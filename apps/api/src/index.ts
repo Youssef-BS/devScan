@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import authRoutes from "./routes/auth.routes.js";
 
 dotenv.config();
 
@@ -14,9 +15,14 @@ app.use(cors(
 ));
 app.use(express.json());
 
+
+//test route
 app.get("/health", (req, res) => {
   res.json({ messgae: "API Service is running" });
 });
+
+
+app.use("/api/auth", authRoutes);
 
 
 app.listen(process.env.PORT, () => {
