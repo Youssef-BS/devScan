@@ -25,6 +25,9 @@ app.get("/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 
 
+
+
+
 app.listen(process.env.PORT, () => {
   console.log(`API running on http://localhost:${process.env.PORT}`);
 });
