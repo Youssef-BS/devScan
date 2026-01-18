@@ -1,11 +1,12 @@
-import { Router , Request ,   Response } from "express";
-// import { login } from "../controllers/Auth.controller.js";
+import { Router } from "express";
+import {  githubLogin , githubCallback , logout , getCurrentUser } from "../controllers/Auth.controller.js";
 
 const router:Router = Router();
 
-router.get('/login', (req: Request, res: Response) => {
-  res.json({ message: 'Login successful (GET)' });
-});
+router.get("/github", githubLogin);
+router.get("/github/callback", githubCallback);
+router.get("/current-user", getCurrentUser);
+router.post("/logout", logout);
 
 
 export default router; 
