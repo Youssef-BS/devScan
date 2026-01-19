@@ -8,3 +8,4 @@ export const logout = () => {
     console.log(data);
     window.location.href = '/';
 }
+

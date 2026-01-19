@@ -1,6 +1,14 @@
 "use client"
 
+import { useRouter } from "next/navigation"
+
 const NavbarHomePage = () => {
+
+  const router = useRouter()
+
+  const openModal = () => {
+     router.push("?setModal=true")
+  }
     
   return (
     <div className="shadow w-full py-4 px-8 flex flex-col justify-between items-center md:flex-row ">
@@ -17,8 +25,8 @@ const NavbarHomePage = () => {
         <a href="#pricing" className="mx-4 text-gray-700 hover:text-black">Pricing</a>
         <a href="#contact" className="mx-4 text-gray-700 hover:text-black">Contact</a>
         <div>
-         <a href="/auth/login" className="mx-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition">Login</a>
-         <a href="/#" className="mx-2 px-4 py-2 rounded-lg bg-black text-white hover:bg-gray-800  transition">Get Started free</a>
+         <button className="mx-2 px-4 py-2 bg-white border-2 border-gray-800 text-black  rounded-lg transition" onClick={openModal}>Login</button>
+         <button  className="mx-2 px-4 py-2 rounded-lg text-white transition bg-gradient-to-br from-blue-600 to-purple-600">Get Started free</button>
         </div>
         
       </div>

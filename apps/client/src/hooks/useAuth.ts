@@ -26,7 +26,7 @@ export const useAuth = () => {
       } catch (error) {
         console.error("Error fetching current user:", error);
         setUser(null);
-        router.push("/auth/login");
+        router.push("/dashboard");
       } finally {
         setLoading(false);
       }
