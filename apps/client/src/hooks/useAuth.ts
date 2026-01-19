@@ -22,6 +22,7 @@ export const useAuth = () => {
 
         const data = await res.json();
         setUser(data.user);
+        console.log("Fetched user:", data.user);
       } catch (error) {
         console.error("Error fetching current user:", error);
         setUser(null);

@@ -12,16 +12,17 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
 import { logout } from "@/lib/api"
-import {useAuth} from "@/hooks/useAuth"
+import { useAuthContext } from "@/auth-context"
 import { useEffect } from "react"
+
 
 export function Navbar() {
 
-  const {user , loading} = useAuth();
+  const { user } = useAuthContext() ;
+  useEffect(()=> {
+    console.log("Navbar user:", user);
 
-  // useEffect(()=> {
-  //   console.log("Current User:", user);
-  // })
+  })
 
   const handleLogout = () => {
     logout();
@@ -63,7 +64,7 @@ export function Navbar() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
                   <Avatar>
-                    <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" alt="User" />
+                    <AvatarImage src={user?.avatar} alt="User" />
                     <AvatarFallback>YB</AvatarFallback>
                   </Avatar>
                 </Button>
@@ -72,8 +73,8 @@ export function Navbar() {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
                   <div className="flex flex-col gap-1">
-                    <p className="font-medium">Youssef Ben Said</p>
-                    <p className="text-xs text-gray-500">@youssefbensaid</p>
+                    <p className="font-medium">{user?.name}</p>
+                    <p className="text-xs text-gray-500">{user?.email}</p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
