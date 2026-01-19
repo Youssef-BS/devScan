@@ -17,23 +17,21 @@ export const useAuth = () => {
         });
 
         if (!res.ok) {
-          throw new Error("Not authenticated");
+          setUser(null)
+          return ;
         }
 
         const data = await res.json();
         setUser(data.user);
-        console.log("Fetched user:", data.user);
       } catch (error) {
-        console.error("Error fetching current user:", error);
         setUser(null);
-        router.push("/dashboard");
       } finally {
         setLoading(false);
       }
     };
 
     fetchCurrentUser();
-  }, [router]);
+  }, []);
 
   return { user, loading };
 };

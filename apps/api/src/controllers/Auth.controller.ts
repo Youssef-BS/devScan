@@ -111,7 +111,7 @@ export const githubCallback = async (req: Request, res: Response) => {
     return res.redirect(`${clientUrl}/dashboard`);
   } catch (error) {
     console.error('githubCallback error:', error);
-    const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000/dashboard';
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
     return res.redirect(`${clientUrl}/auth?error=github`);
   }
 };
