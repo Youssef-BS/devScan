@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import axios from 'axios';
 import { randomBytes } from 'crypto';
+// import {prisma} from "@repo/db"
 
 const requireEnv = (key: string) => {
   const val = process.env[key];
@@ -66,7 +67,7 @@ export const githubCallback = async (req: Request, res: Response) => {
     const accessToken = tokenResponse.data?.access_token;
     if (!accessToken) {
       console.error('No access_token in token response:', tokenResponse.data);
-      return res.redirect(`${clientUrl}/auth?error=oauth`);
+      return res.redirect(`${clientUrl}?error=oauth`);
     }
 
     const userResponse = await axios.get('https://api.github.com/user', {
@@ -96,6 +97,30 @@ export const githubCallback = async (req: Request, res: Response) => {
       }
     }
 
+    //problem
+
+//  const dbUser = await prisma.user.upsert({
+//     where: { githubId: String(githubUser.id) },
+//     update: {
+//       name: githubUser.name,
+//       email,
+//       avatar: githubUser.avatar_url,
+//       accessToken,
+//     },
+//     create: {
+//       githubId: String(githubUser.id),
+//       name: githubUser.name,
+//       email,
+//       avatar: githubUser.avatar_url,
+//       accessToken,
+//     },
+//   });
+
+
+
+
+
+
     req.session.user = {
       id: githubUser.id,
       name: githubUser.name || githubUser.login || null,
@@ -111,8 +136,8 @@ export const githubCallback = async (req: Request, res: Response) => {
     return res.redirect(`${clientUrl}/dashboard`);
   } catch (error) {
     console.error('githubCallback error:', error);
-    const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
-    return res.redirect(`${clientUrl}/auth?error=github`);
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000/';
+    return res.redirect(`${clientUrl}`);
   }
 };
 

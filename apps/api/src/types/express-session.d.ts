@@ -4,11 +4,11 @@ declare module "express-session" {
   interface SessionData {
     user?: {
       id: number;
-      name: string;
-      email: string;
-      avatar: string;
+      name: string | null;
+      email: string | null;
+      avatar: string | null;
     };
-    // store oauth state for CSRF protection during OAuth flow
+
     oauthState?: string;
   }
 }
