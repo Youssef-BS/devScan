@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import axios from 'axios';
 import { randomBytes } from 'crypto';
-// import {prisma} from "@repo/db"
+import { prisma } from '../db';
 
 const requireEnv = (key: string) => {
   const val = process.env[key];
@@ -99,27 +99,22 @@ export const githubCallback = async (req: Request, res: Response) => {
 
     //problem
 
-//  const dbUser = await prisma.user.upsert({
-//     where: { githubId: String(githubUser.id) },
-//     update: {
-//       name: githubUser.name,
-//       email,
-//       avatar: githubUser.avatar_url,
-//       accessToken,
-//     },
-//     create: {
-//       githubId: String(githubUser.id),
-//       name: githubUser.name,
-//       email,
-//       avatar: githubUser.avatar_url,
-//       accessToken,
-//     },
-//   });
-
-
-
-
-
+ const dbUser = await prisma.user.upsert({
+    where: { githubId: String(githubUser.id) },
+    update: {
+      username: githubUser.name,
+      email,
+      avatarUrl: githubUser.avatar_url,
+      accessToken,
+    },
+    create: {
+      githubId: String(githubUser.id),
+      username: githubUser.name,
+      email,
+      avatarUrl: githubUser.avatar_url,
+      accessToken,
+    },
+  });
 
     req.session.user = {
       id: githubUser.id,

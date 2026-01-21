@@ -1,0 +1,39 @@
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: devscan_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: devscan
+      POSTGRES_PASSWORD: devscan
+      POSTGRES_DB: devscan_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfiles/Dockerfile.api
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./apps/api/.env
+    depends_on:
+      - postgres
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfiles/Dockerfile.client
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./apps/client/.env
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
