@@ -1,159 +1,191 @@
 "use client"
 
-import React , {useState , useEffect} from 'react'
-import {  Search , ListFilterPlus} from 'lucide-react'
-import { useRouter  } from 'next/navigation'
-import { Input } from "@/components/ui/input"
+import React, { useState, useEffect } from "react";
+import { Search, ListFilterPlus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import IntroDashboard from '@/components/intro-dashboard'
+} from "@/components/ui/select";
+import IntroDashboard from "@/components/intro-dashboard";
+import { useRepoStore } from "@/store/useRepoStore";
 
-const fakeRepos = [
-  {name: "awesome-project", description: "An awesome project repository", language: "JavaScript" , state : "public", issues : 16 , lastScan: "2 days ago" , auto_audit : true},
-  {name: "nextjs-app", description: "A Next.js application", language: "TypeScript", state : "private", issues : 16 , lastScan: "1 day ago" , auto_audit : false},
-  {name: "java-backend", description: "Backend services in Java", language: "Java", state : "private", issues : 16, lastScan: "3 days ago" , auto_audit : true},
-  {name: "react-library", description: "A reusable React component library", language: "JavaScript", state : "public", issues : 16, lastScan: "5 days ago" , auto_audit : false},
-  {name: "typescript-utils", description: "Utility functions in TypeScript", language: "TypeScript", state : "public", issues : 16, lastScan: "4 days ago" , auto_audit : true},
-  {name: "spring-boot-api", description: "RESTful API with Spring Boot", language: "Java", state : "public", issues : 16, lastScan: "2 weeks ago" , auto_audit : false},
-]
+const Dashboard = () => {
+  const router = useRouter();
 
-const Dashboard = ()=> {
-
-  const router = useRouter()
   const [currentPath, setCurrentPath] = useState<string>("repositories");
   const [search, setSearch] = useState<string>("");
   const [language, setLanguage] = useState<string>("all");
 
-  const changePath = (path:string) => {
-    console.log("Current path:", path);
-    if (path === "repositories") {
-      router.push("?homeType=repositories");
-      setCurrentPath("repositories");
-    } 
-    else if (path === "analytics") {
-      router.push("?homeType=analytics");
-      setCurrentPath("analytics");
-      setLanguage("all");
-      setSearch("");
-    }
-  }
+  const { repos, toggleAutoAudit, setSearch: setStoreSearch, setLanguage: setStoreLanguage } = useRepoStore();
 
-
-useEffect(() => {
-  const params = new URLSearchParams(window.location.search);
-
-  const homeType = params.get("homeType");
-  const searchParam = params.get("search");
-  const languageParam = params.get("language");
-
-  if (homeType === "repositories" || homeType === "analytics") {
-    setCurrentPath(homeType);
-  }
-
-  if (searchParam) {
-    setSearch(searchParam);
-  }
-
-  if (languageParam) {
-    setLanguage(languageParam);
-  }
-}, []);
-
-
-useEffect(() => {
-  const timeout = setTimeout(() => {
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
 
-    if (search) params.set("search", search);
-    else params.delete("search");
+    const homeType = params.get("homeType");
+    const searchParam = params.get("search");
+    const languageParam = params.get("language");
 
+    if (homeType === "repositories" || homeType === "analytics") {
+      setCurrentPath(homeType);
+    }
+
+    if (searchParam) {
+      setSearch(searchParam);
+      setStoreSearch(searchParam);
+    }
+
+    if (languageParam) {
+      setLanguage(languageParam);
+      setStoreLanguage(languageParam);
+    }
+  }, [setStoreSearch, setStoreLanguage]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+
+      if (search) params.set("search", search);
+      else params.delete("search");
+
+      router.replace(`?${params.toString()}`);
+    }, 400);
+
+    return () => clearTimeout(timeout);
+  }, [search, router]);
+
+  const changePath = (path: string) => {
+    const params = new URLSearchParams(window.location.search);
+    params.set("homeType", path);
+    router.push(`?${params.toString()}`);
+    setCurrentPath(path);
+
+    if (path === "analytics") {
+      setSearch("");
+      setLanguage("all");
+      setStoreSearch("");
+      setStoreLanguage("all");
+    }
+  };
+
+  const onLanguageChange = (value: string) => {
+    setLanguage(value);
+    setStoreLanguage(value);
+
+    const params = new URLSearchParams(window.location.search);
+    params.set("language", value);
     router.replace(`?${params.toString()}`);
-  }, 400);
+  };
+  const filteredRepos = repos.filter((repo) => {
+    const matchesSearch = repo.name.toLowerCase().includes(search.toLowerCase());
+    const matchesLanguage =
+      language === "all" || repo.language.toLowerCase() === language.toLowerCase();
+    return matchesSearch && matchesLanguage;
+  });
 
-  return () => clearTimeout(timeout);
-}, [search]);
+  return (
+    <React.Fragment>
+      <IntroDashboard path={currentPath} changePath={changePath} />
 
-const onLanguageChange = (value: string) => {
-  setLanguage(value)
+      <section className="mx-16 my-8">
+        <div className="flex items-center w-full rounded-2xl bg-gray-100 px-4 py-2">
+          <Search className="text-gray-400 mr-3 shrink-0" />
+          <Input
+            placeholder="Search repositories..."
+            className="flex-1 border-0 bg-transparent focus-visible:ring-0 text-sm"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setStoreSearch(e.target.value);
+            }}
+          />
+          <div className="mx-4 h-6 w-px bg-gray-300" />
+          <ListFilterPlus className="text-gray-500 mr-2 shrink-0" />
+          <Select value={language} defaultValue="all" onValueChange={onLanguageChange}>
+            <SelectTrigger className="border-0 bg-transparent shadow-none focus:ring-0 text-sm font-medium w-[160px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Languages</SelectItem>
+              <SelectItem value="js">JavaScript</SelectItem>
+              <SelectItem value="ts">TypeScript</SelectItem>
+              <SelectItem value="java">Java</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </section>
 
-  const params = new URLSearchParams(window.location.search)
-  params.set("language", value)
+      <section className="flex flex-wrap gap-5 m-16 justify-items-start">
+        {filteredRepos.map((repo, index) => (
+          <div
+            key={index}
+            className="bg-white border border-gray-200 rounded-xl p-6 basis-[31%] min-h-[220px] hover:shadow-sm transition-shadow"
+          >
+            <div className="flex justify-between items-start">
+              <div className="flex items-center gap-2">
+                <svg
+                  viewBox="0 0 16 16"
+                  className="w-5 h-5 text-gray-700"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h7A2.5 2.5 0 0 1 14 2.5v11a.5.5 0 0 1-.757.429L8 11.101l-5.243 2.828A.5.5 0 0 1 2 13.5v-11Z" />
+                </svg>
+                <h2 className="font-semibold text-base">{repo.name}</h2>
+              </div>
 
-  router.replace(`?${params.toString()}`)
-}
+              <div className="relative inline-flex items-center">
+                <input
+                  type="checkbox"
+                  checked={repo.auto_audit}
+                  onChange={() => toggleAutoAudit(repo.name)}
+                  className="peer sr-only"
+                />
+                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-black transition-colors" />
+                <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5" />
+              </div>
+            </div>
 
+            <p className="text-sm text-gray-500 mt-2 line-clamp-2">{repo.description}</p>
 
+            <div className="flex items-center gap-4 mt-4 text-sm">
+              <div className="flex items-center gap-1 text-red-600">
+                <span className="font-medium">{repo.issues}</span>
+                <span className="text-gray-500">issues found</span>
+              </div>
 
-return (
-<React.Fragment>
+              <div className="flex items-center gap-1 text-gray-500">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" />
+                  <circle cx="12" cy="12" r="9" />
+                </svg>
+                <span>Last scan: {repo.lastScan}</span>
+              </div>
+            </div>
 
-<IntroDashboard path={currentPath} changePath={changePath} />
-
-<section className="mx-16 my-8">
-  <div className="flex items-center w-full rounded-2xl bg-gray-100 px-4 py-2">
-    <Search className="text-gray-400 mr-3 shrink-0" />
-    <Input
-      placeholder="Search repositories..."
-      className="flex-1 border-0 bg-transparent focus-visible:ring-0 text-sm"
-      onChange={(e)=>setSearch(e.target.value)}
-    />
-    <div className="mx-4 h-6 w-px bg-gray-300" />
-    <ListFilterPlus className="text-gray-500 mr-2 shrink-0" />
-    <Select
-  value={language}
-  defaultValue="all"
-  onValueChange={onLanguageChange}
->
-      <SelectTrigger className="border-0 bg-transparent shadow-none focus:ring-0 text-sm font-medium w-[160px]">
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent >
-        <SelectItem value="all">All Languages</SelectItem>
-        <SelectItem value="js">JavaScript</SelectItem>
-        <SelectItem value="ts">TypeScript</SelectItem>
-        <SelectItem value="java">Java</SelectItem>
-      </SelectContent>
-    </Select>
-
-  </div>
-</section>
-
-<section className='flex flex-wrap gap-5 m-16 justify-items-start'>
-  {
-    fakeRepos.map((repo, index) => (
-      <div key={index} className="bg-white border border-gray-200 rounded-xl p-6 basis-[31%] min-h-[250px] w-60 m-auto hover:shadow-sm transition-shadow">
-        <div className="flex justify-between items-start">
-          <div>
-            <h2 className="font-bold text-lg">{repo.name}</h2>
-            <p className="text-gray-500 text-sm">{repo.description}</p>
+            <div className="flex items-center gap-2 mt-6">
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  repo.language === "JavaScript"
+                    ? "bg-yellow-400"
+                    : repo.language === "TypeScript"
+                    ? "bg-blue-500"
+                    : repo.language === "Java"
+                    ? "bg-red-500"
+                    : "bg-gray-400"
+                }`}
+              />
+              <span className="text-sm text-gray-600">{repo.language}</span>
+            </div>
           </div>
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${repo.state === "public" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
-            {repo.state}
-          </span>
-        </div>
-        <div className="mt-4 flex justify-between items-center">
-          <span className="text-gray-500 text-sm">{repo.language}</span>
-          <span className="text-gray-500 text-sm">{repo.lastScan}</span>
-        </div>
-        <div className="mt-4 flex justify-between items-center">
-          <span className="text-gray-500 text-sm">Issues: {repo.issues}</span>
-          <span className={`text-xs font-medium ${repo.auto_audit ? "text-green-600" : "text-red-600"}`}>
-            {repo.auto_audit ? "Auto Audit Enabled" : "Auto Audit Disabled"}
-          </span>
-        </div>
-      </div>
-    ))
-  }
-  
-</section>
-
+        ))}
+      </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Dashboard ;
+export default Dashboard;
