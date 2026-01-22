@@ -1,7 +1,6 @@
 "use client"
 import { AnalyseCardProps } from "@/types/analyse";
 
-
 const AnalyseCard = ({id , logo , title , desc} : AnalyseCardProps ) => {
 
   return (

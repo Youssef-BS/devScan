@@ -1,13 +1,14 @@
 "use client"
-import React from "react" ;
-import AnalyseCard from "@/components/AnalyseCard";
+import React, { useEffect } from "react" ;
+import AnalyseCard from "@/components/cards/AnalyseCard";
 import { FingerprintPattern , Zap , Code , BrainCircuit , Check , Github , ArrowRight ,Users , TrendingUp , Code2} from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useSearchParams , useRouter} from "next/navigation";
 import Footer from "@/components/Footer";
+import PlanCard from "@/components/cards/PlanCard";
+import { usePlanStore } from "@/store/usePlanStore";
+import { useServiceStore } from "@/store/useServiceStore";
 
 const data = [
   {
@@ -36,63 +37,6 @@ const data = [
   }
 ]
 
-
-const plans = [
-    {
-      name: "Free",
-      price: "0",
-      period: "forever",
-      description: "Perfect for individual developers and small projects",
-      features: [
-        "Up to 3 repositories",
-        "Basic security scans",
-        "Weekly audits",
-        "Community support",
-        "Public repositories only"
-      ],
-      popular: false,
-      cta: "Get Started"
-    },
-    {
-      name: "Pro",
-      price: "29",
-      period: "per month",
-      description: "For professional developers and growing teams",
-      features: [
-        "Unlimited repositories",
-        "Advanced AI analysis",
-        "Real-time scanning (on push)",
-        "Auto-fix PR creation",
-        "Priority support",
-        "Private repositories",
-        "Custom webhooks",
-        "API access"
-      ],
-      popular: true,
-      cta: "Start Free Trial"
-    },
-    {
-      name: "Enterprise",
-      price: "Custom",
-      period: "contact us",
-      description: "For large teams and organizations",
-      features: [
-        "Everything in Pro",
-        "Self-hosted option",
-        "Custom AI models",
-        "SLA guarantee",
-        "Dedicated support",
-        "Advanced analytics",
-        "SSO integration",
-        "Compliance reports"
-      ],
-      popular: false,
-      cta: "Contact Sales"
-    }
-  ];
-
-
-
 const page = () => {
 
  const openLoginModal = () => {
@@ -112,6 +56,21 @@ const page = () => {
     params.delete("setModal")
     router.push(`?${params.toString()}`)
   }
+
+  
+  const {plans} = usePlanStore() ;
+  const {services} = useServiceStore() ;
+
+  const setPlans = usePlanStore((state) => state.setPlans)
+  const setServices = useServiceStore((state) => state.setServices) ;
+
+
+  useEffect(()=> {
+     setPlans(plans) ;
+     setServices(data) ;
+  } , [setPlans]) ;
+
+  console.log("plans in page.tsx:", services) ;
 
   
   return (
@@ -174,7 +133,7 @@ const page = () => {
     <div className="flex flex-row mt-16 mx-24 justify-center">
       {
 
-        data.map((item)=>
+        services.map((item)=>
             <AnalyseCard key={item.id} id={item.id} title={item.title} logo={item.logo} desc={item.desc}/>  
         )
 
@@ -221,8 +180,6 @@ const page = () => {
           </div>
         </div>
       </section>
-
-
        <section className="py-20 bg-white" id="pricing">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
@@ -232,51 +189,9 @@ const page = () => {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {plans.map((plan, index) => (
-              <Card 
-                key={index} 
-                className={`relative ${plan.popular ? 'border-blue-600 border-2 shadow-xl scale-105' : ''}`}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-                      Most Popular
-                    </Badge>
-                  </div>
-                )}
-                <CardHeader>
-                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                  <CardDescription>{plan.description}</CardDescription>
-                  <div className="mt-4">
-                    <span className="text-4xl font-bold">
-                      {plan.price === "Custom" ? plan.price : `$${plan.price}`}
-                    </span>
-                    {plan.price !== "Custom" && (
-                      <span className="text-gray-600 ml-2">/{plan.period}</span>
-                    )}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3">
-                    {plan.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-start gap-2">
-                        <Check className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                        <span className="text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Button 
-                    className={`w-full ${plan.popular ? 'bg-gradient-to-r from-blue-600 to-purple-600' : ''}`}
-                    variant={plan.popular ? 'default' : 'outline'}
-                    onClick={openLoginModal}
-                  >
-                    {plan.cta}
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
+     {plans.map((plan, index) => (
+        <PlanCard key={index} plan={plan} openLoginModal={openLoginModal} />
+      ))}
           </div>
         </div>
       </section>
@@ -305,8 +220,6 @@ const page = () => {
           </div>
         </div>
       </section>
-
-      {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
           <h2 className="text-4xl sm:text-5xl font-bold">

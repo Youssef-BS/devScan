@@ -22,6 +22,11 @@ const Dashboard = () => {
   const [language, setLanguage] = useState<string>("all");
 
   const { repos, toggleAutoAudit, setSearch: setStoreSearch, setLanguage: setStoreLanguage } = useRepoStore();
+  const setRepo = useRepoStore((state) => state.setRepos);
+
+  useEffect(()=> {
+    setRepo(repos);
+  } , [setRepo])
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);

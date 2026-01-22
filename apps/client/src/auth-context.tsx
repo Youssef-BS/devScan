@@ -1,13 +1,7 @@
 "use client"
-
 import { createContext , useContext , ReactNode } from "react" ;
 import { useAuth } from "@/hooks/useAuth";
-
-type AuthContextType = {
-    user: any ;
-    loading: boolean ;
-} ;
-
+import { AuthContextType } from "@/types/auth" ;
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined) ;
 

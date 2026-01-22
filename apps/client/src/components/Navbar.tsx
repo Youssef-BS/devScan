@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge"
 import { logout } from "@/lib/api"
 import { useAuthContext } from "@/auth-context"
 import { useEffect } from "react"
+import { Bell , Settings  } from "lucide-react"
 
 
 export function Navbar() {
@@ -29,11 +30,9 @@ export function Navbar() {
   }
 
   return (
-    
     <nav className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
           <div className="flex items-center gap-3">
             <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-2 rounded-lg">
               <span className="text-white font-bold">DS</span>
@@ -43,23 +42,16 @@ export function Navbar() {
               <p className="text-xs text-gray-500">AI Code Auditor</p>
             </div>
           </div>
-
-          {/* Right Side */}
           <div className="flex items-center gap-4">
-            {/* Notifications */}
             <Button variant="ghost" size="sm" className="relative">
-              🔔
+              <Bell />
               <Badge className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 bg-red-500 text-white text-[10px] rounded-full">
                 3
               </Badge>
             </Button>
-
-            {/* Settings */}
             <Button variant="ghost" size="sm">
-              ⚙️
+            <Settings />
             </Button>
-
-            {/* User Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
