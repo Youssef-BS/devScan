@@ -18,12 +18,10 @@ export const getCurrentUserApi = async ({setUser, setLoading} : {setUser : (user
         const res = await fetch("http://localhost:4000/auth/current-user", {
           credentials: "include",
         });
-
         if (!res.ok) {
           setUser(null)
           return ;
         }
-
         const data = await res.json();
         setUser(data.user);
       } catch (error) {

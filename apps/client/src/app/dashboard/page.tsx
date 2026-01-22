@@ -128,7 +128,7 @@ const Dashboard = () => {
         {filteredRepos.map((repo, index) => (
           <div
             key={index}
-            className="bg-white border border-gray-200 rounded-xl p-6 basis-[31%] min-h-[220px] hover:shadow-sm transition-shadow"
+            className="bg-white border border-gray-200 rounded-xl p-6 basis-[100%] min-h-[220px] lg:basis-[31%]  hover:shadow-sm transition-shadow"
           >
             <div className="flex justify-between items-start">
               <div className="flex items-center gap-2">

@@ -6,7 +6,7 @@ const IntroDashboard = ({path , changePath} : {path:string , changePath : (path 
 
   return (
     <React.Fragment>
-              <section className='m-12 items-center justify-between flex'>
+   <section className='m-12 items-center justify-center text-center lg:justify-between flex lg:flex-row flex-col lg:gap-0 gap-4'>
       <div>     
       <h1 className='font-bold text-4xl'>Your Repositories</h1>
       <p className='pt-2.5 text-gray-500'>Monitor and audit your code automatically</p>
@@ -20,7 +20,7 @@ const IntroDashboard = ({path , changePath} : {path:string , changePath : (path 
      </section>
 
      {/* filter */}
-<section className="mx-12">
+<section className="mx-1 mb-4 flex justify-center lg:justify-start lg:mx-12">
   <div className="bg-gray-200 p-1 flex items-center rounded-2xl gap-1.5 w-fit">
     <button className={`cursor-pointer px-11 py-1 font-semibold rounded-xl  ${path === "repositories" ? "bg-white" : "hover:bg-gray-100" }`}  onClick={()=>changePath("repositories")}>
       Repositories
