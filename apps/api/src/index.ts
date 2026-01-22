@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes.js";
+import githubRoutes from "./routes/github.routes.js";
 import session from "express-session";
 
 dotenv.config();
@@ -37,6 +38,8 @@ app.get("/health", (req, res) => {
 
 
 app.use("/auth", authRoutes);
+app.use("/github/repos", githubRoutes);
+
 
 app.listen(process.env.PORT, () => {
   console.log(`API running on http://localhost:${process.env.PORT}`);

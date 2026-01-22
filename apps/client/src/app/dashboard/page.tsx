@@ -1,9 +1,10 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
-import { Search, ListFilterPlus } from "lucide-react";
+import { Search, ListFilterPlus, RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -13,6 +14,18 @@ import {
 } from "@/components/ui/select";
 import IntroDashboard from "@/components/intro-dashboard";
 import { useRepoStore } from "@/store/useRepoStore";
+import SpinnerLoad from "@/components/Spinner" ;
+import { Button } from "@/components/ui/button";
+import { syncGithubReposApi } from "@/lib/api";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";  
+import SonnerAlert from "@/components/SonnerAlert";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -20,12 +33,27 @@ const Dashboard = () => {
   const [currentPath, setCurrentPath] = useState<string>("repositories");
   const [search, setSearch] = useState<string>("");
   const [language, setLanguage] = useState<string>("all");
+  const [isSyncing, setIsSyncing] = useState(false);
 
-  const { repos, toggleAutoAudit, setSearch: setStoreSearch, setLanguage: setStoreLanguage } = useRepoStore();
+  const { repos, toggleAutoAudit, setSearch: setStoreSearch, setLanguage: setStoreLanguage , fetchRepos , loading , page , totalPages , asyncRepos } = useRepoStore();
   const setRepo = useRepoStore((state) => state.setRepos);
 
+  const handleSync = async () => {
+    try {
+      setIsSyncing(true);
+      const result = await syncGithubReposApi();
+      await fetchRepos();
+      toast.success(`Synced ${result.count} repositories successfully!`);
+    } catch (error) {
+      console.error('Sync error:', error);
+      toast.error('Failed to sync repositories');
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
   useEffect(()=> {
-    setRepo(repos);
+    fetchRepos() ;
   } , [setRepo])
 
   useEffect(() => {
@@ -97,33 +125,45 @@ const Dashboard = () => {
       <IntroDashboard path={currentPath} changePath={changePath} />
 
       <section className="mx-16 my-8">
-        <div className="flex items-center w-full rounded-2xl bg-gray-100 px-4 py-2">
-          <Search className="text-gray-400 mr-3 shrink-0" />
-          <Input
-            placeholder="Search repositories..."
-            className="flex-1 border-0 bg-transparent focus-visible:ring-0 text-sm"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setStoreSearch(e.target.value);
-            }}
-          />
-          <div className="mx-4 h-6 w-px bg-gray-300" />
-          <ListFilterPlus className="text-gray-500 mr-2 shrink-0" />
-          <Select value={language} defaultValue="all" onValueChange={onLanguageChange}>
-            <SelectTrigger className="border-0 bg-transparent shadow-none focus:ring-0 text-sm font-medium w-[160px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center w-full rounded-2xl bg-gray-100 px-4 py-2">
+            <Search className="text-gray-400 mr-3 shrink-0" />
+            <Input
+              placeholder="Search repositories..."
+              className="flex-1 border-0 bg-transparent focus-visible:ring-0 text-sm"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setStoreSearch(e.target.value);
+              }}
+            />
+            <div className="mx-4 h-6 w-px bg-gray-300" />
+            <ListFilterPlus className="text-gray-500 mr-2 shrink-0" />
+            <Select value={language} defaultValue="all" onValueChange={onLanguageChange}>
+              <SelectTrigger className="border-0 bg-transparent shadow-none focus:ring-0 text-sm font-medium w-[160px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
               <SelectItem value="all">All Languages</SelectItem>
               <SelectItem value="js">JavaScript</SelectItem>
               <SelectItem value="ts">TypeScript</SelectItem>
               <SelectItem value="java">Java</SelectItem>
             </SelectContent>
           </Select>
+          </div>
+          <Button
+            onClick={handleSync}
+            disabled={isSyncing}
+            className="ml-4 flex items-center gap-2"
+            variant="outline"
+          >
+            <RefreshCw size={18} className={isSyncing ? 'animate-spin' : ''} />
+            {isSyncing ? 'Syncing...' : 'Sync Repos'}
+          </Button>
         </div>
       </section>
 
+      {loading ? <SpinnerLoad /> :
       <section className="flex flex-wrap gap-5 m-16 justify-items-start">
         {filteredRepos.map((repo, index) => (
           <div
@@ -188,7 +228,31 @@ const Dashboard = () => {
             </div>
           </div>
         ))}
+        <Pagination>
+  <PaginationContent>
+    <PaginationPrevious
+      onClick={() => page > 1 && fetchRepos(page - 1)}
+    />
+
+    {[...Array(totalPages)].map((_, i) => (
+      <PaginationLink
+        key={i}
+        isActive={page === i + 1}
+        onClick={() => fetchRepos(i + 1)}
+      >
+        {i + 1}
+      </PaginationLink>
+    ))}
+
+    <PaginationNext
+      onClick={() => page < totalPages && fetchRepos(page + 1)}
+    />
+  </PaginationContent>
+</Pagination>
       </section>
+
+
+}
     </React.Fragment>
   );
 };

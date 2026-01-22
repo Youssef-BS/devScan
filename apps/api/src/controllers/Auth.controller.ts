@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import axios from 'axios';
 import { randomBytes } from 'crypto';
 import { prisma } from '../db';
+import { saveGithubRepos } from './Github.controller';
 
 const requireEnv = (key: string) => {
   const val = process.env[key];

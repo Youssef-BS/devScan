@@ -1,19 +1,35 @@
 generator client {
-  provider   = "prisma-client"
-  output     = "./generated"
+  provider = "prisma-client"
+  output   = "./generated"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-
 model User {
-  id           Int      @id @default(autoincrement())
-  githubId     String   @unique
-  username     String?
-  email        String?  @unique
-  avatarUrl    String?
-  accessToken  String?
-  createdAt    DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  githubId    String   @unique
+  username    String?
+  email       String?  @unique
+  avatarUrl   String?
+  accessToken String?
+  createdAt   DateTime @default(now())
+  Repo        Repo[]
+}
+
+model Repo {
+  id          Int      @id @default(autoincrement())
+  githubId    String   @unique
+  name        String
+  fullName    String
+  htmlUrl     String
+  description String?
+  language    String?
+  private     Boolean
+  fork        Boolean
+  ownerId     Int
+  autoAudit   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  User        User     @relation(fields: [ownerId], references: [id])
 }

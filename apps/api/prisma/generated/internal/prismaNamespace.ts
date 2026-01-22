@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.2.0
- * Query Engine version: 0c8ef2ce45c83248ab3df073180d5eda9e8be7a3
+ * Prisma Client JS version: 7.3.0
+ * Query Engine version: 9d6ad21cbbceab97458517b147a6a09ff43aa735
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.2.0",
-  engine: "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3"
+  client: "7.3.0",
+  engine: "9d6ad21cbbceab97458517b147a6a09ff43aa735"
 }
 
 /**
@@ -384,7 +384,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
-  User: 'User'
+  User: 'User',
+  Repo: 'Repo'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -400,7 +401,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user"
+    modelProps: "user" | "repo"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -478,6 +479,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Repo: {
+      payload: Prisma.$RepoPayload<ExtArgs>
+      fields: Prisma.RepoFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RepoFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepoPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RepoFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepoPayload>
+        }
+        findFirst: {
+          args: Prisma.RepoFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepoPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RepoFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepoPayload>
+        }
+        findMany: {
+          args: Prisma.RepoFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepoPayload>[]
+        }
+        create: {
+          args: Prisma.RepoCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepoPayload>
+        }
+        createMany: {
+          args: Prisma.RepoCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RepoCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepoPayload>[]
+        }
+        delete: {
+          args: Prisma.RepoDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepoPayload>
+        }
+        update: {
+          args: Prisma.RepoUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepoPayload>
+        }
+        deleteMany: {
+          args: Prisma.RepoDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RepoUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RepoUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepoPayload>[]
+        }
+        upsert: {
+          args: Prisma.RepoUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepoPayload>
+        }
+        aggregate: {
+          args: Prisma.RepoAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRepo>
+        }
+        groupBy: {
+          args: Prisma.RepoGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RepoGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RepoCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RepoCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -528,6 +603,24 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const RepoScalarFieldEnum = {
+  id: 'id',
+  githubId: 'githubId',
+  name: 'name',
+  fullName: 'fullName',
+  htmlUrl: 'htmlUrl',
+  description: 'description',
+  language: 'language',
+  private: 'private',
+  fork: 'fork',
+  ownerId: 'ownerId',
+  autoAudit: 'autoAudit',
+  createdAt: 'createdAt'
+} as const
+
+export type RepoScalarFieldEnum = (typeof RepoScalarFieldEnum)[keyof typeof RepoScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -599,6 +692,13 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -711,6 +811,7 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  repo?: Prisma.RepoOmit
 }
 
 /* Types for Logging */

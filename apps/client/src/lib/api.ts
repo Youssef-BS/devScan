@@ -1,6 +1,3 @@
-
-
-
 export const logout = () => {
     const res = fetch('http://localhost:4000/auth/logout', {
         method: 'POST',
@@ -32,3 +29,27 @@ export const getCurrentUserApi = async ({setUser, setLoading} : {setUser : (user
 }
 
 
+export const getGithubReposApi = async (page = 1 , limit = 9) => {
+  const res = await fetch('http://localhost:4000/github/repos', {
+    credentials: 'include',
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch GitHub repos');
+  }
+
+  return res.json();
+};
+
+export const syncGithubReposApi = async () => {
+  const res = await fetch('http://localhost:4000/github/repos/sync', {
+    method: 'POST',
+    credentials: 'include',
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to sync GitHub repos');
+  }
+
+  return res.json();
+};
