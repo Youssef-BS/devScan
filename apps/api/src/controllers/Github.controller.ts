@@ -85,6 +85,7 @@ export const saveGithubRepos = async (githubUserId: string, repos: any[]) => {
           language: repo.language,
           private: repo.private,
           fork: repo.fork,
+          autoAudit : repo.auto_audit ,
         },
         create: {
           githubId: String(repo.id),
@@ -96,6 +97,7 @@ export const saveGithubRepos = async (githubUserId: string, repos: any[]) => {
           private: repo.private,
           fork: repo.fork,
           ownerId: user.id,
+          autoAudit : repo.auto_audit ,
         },
       });
     }
@@ -105,15 +107,159 @@ export const saveGithubRepos = async (githubUserId: string, repos: any[]) => {
 };
 
 
-// export const getRepoByName = async (req: Request, res: Response) => {
-//     try  {
-//         if(!req.session.user) {
-//             return res.status(401).json({ message: 'Not authenticated' });
-//         }
-//         const { name } = req.params;
-//         const dbUser = await prisma
-//     }catch (error) {    
-//         console.error('getRepoByName error:', error);
-//         res.status(500).json({ message: 'Failed to fetch repository' });
-//     }
-// }
+export const getAllRepoFromDbByUser = async (req: Request, res: Response) => {
+  try {
+    if (!req.session.user) {
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
+
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 9;
+    const offset = (page - 1) * limit;
+
+    const dbUser = await prisma.user.findUnique({
+      where: { githubId: String(req.session.user.id) },
+      select: { id: true },
+    });
+
+    if (!dbUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const [repos, total] = await Promise.all([
+      prisma.repo.findMany({
+        where: { ownerId: dbUser.id },
+        skip: offset,
+        take: limit,
+      }),
+      prisma.repo.count({
+        where: { ownerId: dbUser.id },
+      }),
+    ]);
+
+    res.json({
+      data: repos,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
+  } catch (error) {
+    console.error('getAllRepoFromDbByUser error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+export const updateRepoAutoAudit = async (req: Request, res: Response) => {
+  try {
+    if (!req.session.user) {
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
+
+    const { full_name } = req.params;
+    const { auto_audit } = req.body;
+
+    const dbUser = await prisma.user.findUnique({
+      where: { githubId: String(req.session.user.id) },
+      select: { id: true },
+    });
+
+    if (!dbUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const updatedRepo = await prisma.repo.updateMany({
+      where: {
+        name: String(full_name),
+        ownerId: dbUser.id,
+      },
+      data: {
+        autoAudit: auto_audit,
+      },
+    });
+
+    if (updatedRepo.count === 0) {
+      return res.status(404).json({ message: 'Repository not found' });
+    }
+
+    res.json({ message: 'Repository updated successfully', autoAudit: auto_audit });
+  } catch (error) {
+    console.error('updateRepoAutoAudit error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+
+export const deleteGithubRepo = async (res: Response , req: Request) => {
+  try {
+    if(!req.session.user) {
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
+    const { githubId } = req.params ;
+    await prisma.repo.deleteMany({
+      where: {
+        githubId: String(githubId),
+        ownerId: req.session.user.id
+      }
+    });
+    res.json({ message: 'Repository deleted successfully' });
+  }catch(error) {
+    console.error('error:', error);
+  }
+}
+
+export const deleteAllGithubRepos = async (req: Request, res: Response) => {
+  try {
+    if(!req.session.user) {
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
+    await prisma.repo.deleteMany({
+      where: {
+        githubId: req.session.user.githubId
+      }});
+    res.json({ message: 'All repositories deleted successfully' });
+  } catch(error) {
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
+
+
+export const saveGithubRepo = async (req: Request, res: Response) => {
+  try {
+    if (!req.session.user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const userId = req.session.user.id;
+    const { githubId, name, fullName, htmlUrl, description, language, privateRepo, fork } = req.body;
+
+    const existingRepo = await prisma.repo.findUnique({
+      where: { githubId },
+    });
+
+    if (existingRepo) {
+      return res.status(400).json({ message: "Repository already saved" });
+    }
+
+    const newRepo = await prisma.repo.create({
+      data: {
+        githubId,
+        name,
+        fullName,
+        htmlUrl,
+        description,
+        language,
+        private: privateRepo,
+        fork,
+        ownerId: userId,
+      },
+    });
+
+    return res.status(201).json({ message: "Repository saved successfully", repo: newRepo });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+

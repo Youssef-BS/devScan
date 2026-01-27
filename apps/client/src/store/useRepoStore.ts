@@ -1,15 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Repo } from '@/types/Repo';
-import { getGithubReposApi , syncGithubReposApi} from '@/lib/api';
-import { get } from 'http';
+import { deleteAllGithubRepos, getGithubReposApi , updateAutoAuditApi , saveGithubRepo } from '@/lib/api/github';
 
 interface RepoStore {
   repos: Repo[];
   search: string;
   language: string;
   loading: boolean;
-
   page: number;
   totalPages: number;
 
@@ -17,8 +15,10 @@ interface RepoStore {
   setRepos: (repos: Repo[]) => void;
   setSearch: (value: string) => void;
   setLanguage: (value: string) => void;
-  toggleAutoAudit: (repoName: string) => void;
-  asyncRepos : () => Promise<void> ; 
+  toggleAutoAudit: (repoName: string) => Promise<void>;
+  deleteAllRepos : () => Promise<void> ;
+  saveRepo  : (value : Repo) => Promise<void> ;
+
 }
 
 export const useRepoStore = create<RepoStore>()(
@@ -28,10 +28,20 @@ export const useRepoStore = create<RepoStore>()(
       search: '',
       language: 'all',
       loading: false,
-
       page: 1,
       totalPages: 1,
-      
+
+saveRepo: async (value: Repo) => {
+  try {
+    const result = await saveGithubRepo(value);
+    console.log("Repo saved successfully:", result);
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+},
+
 
       fetchRepos: async (page = 1) => {
         set({ loading: true });
@@ -43,8 +53,10 @@ export const useRepoStore = create<RepoStore>()(
             repos: res.data.map((repo: any) => ({
               name: repo.name,
               description: repo.description ?? '',
+              full_name : repo.full_name,
               language: repo.language ?? 'Unknown',
               auto_audit: false,
+              githubId : repo.githubId,
               issues: 0,
               lastScan: 'Never',
               state: repo.private ? 'private' : 'public',
@@ -60,39 +72,42 @@ export const useRepoStore = create<RepoStore>()(
         }
       },
 
-      asyncRepos : async () => {
-        set({ loading: true });
-        try {
-
-          const res = await getGithubReposApi();
-          set({
-            repos: res.data.map((repo: any) => ({
-              name: repo.name,
-              description: repo.description ?? '',
-              language: repo.language ?? 'Unknown',
-              auto_audit: false,
-              issues: 0,
-              lastScan: 'Never',
-              state: repo.private ? 'private' : 'public',
-            })),
-          });
-        } catch (error) {
-          console.error('Failed to fetch repos:', error);
-        }
-      } ,
-
       setRepos: (repos) => set({ repos }),
       setSearch: (value) => set({ search: value }),
       setLanguage: (value) => set({ language: value }),
+      deleteAllRepos : async () => {
+          try {
+            await deleteAllGithubRepos()
+            set({repos : []})
+          }catch(error) {
+            console.error("Error deleting All repos" , error)
+          }
+      } ,
 
-      toggleAutoAudit: (repoName) =>
+      toggleAutoAudit: async (repoName) => {
+        const currentState = useRepoStore.getState();
+        const repo = currentState.repos.find((r) => r.full_name === repoName);
+        const newAuditStatus = repo ? !repo.auto_audit : false;
         set((state) => ({
-          repos: state.repos.map((repo) =>
-            repo.name === repoName
-              ? { ...repo, auto_audit: !repo.auto_audit }
-              : repo
+          repos: state.repos.map((r) =>
+            r.full_name === repoName
+              ? { ...r, auto_audit: newAuditStatus }
+              : r
           ),
-        })),
+        }));
+        try {
+          await updateAutoAuditApi(repoName, newAuditStatus);
+        } catch (error) {
+          console.error('Error updating auto_audit:', error);
+          set((state) => ({
+            repos: state.repos.map((r) =>
+              r.full_name === repoName
+                ? { ...r, auto_audit: !newAuditStatus }
+                : r
+            ),
+          }));
+        }
+      },
     }),
     { name: 'repo-store' }
   )

@@ -1,11 +1,15 @@
 import { Router, Request, Response } from "express";
-import { getGithubRepos, saveGithubRepos } from "../controllers/Github.controller.js";
+import { deleteAllGithubRepos, getGithubRepos, saveGithubRepos, getAllRepoFromDbByUser, updateRepoAutoAudit, saveGithubRepo } from "../controllers/Github.controller.js";
 import axios from "axios";
 import { prisma } from "../db.js";
 
 const router : Router = Router();
 
-router.get("/" , getGithubRepos) ;
+router.get("/", getGithubRepos);
+
+router.patch("/:full_name/audit", updateRepoAutoAudit);
+
+router.get("/db/repos", getAllRepoFromDbByUser);
 
 router.post("/sync", async (req: Request, res: Response) => {
   try {
@@ -47,7 +51,6 @@ router.post("/sync", async (req: Request, res: Response) => {
       }
     }
 
-    // Save to database
     await saveGithubRepos(String(req.session.user.id), allRepos);
 
     res.json({ 
@@ -59,5 +62,9 @@ router.post("/sync", async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to sync repositories" });
   }
 });
+
+
+router.delete("/clear", deleteAllGithubRepos) ;
+router.post("/save" , saveGithubRepo)
 
 export default router ;

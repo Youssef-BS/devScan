@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
-import { Search, ListFilterPlus, RefreshCw } from "lucide-react";
+import { Search, ListFilterPlus, Download } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -16,7 +16,7 @@ import IntroDashboard from "@/components/intro-dashboard";
 import { useRepoStore } from "@/store/useRepoStore";
 import SpinnerLoad from "@/components/Spinner" ;
 import { Button } from "@/components/ui/button";
-import { syncGithubReposApi } from "@/lib/api";
+import { saveReposInDB } from "@/lib/api/github";
 import {
   Pagination,
   PaginationContent,
@@ -26,6 +26,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";  
 import SonnerAlert from "@/components/SonnerAlert";
+import RepoCard from "@/components/cards/RepoCard";
+
 
 const Dashboard = () => {
   const router = useRouter();
@@ -33,22 +35,22 @@ const Dashboard = () => {
   const [currentPath, setCurrentPath] = useState<string>("repositories");
   const [search, setSearch] = useState<string>("");
   const [language, setLanguage] = useState<string>("all");
-  const [isSyncing, setIsSyncing] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
-  const { repos, toggleAutoAudit, setSearch: setStoreSearch, setLanguage: setStoreLanguage , fetchRepos , loading , page , totalPages , asyncRepos } = useRepoStore();
+  const { repos, toggleAutoAudit, setSearch: setStoreSearch, setLanguage: setStoreLanguage , fetchRepos , loading , page , totalPages , saveRepo } = useRepoStore();
   const setRepo = useRepoStore((state) => state.setRepos);
 
-  const handleSync = async () => {
+  const handleDownload = async () => {
     try {
-      setIsSyncing(true);
-      const result = await syncGithubReposApi();
+      setIsDownloading(true);
+      const result = await saveReposInDB();
       await fetchRepos();
-      toast.success(`Synced ${result.count} repositories successfully!`);
+      toast.success(`Downloaded ${result.count} repositories successfully!`);
     } catch (error) {
-      console.error('Sync error:', error);
-      toast.error('Failed to sync repositories');
+      console.error('Download error:', error);
+      toast.error('Failed to download repositories');
     } finally {
-      setIsSyncing(false);
+      setIsDownloading(false);
     }
   };
 
@@ -122,8 +124,6 @@ const Dashboard = () => {
 
   return (
     <React.Fragment>
-      <IntroDashboard path={currentPath} changePath={changePath} />
-
       <section className="mx-16 my-8">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center w-full rounded-2xl bg-gray-100 px-4 py-2">
@@ -140,7 +140,7 @@ const Dashboard = () => {
             <div className="mx-4 h-6 w-px bg-gray-300" />
             <ListFilterPlus className="text-gray-500 mr-2 shrink-0" />
             <Select value={language} defaultValue="all" onValueChange={onLanguageChange}>
-              <SelectTrigger className="border-0 bg-transparent shadow-none focus:ring-0 text-sm font-medium w-[160px]">
+              <SelectTrigger className="border-0 bg-transparent shadow-none focus:ring-0 text-sm font-medium w-40">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -152,107 +152,62 @@ const Dashboard = () => {
           </Select>
           </div>
           <Button
-            onClick={handleSync}
-            disabled={isSyncing}
+            onClick={handleDownload}
+            disabled={isDownloading}
             className="ml-4 flex items-center gap-2"
             variant="outline"
           >
-            <RefreshCw size={18} className={isSyncing ? 'animate-spin' : ''} />
-            {isSyncing ? 'Syncing...' : 'Sync Repos'}
+            <Download size={18} />
+            {isDownloading ? 'Downloading...' : 'Download/update All Repository'}
           </Button>
         </div>
       </section>
 
-      {loading ? <SpinnerLoad /> :
-      <section className="flex flex-wrap gap-5 m-16 justify-items-start">
-        {filteredRepos.map((repo, index) => (
-          <div
-            key={index}
-            className="bg-white border border-gray-200 rounded-xl p-6 basis-[100%] min-h-[220px] lg:basis-[31%]  hover:shadow-sm transition-shadow"
-          >
-            <div className="flex justify-between items-start">
-              <div className="flex items-center gap-2">
-                <svg
-                  viewBox="0 0 16 16"
-                  className="w-5 h-5 text-gray-700"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h7A2.5 2.5 0 0 1 14 2.5v11a.5.5 0 0 1-.757.429L8 11.101l-5.243 2.828A.5.5 0 0 1 2 13.5v-11Z" />
-                </svg>
-                <h2 className="font-semibold text-base">{repo.name}</h2>
-              </div>
+{loading ? (
+  <SpinnerLoad />
+) : (
+  <>
+    <section className="flex flex-wrap gap-5 m-16 justify-items-start">
+      
+      {filteredRepos.map((repo) => (
+        <RepoCard
+          key={repo.full_name}
+          repo={repo}
+          toggleAutoAudit={toggleAutoAudit}
+          addToCheck={()=>saveRepo(repo)}
+        />
+      ))}
 
-              <div className="relative inline-flex items-center">
-                <input
-                  type="checkbox"
-                  checked={repo.auto_audit}
-                  onChange={() => toggleAutoAudit(repo.name)}
-                  className="peer sr-only"
-                />
-                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-black transition-colors" />
-                <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5" />
-              </div>
-            </div>
+    </section>
 
-            <p className="text-sm text-gray-500 mt-2 line-clamp-2">{repo.description}</p>
-
-            <div className="flex items-center gap-4 mt-4 text-sm">
-              <div className="flex items-center gap-1 text-red-600">
-                <span className="font-medium">{repo.issues}</span>
-                <span className="text-gray-500">issues found</span>
-              </div>
-
-              <div className="flex items-center gap-1 text-gray-500">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" />
-                  <circle cx="12" cy="12" r="9" />
-                </svg>
-                <span>Last scan: {repo.lastScan}</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 mt-6">
-              <span
-                className={`w-2 h-2 rounded-full ${
-                  repo.language === "JavaScript"
-                    ? "bg-yellow-400"
-                    : repo.language === "TypeScript"
-                    ? "bg-blue-500"
-                    : repo.language === "Java"
-                    ? "bg-red-500"
-                    : "bg-gray-400"
-                }`}
-              />
-              <span className="text-sm text-gray-600">{repo.language}</span>
-            </div>
-          </div>
-        ))}
+    {totalPages > 1 && (
+      <div className="mb-12 flex justify-center">
         <Pagination>
-  <PaginationContent>
-    <PaginationPrevious
-      onClick={() => page > 1 && fetchRepos(page - 1)}
-    />
+          <PaginationContent>
+            <PaginationPrevious
+              onClick={() => page > 1 && fetchRepos(page - 1)}
+            />
 
-    {[...Array(totalPages)].map((_, i) => (
-      <PaginationLink
-        key={i}
-        isActive={page === i + 1}
-        onClick={() => fetchRepos(i + 1)}
-      >
-        {i + 1}
-      </PaginationLink>
-    ))}
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <PaginationLink
+                key={i}
+                isActive={page === i + 1}
+                onClick={() => fetchRepos(i + 1)}
+              >
+                {i + 1}
+              </PaginationLink>
+            ))}
 
-    <PaginationNext
-      onClick={() => page < totalPages && fetchRepos(page + 1)}
-    />
-  </PaginationContent>
-</Pagination>
-      </section>
+            <PaginationNext
+              onClick={() => page < totalPages && fetchRepos(page + 1)}
+            />
+          </PaginationContent>
+        </Pagination>
+      </div>
+    )}
+  </>
+)}
 
-
-}
     </React.Fragment>
   );
 };
