@@ -41,7 +41,7 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo, toggleAutoAudit, addToCheck }
         <div className="flex items-center gap-2">
           <button
             onClick={handleToggle}
-            disabled={isUpdating}
+            disabled
             className={`px-3 py-1 text-xs rounded-full border transition
               ${repo.auto_audit ? "bg-green-500 text-white" : "bg-gray-100 text-gray-600"}
               ${isUpdating ? "opacity-50 cursor-not-allowed" : "hover:bg-opacity-80"}
@@ -73,14 +73,10 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo, toggleAutoAudit, addToCheck }
 
         <button
           onClick={handleAddToCheck}
-          disabled={isAdding}
-          className={`px-4 py-2 text-sm font-medium rounded-lg transition
-            ${isAdding
-              ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-              : "bg-blue-600 text-white hover:bg-blue-700"}
-          `}
+          disabled={repo.auto_audit}
+          className={`px-4 py-2 text-sm font-medium rounded-lg transition bg-gray-900 text-white cursor-pointer`}
         >
-          {isAdding ? "Adding..." : "Add to check"}
+          {repo.auto_audit ? "Already added" : "Add to check"}
         </button>
       </div>
     </div>

@@ -37,7 +37,18 @@ const Dashboard = () => {
   const [language, setLanguage] = useState<string>("all");
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const { repos, toggleAutoAudit, setSearch: setStoreSearch, setLanguage: setStoreLanguage , fetchRepos , loading , page , totalPages , saveRepo } = useRepoStore();
+  const { 
+    repos, 
+    toggleAutoAudit,
+    setSearch: setStoreSearch,
+    setLanguage: setStoreLanguage , 
+    fetchRepos , 
+    loading , 
+    page , 
+    totalPages , 
+    saveRepo 
+  } = useRepoStore();
+  
   const setRepo = useRepoStore((state) => state.setRepos);
 
   const handleDownload = async () => {

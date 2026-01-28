@@ -51,12 +51,16 @@ saveRepo: async (value: Repo) => {
 
           set({
             repos: res?.data.map((repo: any) => ({
+              id: repo.id,
               name: repo.name,
               description: repo.description ?? '',
               full_name : repo.full_name,
               language: repo.language ?? 'Unknown',
-              auto_audit: false,
+              auto_audit: repo.auto_audit ?? false,
               githubId : repo.githubId,
+              html_url: repo.html_url,
+              private: repo.private,
+              fork: repo.fork,
               issues: 0,
               lastScan: 'Never',
               state: repo.private ? 'private' : 'public',

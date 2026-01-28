@@ -39,7 +39,7 @@ const IntroDashboard = () => {
       <section className="mx-1 mb-4 flex justify-center lg:mx-12 lg:justify-start">
         <div className="flex w-fit gap-1.5 rounded-2xl bg-gray-200 p-1">
           <button
-            className={`px-11 py-1 rounded-xl font-semibold transition
+            className={`px-11 py-1 rounded-xl font-semibold transition cursor-pointer
               ${homeType === "repositories" ? "bg-white" : "hover:bg-gray-100"}
             `}
             onClick={() => goTo("repositories")}
@@ -48,7 +48,7 @@ const IntroDashboard = () => {
           </button>
 
           <button
-            className={`px-11 py-1 rounded-xl font-semibold transition
+            className={`px-11 py-1 rounded-xl font-semibold transition cursor-pointer
               ${homeType === "checking" ? "bg-white" : "hover:bg-gray-100"}
             `}
             onClick={() => goTo("checking", "/dashboard/toCheck")}
@@ -57,7 +57,7 @@ const IntroDashboard = () => {
           </button>
 
           <button
-            className={`px-11 py-1 rounded-xl font-semibold transition
+            className={`px-11 py-1 rounded-xl font-semibold transition cursor-pointer
               ${homeType === "analytics" ? "bg-white" : "hover:bg-gray-100"}
             `}
             onClick={() => goTo("analytics", "/dashboard/analytics")}

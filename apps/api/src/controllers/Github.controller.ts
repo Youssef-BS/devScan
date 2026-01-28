@@ -48,7 +48,11 @@ export const getGithubRepos = async (req: Request, res: Response) => {
     }
 
     const total = allRepos.length;
-    const paginatedRepos = allRepos.slice(offset, offset + limit);
+    const mappedRepos = allRepos.map((repo: any) => ({
+      ...repo,
+      githubId: String(repo.id),
+    }));
+    const paginatedRepos = mappedRepos.slice(offset, offset + limit);
 
     res.json({
       data: paginatedRepos,
@@ -232,11 +236,22 @@ export const saveGithubRepo = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
-    const userId = req.session.user.id;
-    const { githubId, name, fullName, htmlUrl, description, language, privateRepo, fork } = req.body;
+    const githubUserId = String(req.session.user.id);
+    const { githubId, name, fullName, htmlUrl, description, language, private: isPrivate, fork } = req.body;
+
+    const dbUser = await prisma.user.findUnique({
+      where: { githubId: githubUserId },
+      select: { id: true },
+    });
+
+    console.log('saveGithubRepo - dbUser:', dbUser);
+
+    if (!dbUser) {
+      return res.status(401).json({ message: "User not found" });
+    }
 
     const existingRepo = await prisma.repo.findUnique({
-      where: { githubId },
+      where: { githubId: String(githubId) },
     });
 
     if (existingRepo) {
@@ -245,21 +260,24 @@ export const saveGithubRepo = async (req: Request, res: Response) => {
 
     const newRepo = await prisma.repo.create({
       data: {
-        githubId,
+        githubId: String(githubId),
         name,
         fullName,
         htmlUrl,
         description,
         language,
-        private: privateRepo,
+        private: isPrivate,
         fork,
-        ownerId: userId,
+        ownerId: dbUser.id,
+        autoAudit : true 
       },
     });
 
     return res.status(201).json({ message: "Repository saved successfully", repo: newRepo });
   } catch (error) {
-    return res.status(500).json({ message: "Internal Server Error" });
+    console.error('saveGithubRepo error:', error);
+    const errorMessage = error instanceof Error ? error.message : "Internal Server Error";
+    return res.status(500).json({ message: errorMessage, details: String(error) });
   }
 };
 

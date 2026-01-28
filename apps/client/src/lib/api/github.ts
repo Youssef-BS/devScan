@@ -64,13 +64,13 @@ export const deleteAllGithubRepos = async () => {
 
 export const saveGithubRepo = async (repo: Repo) => {
   const payload = {
-    githubId: repo.id,
+    githubId: repo.githubId,
     name: repo.name,
     fullName: repo.full_name,
     htmlUrl: repo.html_url,
     description: repo.description,
     language: repo.language,
-    privateRepo: repo.private,
+    private: repo.private,
     fork: repo.fork,
   };
 
@@ -82,9 +82,13 @@ export const saveGithubRepo = async (repo: Repo) => {
   });
 
   if (!res.ok) {
-    return ;
+    const error = await res.json();
+    console.error('Backend error response:', error);
+    throw new Error(error.details || error.message || "Failed to save repository");
   }
 
-  return res.json();
+  const data = await res.json();
+  console.log(data);
+  return data;
 };
 
