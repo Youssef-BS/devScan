@@ -133,7 +133,7 @@ const page = () => {
     <div className="flex flex-row mt-16 mx-24 justify-center">
       {
 
-        services.map((item)=>
+        services?.map((item)=>
             <AnalyseCard key={item.id} id={item.id} title={item.title} logo={item.logo} desc={item.desc}/>  
         )
 

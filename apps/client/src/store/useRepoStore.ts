@@ -50,7 +50,7 @@ saveRepo: async (value: Repo) => {
           const res = await getGithubReposApi(page, 9);
 
           set({
-            repos: res.data.map((repo: any) => ({
+            repos: res?.data.map((repo: any) => ({
               name: repo.name,
               description: repo.description ?? '',
               full_name : repo.full_name,
@@ -61,8 +61,8 @@ saveRepo: async (value: Repo) => {
               lastScan: 'Never',
               state: repo.private ? 'private' : 'public',
             })),
-            page: res.pagination.page,
-            totalPages: res.pagination.totalPages,
+            page: res?.pagination.page,
+            totalPages: res?.pagination.totalPages,
           });
         } catch (error) {
           console.error('Failed to fetch repos:', error);

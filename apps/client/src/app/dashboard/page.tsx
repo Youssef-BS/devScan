@@ -115,7 +115,7 @@ const Dashboard = () => {
     params.set("language", value);
     router.replace(`?${params.toString()}`);
   };
-  const filteredRepos = repos.filter((repo) => {
+  const filteredRepos = repos?.filter((repo) => {
     const matchesSearch = repo.name.toLowerCase().includes(search.toLowerCase());
     const matchesLanguage =
       language === "all" || repo.language.toLowerCase() === language.toLowerCase();
@@ -169,7 +169,7 @@ const Dashboard = () => {
   <>
     <section className="flex flex-wrap gap-5 m-16 justify-items-start">
       
-      {filteredRepos.map((repo) => (
+      {filteredRepos?.map((repo) => (
         <RepoCard
           key={repo.full_name}
           repo={repo}

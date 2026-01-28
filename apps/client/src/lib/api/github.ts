@@ -62,25 +62,29 @@ export const deleteAllGithubRepos = async () => {
 }
 
 
-export const saveGithubRepo = async (repoData: Repo) => {
-  try {
-    const res = await fetch("http://localhost:4000/github/repos/save", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(repoData),
-    });
+export const saveGithubRepo = async (repo: Repo) => {
+  const payload = {
+    githubId: repo.id,
+    name: repo.name,
+    fullName: repo.full_name,
+    htmlUrl: repo.html_url,
+    description: repo.description,
+    language: repo.language,
+    privateRepo: repo.private,
+    fork: repo.fork,
+  };
 
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message || "Failed to save repo");
-    }
+  const res = await fetch("http://localhost:4000/github/repos/save", {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 
-    return res.json();
-  } catch (error) {
-    console.error(error);
-    throw error;
+  if (!res.ok) {
+    return ;
   }
+
+  return res.json();
 };
+
