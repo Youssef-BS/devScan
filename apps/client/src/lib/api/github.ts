@@ -1,4 +1,5 @@
 import { Repo } from "@/types/Repo";
+import { METHODS } from "http";
 
 export const getGithubReposApi = async (page = 1 , limit = 9) => {
   const res = await fetch('http://localhost:4000/github/repos', {
@@ -91,4 +92,22 @@ export const saveGithubRepo = async (repo: Repo) => {
   console.log(data);
   return data;
 };
+
+export const getAllFromDb = async (page = 1, limit = 9) => {
+  const res = await fetch(
+    `http://localhost:4000/github/repos/all-db?page=${page}&limit=${limit}`,
+    {
+      method: "GET",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch repos from DB");
+  }
+
+  return res.json();
+};
+
 

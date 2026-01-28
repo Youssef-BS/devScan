@@ -9,7 +9,7 @@ router.get("/", getGithubRepos);
 
 router.patch("/:full_name/audit", updateRepoAutoAudit);
 
-router.get("/db/repos", getAllRepoFromDbByUser);
+router.get("/all-db", getAllRepoFromDbByUser);
 
 router.post("/sync", async (req: Request, res: Response) => {
   try {

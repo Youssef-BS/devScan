@@ -1,10 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Repo } from '@/types/Repo';
-import { deleteAllGithubRepos, getGithubReposApi , updateAutoAuditApi , saveGithubRepo } from '@/lib/api/github';
+import { deleteAllGithubRepos, getGithubReposApi , updateAutoAuditApi , saveGithubRepo, getAllFromDb } from '@/lib/api/github';
 
 interface RepoStore {
   repos: Repo[];
+  dataFromDb : Repo []
   search: string;
   language: string;
   loading: boolean;
@@ -18,6 +19,7 @@ interface RepoStore {
   toggleAutoAudit: (repoName: string) => Promise<void>;
   deleteAllRepos : () => Promise<void> ;
   saveRepo  : (value : Repo) => Promise<void> ;
+  getFromDb : () => Promise<void> ;
 
 }
 
@@ -25,6 +27,7 @@ export const useRepoStore = create<RepoStore>()(
   persist(
     (set) => ({
       repos: [],
+      dataFromDb : [] ,
       search: '',
       language: 'all',
       loading: false,
@@ -41,6 +44,41 @@ saveRepo: async (value: Repo) => {
     throw error;
   }
 },
+
+getFromDb: async (page = 1) => {
+  set({ loading: true });
+  try {
+    const res = await getAllFromDb(page, 9);
+
+    console.log(res)
+
+    set({
+      dataFromDb: res.data.map((repo: any) => ({
+        id: repo.id,
+        name: repo.name,
+        description: repo.description ?? '',
+        full_name: repo.full_name,
+        language: repo.language ?? 'Unknown',
+        auto_audit: repo.auto_audit ?? false,
+        githubId: repo.githubId,
+        html_url: repo.html_url,
+        private: repo.private,
+        fork: repo.fork,
+        issues: 0,
+        lastScan: repo.lastScan,
+        state: repo.private ? 'private' : 'public',
+      })),
+      page: res.pagination.page,
+      totalPages: res.pagination.totalPages,
+    });
+  } catch (error) {
+    console.error('Failed to fetch repos from DB:', error);
+    set({ dataFromDb: [] });
+  } finally {
+    set({ loading: false });
+  }
+},
+
 
 
       fetchRepos: async (page = 1) => {

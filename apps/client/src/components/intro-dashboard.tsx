@@ -8,7 +8,6 @@ const IntroDashboard = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // active tab from URL
   const homeType = searchParams.get("homeType") || "repositories";
 
   const goTo = (type: string, path = "/dashboard") => {
