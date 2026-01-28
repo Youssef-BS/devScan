@@ -2,6 +2,7 @@
 
 import React from "react";
 import type { Repo } from "@/types/Repo";
+import { usePathname } from "next/navigation";
 
 interface RepoCardProps {
   repo: Repo;
@@ -12,6 +13,10 @@ interface RepoCardProps {
 const RepoCard: React.FC<RepoCardProps> = ({ repo, toggleAutoAudit, addToCheck }) => {
   const [isUpdating, setIsUpdating] = React.useState(false);
   const [isAdding, setIsAdding] = React.useState(false);
+
+  const pathName = usePathname() ; 
+
+
 
   const handleToggle = async () => {
     setIsUpdating(true);
@@ -71,13 +76,22 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo, toggleAutoAudit, addToCheck }
           <span className="text-sm text-gray-600">{repo.language}</span>
         </div>
 
+{pathName === "/dashboard" ? 
         <button
           onClick={handleAddToCheck}
           disabled={repo.auto_audit}
           className={`px-4 py-2 text-sm font-medium rounded-lg transition bg-gray-900 text-white cursor-pointer`}
         >
           {repo.auto_audit ? "Already added" : "Add to check"}
+        </button> : 
+
+          <button
+          className={`px-4 py-2 text-sm font-medium rounded-lg transition bg-gray-900 text-white cursor-pointer`}
+        >
+          See Details
         </button>
+}
+
       </div>
     </div>
   );

@@ -25,13 +25,6 @@ const IntroDashboard = () => {
           </p>
         </div>
 
-        <button
-          onClick={() => router.push("/dashboard/add-repository")}
-          className="flex items-center gap-2 rounded-lg bg-linear-to-br from-blue-600 to-purple-600 px-4 py-2 text-white hover:opacity-90"
-        >
-          <Plus />
-          <span className="font-medium">Add Repository</span>
-        </button>
       </section>
 
       {/* Filters */}
