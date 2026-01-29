@@ -19,17 +19,33 @@ model User {
 }
 
 model Repo {
-  id          Int      @id @default(autoincrement())
-  githubId    String   @unique
-  name        String
-  fullName    String
-  htmlUrl     String
-  description String?
-  language    String?
-  private     Boolean
-  fork        Boolean
-  ownerId     Int
-  autoAudit   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  User        User     @relation(fields: [ownerId], references: [id])
+  id                Int       @id @default(autoincrement())
+  githubId          String    @unique
+  name              String
+  fullName          String
+  htmlUrl           String
+  description       String?
+  language          String?
+  private           Boolean
+  fork              Boolean
+  ownerId           Int
+  autoAudit         Boolean   @default(false)
+  lastCommitSha     String?
+  lastCommitMessage String?
+  lastCommitDate    DateTime?
+  createdAt         DateTime  @default(now())
+  User              User      @relation(fields: [ownerId], references: [id])
+  commits           Commit[]
+}
+
+model Commit {
+  id      Int      @id @default(autoincrement())
+  sha     String   @unique
+  message String
+  author  String
+  date    DateTime
+  repoId  Int
+  Repo    Repo     @relation(fields: [repoId], references: [id])
+
+  @@index([repoId])
 }
