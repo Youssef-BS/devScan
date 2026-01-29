@@ -2,7 +2,7 @@
 
 import React from "react";
 import type { Repo } from "@/types/Repo";
-import { usePathname } from "next/navigation";
+import { usePathname , useRouter } from "next/navigation";
 
 interface RepoCardProps {
   repo: Repo;
@@ -15,6 +15,7 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo, toggleAutoAudit, addToCheck }
   const [isAdding, setIsAdding] = React.useState(false);
 
   const pathName = usePathname() ; 
+  const router = useRouter() ;
 
 
 
@@ -84,9 +85,9 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo, toggleAutoAudit, addToCheck }
         >
           {repo.auto_audit ? "Already added" : "Add to check"}
         </button> : 
-
           <button
           className={`px-4 py-2 text-sm font-medium rounded-lg transition bg-gray-900 text-white cursor-pointer`}
+          onClick={()=>router.push(`/dashboard/repo/${repo.githubId}`)}
         >
           See Details
         </button>

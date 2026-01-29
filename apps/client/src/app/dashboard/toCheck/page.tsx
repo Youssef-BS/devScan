@@ -38,9 +38,9 @@ const Page = () => {
         <SpinnerLoad />
       ) : dataFromDb.length > 0 ? (
         <section className="flex flex-wrap gap-5 m-16 justify-items-start">
-          {dataFromDb.map((repo) => (
+          {dataFromDb.map((repo , index) => (
             <RepoCard
-              key={repo.full_name}
+              key={index}
               repo={repo}
               toggleAutoAudit={toggleAutoAudit}
               addToCheck={() => saveRepo(repo)}

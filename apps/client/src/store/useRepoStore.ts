@@ -1,11 +1,20 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Repo } from '@/types/Repo';
-import { deleteAllGithubRepos, getGithubReposApi , updateAutoAuditApi , saveGithubRepo, getAllFromDb } from '@/lib/api/github';
+
+import {
+  deleteAllGithubRepos,
+  getGithubReposApi,
+  updateAutoAuditApi,
+  saveGithubRepo,
+  getAllFromDb,
+  getRepoDetails
+} from '@/lib/api/github';
 
 interface RepoStore {
   repos: Repo[];
-  dataFromDb : Repo []
+  dataFromDb: Repo[];
+  repoDetails : Repo | null ;
   search: string;
   language: string;
   loading: boolean;
@@ -13,144 +22,157 @@ interface RepoStore {
   totalPages: number;
 
   fetchRepos: (page?: number) => Promise<void>;
+  getFromDb: (page?: number) => Promise<void>;
+
   setRepos: (repos: Repo[]) => void;
   setSearch: (value: string) => void;
   setLanguage: (value: string) => void;
+
+  saveRepo: (repo: Repo) => Promise<void>;
+  deleteAllRepos: () => Promise<void>;
   toggleAutoAudit: (repoName: string) => Promise<void>;
-  deleteAllRepos : () => Promise<void> ;
-  saveRepo  : (value : Repo) => Promise<void> ;
-  getFromDb : () => Promise<void> ;
+
+  getRepoDetails : (githubId : string) => Promise<void>;
 
 }
 
 export const useRepoStore = create<RepoStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       repos: [],
-      dataFromDb : [] ,
+      dataFromDb: [],
+      repoDetails : null ,
       search: '',
       language: 'all',
       loading: false,
       page: 1,
       totalPages: 1,
 
-saveRepo: async (value: Repo) => {
-  try {
-    const result = await saveGithubRepo(value);
-    console.log("Repo saved successfully:", result);
-    return result;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-},
-
-getFromDb: async (page = 1) => {
-  set({ loading: true });
-  try {
-    const res = await getAllFromDb(page, 9);
-
-    console.log(res)
-
-    set({
-      dataFromDb: res.data.map((repo: any) => ({
-        id: repo.id,
-        name: repo.name,
-        description: repo.description ?? '',
-        full_name: repo.full_name,
-        language: repo.language ?? 'Unknown',
-        auto_audit: repo.auto_audit ?? false,
-        githubId: repo.githubId,
-        html_url: repo.html_url,
-        private: repo.private,
-        fork: repo.fork,
-        issues: 0,
-        lastScan: repo.lastScan,
-        state: repo.private ? 'private' : 'public',
-      })),
-      page: res.pagination.page,
-      totalPages: res.pagination.totalPages,
-    });
-  } catch (error) {
-    console.error('Failed to fetch repos from DB:', error);
-    set({ dataFromDb: [] });
-  } finally {
-    set({ loading: false });
-  }
-},
-
-
+      setRepos: (repos) => set({ repos }),
+      setSearch: (value) => set({ search: value }),
+      setLanguage: (value) => set({ language: value }),
 
       fetchRepos: async (page = 1) => {
         set({ loading: true });
-
         try {
-          const res = await getGithubReposApi(page, 9);
+          const { search, language } = get();
+          const res = await getGithubReposApi(page, 9, search, language);
 
           set({
-            repos: res?.data.map((repo: any) => ({
+            repos: res.data.map((repo: any) => ({
               id: repo.id,
               name: repo.name,
               description: repo.description ?? '',
-              full_name : repo.full_name,
+              full_name: repo.full_name,
               language: repo.language ?? 'Unknown',
               auto_audit: repo.auto_audit ?? false,
-              githubId : repo.githubId,
+              githubId: repo.githubId,
               html_url: repo.html_url,
               private: repo.private,
               fork: repo.fork,
+              state: repo.private ? 'private' : 'public',
               issues: 0,
               lastScan: 'Never',
-              state: repo.private ? 'private' : 'public',
             })),
-            page: res?.pagination.page,
-            totalPages: res?.pagination.totalPages,
+            page: res.pagination.page,
+            totalPages: res.pagination.totalPages,
           });
-        } catch (error) {
-          console.error('Failed to fetch repos:', error);
+        } catch (e) {
           set({ repos: [] });
         } finally {
           set({ loading: false });
         }
       },
 
-      setRepos: (repos) => set({ repos }),
-      setSearch: (value) => set({ search: value }),
-      setLanguage: (value) => set({ language: value }),
-      deleteAllRepos : async () => {
-          try {
-            await deleteAllGithubRepos()
-            set({repos : []})
-          }catch(error) {
-            console.error("Error deleting All repos" , error)
-          }
-      } ,
-
-      toggleAutoAudit: async (repoName) => {
-        const currentState = useRepoStore.getState();
-        const repo = currentState.repos.find((r) => r.full_name === repoName);
-        const newAuditStatus = repo ? !repo.auto_audit : false;
-        set((state) => ({
-          repos: state.repos.map((r) =>
-            r.full_name === repoName
-              ? { ...r, auto_audit: newAuditStatus }
-              : r
-          ),
-        }));
+      getRepoDetails : async (githubId) => {
+        set({loading : true})
+      
         try {
-          await updateAutoAuditApi(repoName, newAuditStatus);
-        } catch (error) {
-          console.error('Error updating auto_audit:', error);
-          set((state) => ({
-            repos: state.repos.map((r) =>
+
+          const res = await getRepoDetails(githubId)
+          set({repoDetails : res})
+
+        }catch(error) {
+        
+          set({repoDetails : null})
+        
+        }finally{
+          set({loading : false})
+        }
+      },
+
+      getFromDb: async (page = 1) => {
+        set({ loading: true });
+        try {
+          const res = await getAllFromDb(page, 9);
+
+          set({
+            dataFromDb: res.data.map((repo: any) => ({
+              id: repo.id,
+              name: repo.name,
+              description: repo.description ?? '',
+              full_name: repo.full_name,
+              language: repo.language ?? 'Unknown',
+              auto_audit: repo.auto_audit ?? false,
+              githubId: repo.githubId,
+              html_url: repo.html_url,
+              private: repo.private,
+              fork: repo.fork,
+              issues: 0,
+              lastScan: repo.lastScan ?? 'Never',
+              state: repo.private ? 'private' : 'public',
+            })),
+            page: res.pagination.page,
+            totalPages: res.pagination.totalPages,
+          });
+        } catch (e) {
+          set({ dataFromDb: [] });
+        } finally {
+          set({ loading: false });
+        }
+      },
+
+      saveRepo: async (repo: Repo) => {
+        await saveGithubRepo(repo);
+      },
+
+      deleteAllRepos: async () => {
+        await deleteAllGithubRepos();
+        set({ repos: [] });
+      },
+
+      toggleAutoAudit: async (repoName: string) => {
+        const { repos } = get();
+        const repo = repos.find((r) => r.full_name === repoName);
+        if (!repo) return;
+
+        const newValue = !repo.auto_audit;
+
+        set({
+          repos: repos.map((r) =>
+            r.full_name === repoName ? { ...r, auto_audit: newValue } : r
+          ),
+        });
+
+        try {
+          await updateAutoAuditApi(repoName, newValue);
+        } catch {
+          set({
+            repos: repos.map((r) =>
               r.full_name === repoName
-                ? { ...r, auto_audit: !newAuditStatus }
+                ? { ...r, auto_audit: !newValue }
                 : r
             ),
-          }));
+          });
         }
       },
     }),
-    { name: 'repo-store' }
+    {
+      name: 'repo-store',
+      partialize: (state) => ({
+        search: state.search,
+        language: state.language,
+      }),
+    }
   )
 );

@@ -1,17 +1,28 @@
 import { Repo } from "@/types/Repo";
-import { METHODS } from "http";
 
-export const getGithubReposApi = async (page = 1 , limit = 9) => {
-  const res = await fetch('http://localhost:4000/github/repos', {
-    credentials: 'include',
+export const getGithubReposApi = async (
+  page = 1,
+  limit = 9,
+  search = '',
+  language = 'all'
+) => {
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+    search,
+    language,
   });
 
-  if (!res.ok) {
-    return ;
-  }
+  const res = await fetch(
+    `http://localhost:4000/github/repos?${params.toString()}`,
+    { credentials: 'include' }
+  );
+
+  if (!res.ok) throw new Error('Failed to fetch repos');
 
   return res.json();
 };
+
 
 export const saveReposInDB = async () => {
   const res = await fetch('http://localhost:4000/github/repos/sync', {
@@ -110,4 +121,20 @@ export const getAllFromDb = async (page = 1, limit = 9) => {
   return res.json();
 };
 
+
+export const getRepoDetails = async (id : string) => {
+
+  const res = await fetch(`http://localhost:4000/github/repos/${id}` , {
+    method : "GET" , 
+    credentials : "include" , 
+    headers : {"Content-Type": "application/json"}
+  })
+
+  if(!res.ok) {
+    return ;
+  }
+
+  return res.json();
+
+}
 

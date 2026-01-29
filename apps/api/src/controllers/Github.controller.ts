@@ -10,7 +10,10 @@ export const getGithubRepos = async (req: Request, res: Response) => {
     }
 
     const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 9; 
+    const limit = Number(req.query.limit) || 9;
+    const search = String(req.query.search || '');
+    const language = String(req.query.language || 'all');
+
     const offset = (page - 1) * limit;
 
     const dbUser = await prisma.user.findUnique({
@@ -39,7 +42,7 @@ export const getGithubRepos = async (req: Request, res: Response) => {
         },
       });
 
-      if (response.data.length > 0) {
+      if (response.data.length) {
         allRepos.push(...response.data);
         ghPage++;
       } else {
@@ -47,15 +50,27 @@ export const getGithubRepos = async (req: Request, res: Response) => {
       }
     }
 
-    const total = allRepos.length;
-    const mappedRepos = allRepos.map((repo: any) => ({
-      ...repo,
-      githubId: String(repo.id),
-    }));
-    const paginatedRepos = mappedRepos.slice(offset, offset + limit);
+    let filteredRepos = allRepos.filter((repo) => {
+      const matchesSearch = repo.name
+        .toLowerCase()
+        .includes(search.toLowerCase());
+
+      const matchesLanguage =
+        language === 'all' ||
+        repo.language?.toLowerCase() === language.toLowerCase();
+
+      return matchesSearch && matchesLanguage;
+    });
+
+    const total = filteredRepos.length;
+
+    const paginatedRepos = filteredRepos.slice(offset, offset + limit);
 
     res.json({
-      data: paginatedRepos,
+      data: paginatedRepos.map((repo) => ({
+        ...repo,
+        githubId: String(repo.id),
+      })),
       pagination: {
         page,
         limit,
@@ -68,6 +83,7 @@ export const getGithubRepos = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Failed to fetch repositories' });
   }
 };
+
 
 export const saveGithubRepos = async (githubUserId: string, repos: any[]) => {
   try {
@@ -280,4 +296,26 @@ export const saveGithubRepo = async (req: Request, res: Response) => {
     return res.status(500).json({ message: errorMessage, details: String(error) });
   }
 };
+
+
+export const getRepoDetails = async (req : Request , res : Response) => {
+  const githubId = req.params.githubId ;
+  
+  try{
+  const repoDetails = await  prisma.repo.findUnique({
+      where : {githubId : String(githubId)},
+  })
+
+  if(!repoDetails) {
+    return res.status(404).json({message : "Repo Not found !"})
+  }
+
+  res.status(200).json(repoDetails)
+
+  console.log(repoDetails)
+
+}catch(error) {
+  return res.status(500).json({message : error})
+}
+}
 
