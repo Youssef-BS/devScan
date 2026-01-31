@@ -15,37 +15,37 @@ model User {
   avatarUrl   String?
   accessToken String?
   createdAt   DateTime @default(now())
-  Repo        Repo[]
+
+  repos       Repo[]
 }
 
 model Repo {
-  id                Int       @id @default(autoincrement())
-  githubId          String    @unique
-  name              String
-  fullName          String
-  htmlUrl           String
-  description       String?
-  language          String?
-  private           Boolean
-  fork              Boolean
-  ownerId           Int
-  autoAudit         Boolean   @default(false)
-  lastCommitSha     String?
-  lastCommitMessage String?
-  lastCommitDate    DateTime?
-  createdAt         DateTime  @default(now())
-  User              User      @relation(fields: [ownerId], references: [id])
-  commits           Commit[]
+  id          Int       @id @default(autoincrement())
+  githubId    String    @unique
+  name        String
+  fullName    String
+  htmlUrl     String
+  description String?
+  language    String?
+  private     Boolean
+  fork        Boolean
+  autoAudit   Boolean   @default(false)
+  ownerId     Int
+  createdAt   DateTime  @default(now())
+
+  User        User      @relation(fields: [ownerId], references: [id])
+  commits     Commit[]
 }
 
 model Commit {
-  id      Int      @id @default(autoincrement())
-  sha     String   @unique
-  message String
-  author  String
-  date    DateTime
-  repoId  Int
-  Repo    Repo     @relation(fields: [repoId], references: [id])
+  id        Int      @id @default(autoincrement())
+  sha       String   @unique
+  message   String
+  author    String
+  date      DateTime
 
-  @@index([repoId])
+  repoId    Int
+  Repo      Repo     @relation(fields: [repoId], references: [id], onDelete: Cascade)
+
+  @@index([repoId, date])
 }

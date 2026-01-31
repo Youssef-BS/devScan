@@ -232,7 +232,7 @@ export type UserWhereInput = {
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   accessToken?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  Repo?: Prisma.RepoListRelationFilter
+  repos?: Prisma.RepoListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -243,7 +243,7 @@ export type UserOrderByWithRelationInput = {
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   accessToken?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  Repo?: Prisma.RepoOrderByRelationAggregateInput
+  repos?: Prisma.RepoOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -257,7 +257,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   accessToken?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  Repo?: Prisma.RepoListRelationFilter
+  repos?: Prisma.RepoListRelationFilter
 }, "id" | "githubId" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -295,7 +295,7 @@ export type UserCreateInput = {
   avatarUrl?: string | null
   accessToken?: string | null
   createdAt?: Date | string
-  Repo?: Prisma.RepoCreateNestedManyWithoutUserInput
+  repos?: Prisma.RepoCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -306,7 +306,7 @@ export type UserUncheckedCreateInput = {
   avatarUrl?: string | null
   accessToken?: string | null
   createdAt?: Date | string
-  Repo?: Prisma.RepoUncheckedCreateNestedManyWithoutUserInput
+  repos?: Prisma.RepoUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -316,7 +316,7 @@ export type UserUpdateInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  Repo?: Prisma.RepoUpdateManyWithoutUserNestedInput
+  repos?: Prisma.RepoUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -327,7 +327,7 @@ export type UserUncheckedUpdateInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  Repo?: Prisma.RepoUncheckedUpdateManyWithoutUserNestedInput
+  repos?: Prisma.RepoUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -422,21 +422,21 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type UserCreateNestedOneWithoutRepoInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutRepoInput, Prisma.UserUncheckedCreateWithoutRepoInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRepoInput
+export type UserCreateNestedOneWithoutReposInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReposInput, Prisma.UserUncheckedCreateWithoutReposInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReposInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutRepoNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutRepoInput, Prisma.UserUncheckedCreateWithoutRepoInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRepoInput
-  upsert?: Prisma.UserUpsertWithoutRepoInput
+export type UserUpdateOneRequiredWithoutReposNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReposInput, Prisma.UserUncheckedCreateWithoutReposInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReposInput
+  upsert?: Prisma.UserUpsertWithoutReposInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRepoInput, Prisma.UserUpdateWithoutRepoInput>, Prisma.UserUncheckedUpdateWithoutRepoInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReposInput, Prisma.UserUpdateWithoutReposInput>, Prisma.UserUncheckedUpdateWithoutReposInput>
 }
 
-export type UserCreateWithoutRepoInput = {
+export type UserCreateWithoutReposInput = {
   githubId: string
   username?: string | null
   email?: string | null
@@ -445,7 +445,7 @@ export type UserCreateWithoutRepoInput = {
   createdAt?: Date | string
 }
 
-export type UserUncheckedCreateWithoutRepoInput = {
+export type UserUncheckedCreateWithoutReposInput = {
   id?: number
   githubId: string
   username?: string | null
@@ -455,23 +455,23 @@ export type UserUncheckedCreateWithoutRepoInput = {
   createdAt?: Date | string
 }
 
-export type UserCreateOrConnectWithoutRepoInput = {
+export type UserCreateOrConnectWithoutReposInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutRepoInput, Prisma.UserUncheckedCreateWithoutRepoInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReposInput, Prisma.UserUncheckedCreateWithoutReposInput>
 }
 
-export type UserUpsertWithoutRepoInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutRepoInput, Prisma.UserUncheckedUpdateWithoutRepoInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutRepoInput, Prisma.UserUncheckedCreateWithoutRepoInput>
+export type UserUpsertWithoutReposInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReposInput, Prisma.UserUncheckedUpdateWithoutReposInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReposInput, Prisma.UserUncheckedCreateWithoutReposInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutRepoInput = {
+export type UserUpdateToOneWithWhereWithoutReposInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutRepoInput, Prisma.UserUncheckedUpdateWithoutRepoInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReposInput, Prisma.UserUncheckedUpdateWithoutReposInput>
 }
 
-export type UserUpdateWithoutRepoInput = {
+export type UserUpdateWithoutReposInput = {
   githubId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -480,7 +480,7 @@ export type UserUpdateWithoutRepoInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type UserUncheckedUpdateWithoutRepoInput = {
+export type UserUncheckedUpdateWithoutReposInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   githubId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -496,11 +496,11 @@ export type UserUncheckedUpdateWithoutRepoInput = {
  */
 
 export type UserCountOutputType = {
-  Repo: number
+  repos: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  Repo?: boolean | UserCountOutputTypeCountRepoArgs
+  repos?: boolean | UserCountOutputTypeCountReposArgs
 }
 
 /**
@@ -516,7 +516,7 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountRepoArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type UserCountOutputTypeCountReposArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.RepoWhereInput
 }
 
@@ -529,7 +529,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   avatarUrl?: boolean
   accessToken?: boolean
   createdAt?: boolean
-  Repo?: boolean | Prisma.User$RepoArgs<ExtArgs>
+  repos?: boolean | Prisma.User$reposArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -565,7 +565,7 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "githubId" | "username" | "email" | "avatarUrl" | "accessToken" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  Repo?: boolean | Prisma.User$RepoArgs<ExtArgs>
+  repos?: boolean | Prisma.User$reposArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -574,7 +574,7 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
-    Repo: Prisma.$RepoPayload<ExtArgs>[]
+    repos: Prisma.$RepoPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -978,7 +978,7 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  Repo<T extends Prisma.User$RepoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$RepoArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RepoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  repos<T extends Prisma.User$reposArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reposArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RepoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1403,9 +1403,9 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * User.Repo
+ * User.repos
  */
-export type User$RepoArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$reposArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Repo
    */

@@ -1,38 +1,40 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useRepoStore } from "@/store/useRepoStore";
-import { getLastCommit } from "@/lib/api/commit";
+import { useCommitStore } from "@/store/useCommitStore";
 
-const Page = () => {
-  const { getRepoDetails, repoDetails, loading } = useRepoStore();
-  const [lastCommit, setLastCommit] = useState<any>(null);
+const RepoDetailsPage = () => {
+  const { getRepoDetails, repoDetails, loading: repoLoading } = useRepoStore();
+  const {
+    commits,
+    loading: commitsLoading,
+    error: commitsError,
+    fetchAndLoadCommits,
+  } = useCommitStore();
+
   const params = useParams();
-
   const githubId = typeof params.githubId === "string" ? params.githubId : "";
 
-  // Fetch repo details
   useEffect(() => {
     if (!githubId) return;
     getRepoDetails(githubId);
   }, [githubId, getRepoDetails]);
 
-  // Fetch last commit
   useEffect(() => {
-    const fetchCommit = async () => {
-      if (!githubId) return;
-      const commit = await getLastCommit(githubId);
-      setLastCommit(commit);
-      console.log("Last commit:", commit);
-    };
-    fetchCommit();
-  }, [githubId]);
+    if (!githubId) return;
+    fetchAndLoadCommits(githubId);
+  }, [githubId, fetchAndLoadCommits]);
 
-  if (loading) {
+  const lastCommit = commits[0];
+
+  if (repoLoading || commitsLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <span className="text-gray-500 text-lg">Loading repository...</span>
+        <span className="text-gray-500 text-lg">
+          Loading repository details and commits...
+        </span>
       </div>
     );
   }
@@ -51,29 +53,57 @@ const Page = () => {
         <h1 className="text-2xl font-bold">{repoDetails.name}</h1>
         <p className="text-gray-600">{repoDetails.description || "No description"}</p>
         {repoDetails.language && (
-          <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">{repoDetails.language}</span>
+          <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">
+            {repoDetails.language}
+          </span>
         )}
+        <p className="text-sm text-gray-500">Repo ID: {repoDetails.githubId}</p>
       </div>
 
-      {lastCommit && (
+      {commitsError && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+          <p className="text-yellow-700">{commitsError}</p>
+        </div>
+      )}
+
+      {lastCommit ? (
         <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
-          <h2 className="font-semibold text-lg">Last Commit</h2>
-          <p>
-            <strong>SHA:</strong> {lastCommit.sha}
-          </p>
-          <p>
-            <strong>Message:</strong> {lastCommit.message}
-          </p>
-          <p>
-            <strong>Author:</strong> {lastCommit.author}
-          </p>
-          <p>
-            <strong>Date:</strong> {new Date(lastCommit.date).toLocaleString()}
-          </p>
+          <h2 className="font-semibold text-lg mb-3">Latest Commit</h2>
+          <p><strong>SHA:</strong> {lastCommit.sha}</p>
+          <p><strong>Message:</strong> {lastCommit.message}</p>
+          <p><strong>Author:</strong> {lastCommit.author}</p>
+          <p><strong>Date:</strong> {new Date(lastCommit.date).toLocaleString()}</p>
+        </div>
+      ) : (
+        !commitsError && (
+          <p className="text-center text-gray-500">No commits found</p>
+        )
+      )}
+
+      {commits.length > 1 && (
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold">All Commits ({commits.length})</h2>
+          <ul className="space-y-3">
+            {commits.map((c) => (
+              <li
+                key={c.sha}
+                className="bg-white border border-gray-200 rounded-xl p-4 hover:bg-gray-50"
+              >
+                <p className="truncate text-sm text-gray-500 mb-1">
+                  <strong>SHA:</strong> {c.sha.substring(0, 8)}...
+                </p>
+                <p className="mb-2"><strong>Message:</strong> {c.message}</p>
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span><strong>Author:</strong> {c.author}</span>
+                  <span>{new Date(c.date).toLocaleString()}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
   );
 };
 
-export default Page;
+export default RepoDetailsPage;

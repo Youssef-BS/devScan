@@ -690,11 +690,8 @@ export const RepoScalarFieldEnum = {
   language: 'language',
   private: 'private',
   fork: 'fork',
-  ownerId: 'ownerId',
   autoAudit: 'autoAudit',
-  lastCommitSha: 'lastCommitSha',
-  lastCommitMessage: 'lastCommitMessage',
-  lastCommitDate: 'lastCommitDate',
+  ownerId: 'ownerId',
   createdAt: 'createdAt'
 } as const
 

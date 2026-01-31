@@ -1,10 +1,12 @@
 import { Router } from "express";
-import { fetchAndSaveLastCommit , getLastCommit } from "../controllers/Commit.controller";
+import {
+  fetchAndSaveAllCommits,
+  getAllCommits,
+} from "../controllers/Commit.controller";
 
-const router:Router = Router() ; 
+const router: Router = Router();
 
-router.get("/fetch/:githubId", fetchAndSaveLastCommit);
-router.get("/:githubId", getLastCommit);
+router.get("/fetch/:githubId", fetchAndSaveAllCommits);
+router.get("/:githubId", getAllCommits);
 
-
-export default router ;
+export default router;

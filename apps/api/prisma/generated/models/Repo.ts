@@ -46,11 +46,8 @@ export type RepoMinAggregateOutputType = {
   language: string | null
   private: boolean | null
   fork: boolean | null
-  ownerId: number | null
   autoAudit: boolean | null
-  lastCommitSha: string | null
-  lastCommitMessage: string | null
-  lastCommitDate: Date | null
+  ownerId: number | null
   createdAt: Date | null
 }
 
@@ -64,11 +61,8 @@ export type RepoMaxAggregateOutputType = {
   language: string | null
   private: boolean | null
   fork: boolean | null
-  ownerId: number | null
   autoAudit: boolean | null
-  lastCommitSha: string | null
-  lastCommitMessage: string | null
-  lastCommitDate: Date | null
+  ownerId: number | null
   createdAt: Date | null
 }
 
@@ -82,11 +76,8 @@ export type RepoCountAggregateOutputType = {
   language: number
   private: number
   fork: number
-  ownerId: number
   autoAudit: number
-  lastCommitSha: number
-  lastCommitMessage: number
-  lastCommitDate: number
+  ownerId: number
   createdAt: number
   _all: number
 }
@@ -112,11 +103,8 @@ export type RepoMinAggregateInputType = {
   language?: true
   private?: true
   fork?: true
-  ownerId?: true
   autoAudit?: true
-  lastCommitSha?: true
-  lastCommitMessage?: true
-  lastCommitDate?: true
+  ownerId?: true
   createdAt?: true
 }
 
@@ -130,11 +118,8 @@ export type RepoMaxAggregateInputType = {
   language?: true
   private?: true
   fork?: true
-  ownerId?: true
   autoAudit?: true
-  lastCommitSha?: true
-  lastCommitMessage?: true
-  lastCommitDate?: true
+  ownerId?: true
   createdAt?: true
 }
 
@@ -148,11 +133,8 @@ export type RepoCountAggregateInputType = {
   language?: true
   private?: true
   fork?: true
-  ownerId?: true
   autoAudit?: true
-  lastCommitSha?: true
-  lastCommitMessage?: true
-  lastCommitDate?: true
+  ownerId?: true
   createdAt?: true
   _all?: true
 }
@@ -253,11 +235,8 @@ export type RepoGroupByOutputType = {
   language: string | null
   private: boolean
   fork: boolean
-  ownerId: number
   autoAudit: boolean
-  lastCommitSha: string | null
-  lastCommitMessage: string | null
-  lastCommitDate: Date | null
+  ownerId: number
   createdAt: Date
   _count: RepoCountAggregateOutputType | null
   _avg: RepoAvgAggregateOutputType | null
@@ -294,11 +273,8 @@ export type RepoWhereInput = {
   language?: Prisma.StringNullableFilter<"Repo"> | string | null
   private?: Prisma.BoolFilter<"Repo"> | boolean
   fork?: Prisma.BoolFilter<"Repo"> | boolean
-  ownerId?: Prisma.IntFilter<"Repo"> | number
   autoAudit?: Prisma.BoolFilter<"Repo"> | boolean
-  lastCommitSha?: Prisma.StringNullableFilter<"Repo"> | string | null
-  lastCommitMessage?: Prisma.StringNullableFilter<"Repo"> | string | null
-  lastCommitDate?: Prisma.DateTimeNullableFilter<"Repo"> | Date | string | null
+  ownerId?: Prisma.IntFilter<"Repo"> | number
   createdAt?: Prisma.DateTimeFilter<"Repo"> | Date | string
   User?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   commits?: Prisma.CommitListRelationFilter
@@ -314,11 +290,8 @@ export type RepoOrderByWithRelationInput = {
   language?: Prisma.SortOrderInput | Prisma.SortOrder
   private?: Prisma.SortOrder
   fork?: Prisma.SortOrder
-  ownerId?: Prisma.SortOrder
   autoAudit?: Prisma.SortOrder
-  lastCommitSha?: Prisma.SortOrderInput | Prisma.SortOrder
-  lastCommitMessage?: Prisma.SortOrderInput | Prisma.SortOrder
-  lastCommitDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   User?: Prisma.UserOrderByWithRelationInput
   commits?: Prisma.CommitOrderByRelationAggregateInput
@@ -337,11 +310,8 @@ export type RepoWhereUniqueInput = Prisma.AtLeast<{
   language?: Prisma.StringNullableFilter<"Repo"> | string | null
   private?: Prisma.BoolFilter<"Repo"> | boolean
   fork?: Prisma.BoolFilter<"Repo"> | boolean
-  ownerId?: Prisma.IntFilter<"Repo"> | number
   autoAudit?: Prisma.BoolFilter<"Repo"> | boolean
-  lastCommitSha?: Prisma.StringNullableFilter<"Repo"> | string | null
-  lastCommitMessage?: Prisma.StringNullableFilter<"Repo"> | string | null
-  lastCommitDate?: Prisma.DateTimeNullableFilter<"Repo"> | Date | string | null
+  ownerId?: Prisma.IntFilter<"Repo"> | number
   createdAt?: Prisma.DateTimeFilter<"Repo"> | Date | string
   User?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   commits?: Prisma.CommitListRelationFilter
@@ -357,11 +327,8 @@ export type RepoOrderByWithAggregationInput = {
   language?: Prisma.SortOrderInput | Prisma.SortOrder
   private?: Prisma.SortOrder
   fork?: Prisma.SortOrder
-  ownerId?: Prisma.SortOrder
   autoAudit?: Prisma.SortOrder
-  lastCommitSha?: Prisma.SortOrderInput | Prisma.SortOrder
-  lastCommitMessage?: Prisma.SortOrderInput | Prisma.SortOrder
-  lastCommitDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.RepoCountOrderByAggregateInput
   _avg?: Prisma.RepoAvgOrderByAggregateInput
@@ -383,11 +350,8 @@ export type RepoScalarWhereWithAggregatesInput = {
   language?: Prisma.StringNullableWithAggregatesFilter<"Repo"> | string | null
   private?: Prisma.BoolWithAggregatesFilter<"Repo"> | boolean
   fork?: Prisma.BoolWithAggregatesFilter<"Repo"> | boolean
-  ownerId?: Prisma.IntWithAggregatesFilter<"Repo"> | number
   autoAudit?: Prisma.BoolWithAggregatesFilter<"Repo"> | boolean
-  lastCommitSha?: Prisma.StringNullableWithAggregatesFilter<"Repo"> | string | null
-  lastCommitMessage?: Prisma.StringNullableWithAggregatesFilter<"Repo"> | string | null
-  lastCommitDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Repo"> | Date | string | null
+  ownerId?: Prisma.IntWithAggregatesFilter<"Repo"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Repo"> | Date | string
 }
 
@@ -401,11 +365,8 @@ export type RepoCreateInput = {
   private: boolean
   fork: boolean
   autoAudit?: boolean
-  lastCommitSha?: string | null
-  lastCommitMessage?: string | null
-  lastCommitDate?: Date | string | null
   createdAt?: Date | string
-  User: Prisma.UserCreateNestedOneWithoutRepoInput
+  User: Prisma.UserCreateNestedOneWithoutReposInput
   commits?: Prisma.CommitCreateNestedManyWithoutRepoInput
 }
 
@@ -419,11 +380,8 @@ export type RepoUncheckedCreateInput = {
   language?: string | null
   private: boolean
   fork: boolean
-  ownerId: number
   autoAudit?: boolean
-  lastCommitSha?: string | null
-  lastCommitMessage?: string | null
-  lastCommitDate?: Date | string | null
+  ownerId: number
   createdAt?: Date | string
   commits?: Prisma.CommitUncheckedCreateNestedManyWithoutRepoInput
 }
@@ -438,11 +396,8 @@ export type RepoUpdateInput = {
   private?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  lastCommitSha?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  User?: Prisma.UserUpdateOneRequiredWithoutRepoNestedInput
+  User?: Prisma.UserUpdateOneRequiredWithoutReposNestedInput
   commits?: Prisma.CommitUpdateManyWithoutRepoNestedInput
 }
 
@@ -456,11 +411,8 @@ export type RepoUncheckedUpdateInput = {
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   private?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  lastCommitSha?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   commits?: Prisma.CommitUncheckedUpdateManyWithoutRepoNestedInput
 }
@@ -475,11 +427,8 @@ export type RepoCreateManyInput = {
   language?: string | null
   private: boolean
   fork: boolean
-  ownerId: number
   autoAudit?: boolean
-  lastCommitSha?: string | null
-  lastCommitMessage?: string | null
-  lastCommitDate?: Date | string | null
+  ownerId: number
   createdAt?: Date | string
 }
 
@@ -493,9 +442,6 @@ export type RepoUpdateManyMutationInput = {
   private?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  lastCommitSha?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -509,11 +455,8 @@ export type RepoUncheckedUpdateManyInput = {
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   private?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  lastCommitSha?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -537,11 +480,8 @@ export type RepoCountOrderByAggregateInput = {
   language?: Prisma.SortOrder
   private?: Prisma.SortOrder
   fork?: Prisma.SortOrder
-  ownerId?: Prisma.SortOrder
   autoAudit?: Prisma.SortOrder
-  lastCommitSha?: Prisma.SortOrder
-  lastCommitMessage?: Prisma.SortOrder
-  lastCommitDate?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -560,11 +500,8 @@ export type RepoMaxOrderByAggregateInput = {
   language?: Prisma.SortOrder
   private?: Prisma.SortOrder
   fork?: Prisma.SortOrder
-  ownerId?: Prisma.SortOrder
   autoAudit?: Prisma.SortOrder
-  lastCommitSha?: Prisma.SortOrder
-  lastCommitMessage?: Prisma.SortOrder
-  lastCommitDate?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -578,11 +515,8 @@ export type RepoMinOrderByAggregateInput = {
   language?: Prisma.SortOrder
   private?: Prisma.SortOrder
   fork?: Prisma.SortOrder
-  ownerId?: Prisma.SortOrder
   autoAudit?: Prisma.SortOrder
-  lastCommitSha?: Prisma.SortOrder
-  lastCommitMessage?: Prisma.SortOrder
-  lastCommitDate?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -642,10 +576,6 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type RepoCreateNestedOneWithoutCommitsInput = {
   create?: Prisma.XOR<Prisma.RepoCreateWithoutCommitsInput, Prisma.RepoUncheckedCreateWithoutCommitsInput>
   connectOrCreate?: Prisma.RepoCreateOrConnectWithoutCommitsInput
@@ -670,9 +600,6 @@ export type RepoCreateWithoutUserInput = {
   private: boolean
   fork: boolean
   autoAudit?: boolean
-  lastCommitSha?: string | null
-  lastCommitMessage?: string | null
-  lastCommitDate?: Date | string | null
   createdAt?: Date | string
   commits?: Prisma.CommitCreateNestedManyWithoutRepoInput
 }
@@ -688,9 +615,6 @@ export type RepoUncheckedCreateWithoutUserInput = {
   private: boolean
   fork: boolean
   autoAudit?: boolean
-  lastCommitSha?: string | null
-  lastCommitMessage?: string | null
-  lastCommitDate?: Date | string | null
   createdAt?: Date | string
   commits?: Prisma.CommitUncheckedCreateNestedManyWithoutRepoInput
 }
@@ -734,11 +658,8 @@ export type RepoScalarWhereInput = {
   language?: Prisma.StringNullableFilter<"Repo"> | string | null
   private?: Prisma.BoolFilter<"Repo"> | boolean
   fork?: Prisma.BoolFilter<"Repo"> | boolean
-  ownerId?: Prisma.IntFilter<"Repo"> | number
   autoAudit?: Prisma.BoolFilter<"Repo"> | boolean
-  lastCommitSha?: Prisma.StringNullableFilter<"Repo"> | string | null
-  lastCommitMessage?: Prisma.StringNullableFilter<"Repo"> | string | null
-  lastCommitDate?: Prisma.DateTimeNullableFilter<"Repo"> | Date | string | null
+  ownerId?: Prisma.IntFilter<"Repo"> | number
   createdAt?: Prisma.DateTimeFilter<"Repo"> | Date | string
 }
 
@@ -752,11 +673,8 @@ export type RepoCreateWithoutCommitsInput = {
   private: boolean
   fork: boolean
   autoAudit?: boolean
-  lastCommitSha?: string | null
-  lastCommitMessage?: string | null
-  lastCommitDate?: Date | string | null
   createdAt?: Date | string
-  User: Prisma.UserCreateNestedOneWithoutRepoInput
+  User: Prisma.UserCreateNestedOneWithoutReposInput
 }
 
 export type RepoUncheckedCreateWithoutCommitsInput = {
@@ -769,11 +687,8 @@ export type RepoUncheckedCreateWithoutCommitsInput = {
   language?: string | null
   private: boolean
   fork: boolean
-  ownerId: number
   autoAudit?: boolean
-  lastCommitSha?: string | null
-  lastCommitMessage?: string | null
-  lastCommitDate?: Date | string | null
+  ownerId: number
   createdAt?: Date | string
 }
 
@@ -803,11 +718,8 @@ export type RepoUpdateWithoutCommitsInput = {
   private?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  lastCommitSha?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  User?: Prisma.UserUpdateOneRequiredWithoutRepoNestedInput
+  User?: Prisma.UserUpdateOneRequiredWithoutReposNestedInput
 }
 
 export type RepoUncheckedUpdateWithoutCommitsInput = {
@@ -820,11 +732,8 @@ export type RepoUncheckedUpdateWithoutCommitsInput = {
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   private?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  lastCommitSha?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -839,9 +748,6 @@ export type RepoCreateManyUserInput = {
   private: boolean
   fork: boolean
   autoAudit?: boolean
-  lastCommitSha?: string | null
-  lastCommitMessage?: string | null
-  lastCommitDate?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -855,9 +761,6 @@ export type RepoUpdateWithoutUserInput = {
   private?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  lastCommitSha?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   commits?: Prisma.CommitUpdateManyWithoutRepoNestedInput
 }
@@ -873,9 +776,6 @@ export type RepoUncheckedUpdateWithoutUserInput = {
   private?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  lastCommitSha?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   commits?: Prisma.CommitUncheckedUpdateManyWithoutRepoNestedInput
 }
@@ -891,9 +791,6 @@ export type RepoUncheckedUpdateManyWithoutUserInput = {
   private?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  lastCommitSha?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastCommitDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -938,11 +835,8 @@ export type RepoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   language?: boolean
   private?: boolean
   fork?: boolean
-  ownerId?: boolean
   autoAudit?: boolean
-  lastCommitSha?: boolean
-  lastCommitMessage?: boolean
-  lastCommitDate?: boolean
+  ownerId?: boolean
   createdAt?: boolean
   User?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   commits?: boolean | Prisma.Repo$commitsArgs<ExtArgs>
@@ -959,11 +853,8 @@ export type RepoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   language?: boolean
   private?: boolean
   fork?: boolean
-  ownerId?: boolean
   autoAudit?: boolean
-  lastCommitSha?: boolean
-  lastCommitMessage?: boolean
-  lastCommitDate?: boolean
+  ownerId?: boolean
   createdAt?: boolean
   User?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["repo"]>
@@ -978,11 +869,8 @@ export type RepoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   language?: boolean
   private?: boolean
   fork?: boolean
-  ownerId?: boolean
   autoAudit?: boolean
-  lastCommitSha?: boolean
-  lastCommitMessage?: boolean
-  lastCommitDate?: boolean
+  ownerId?: boolean
   createdAt?: boolean
   User?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["repo"]>
@@ -997,15 +885,12 @@ export type RepoSelectScalar = {
   language?: boolean
   private?: boolean
   fork?: boolean
-  ownerId?: boolean
   autoAudit?: boolean
-  lastCommitSha?: boolean
-  lastCommitMessage?: boolean
-  lastCommitDate?: boolean
+  ownerId?: boolean
   createdAt?: boolean
 }
 
-export type RepoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "githubId" | "name" | "fullName" | "htmlUrl" | "description" | "language" | "private" | "fork" | "ownerId" | "autoAudit" | "lastCommitSha" | "lastCommitMessage" | "lastCommitDate" | "createdAt", ExtArgs["result"]["repo"]>
+export type RepoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "githubId" | "name" | "fullName" | "htmlUrl" | "description" | "language" | "private" | "fork" | "autoAudit" | "ownerId" | "createdAt", ExtArgs["result"]["repo"]>
 export type RepoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   User?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   commits?: boolean | Prisma.Repo$commitsArgs<ExtArgs>
@@ -1034,11 +919,8 @@ export type $RepoPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     language: string | null
     private: boolean
     fork: boolean
-    ownerId: number
     autoAudit: boolean
-    lastCommitSha: string | null
-    lastCommitMessage: string | null
-    lastCommitDate: Date | null
+    ownerId: number
     createdAt: Date
   }, ExtArgs["result"]["repo"]>
   composites: {}
@@ -1474,11 +1356,8 @@ export interface RepoFieldRefs {
   readonly language: Prisma.FieldRef<"Repo", 'String'>
   readonly private: Prisma.FieldRef<"Repo", 'Boolean'>
   readonly fork: Prisma.FieldRef<"Repo", 'Boolean'>
-  readonly ownerId: Prisma.FieldRef<"Repo", 'Int'>
   readonly autoAudit: Prisma.FieldRef<"Repo", 'Boolean'>
-  readonly lastCommitSha: Prisma.FieldRef<"Repo", 'String'>
-  readonly lastCommitMessage: Prisma.FieldRef<"Repo", 'String'>
-  readonly lastCommitDate: Prisma.FieldRef<"Repo", 'DateTime'>
+  readonly ownerId: Prisma.FieldRef<"Repo", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Repo", 'DateTime'>
 }
     
