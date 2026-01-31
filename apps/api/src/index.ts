@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes.js";
 import githubRoutes from "./routes/github.routes.js";
+import commitRoutes from "./routes/commit.routes.js";
 import session from "express-session";
 
 dotenv.config();
@@ -39,6 +40,7 @@ app.get("/health", (req, res) => {
 
 app.use("/auth", authRoutes);
 app.use("/github/repos", githubRoutes);
+app.use("/github/commit" , commitRoutes); 
 
 
 app.listen(process.env.PORT, () => {

@@ -27,3 +27,8 @@ export type User = Prisma.UserModel
  * 
  */
 export type Repo = Prisma.RepoModel
+/**
+ * Model Commit
+ * 
+ */
+export type Commit = Prisma.CommitModel

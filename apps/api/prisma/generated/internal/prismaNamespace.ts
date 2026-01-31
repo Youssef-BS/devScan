@@ -385,7 +385,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
-  Repo: 'Repo'
+  Repo: 'Repo',
+  Commit: 'Commit'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -401,7 +402,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "repo"
+    modelProps: "user" | "repo" | "commit"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -553,6 +554,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Commit: {
+      payload: Prisma.$CommitPayload<ExtArgs>
+      fields: Prisma.CommitFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CommitFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommitPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CommitFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommitPayload>
+        }
+        findFirst: {
+          args: Prisma.CommitFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommitPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CommitFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommitPayload>
+        }
+        findMany: {
+          args: Prisma.CommitFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommitPayload>[]
+        }
+        create: {
+          args: Prisma.CommitCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommitPayload>
+        }
+        createMany: {
+          args: Prisma.CommitCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CommitCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommitPayload>[]
+        }
+        delete: {
+          args: Prisma.CommitDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommitPayload>
+        }
+        update: {
+          args: Prisma.CommitUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommitPayload>
+        }
+        deleteMany: {
+          args: Prisma.CommitDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CommitUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CommitUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommitPayload>[]
+        }
+        upsert: {
+          args: Prisma.CommitUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommitPayload>
+        }
+        aggregate: {
+          args: Prisma.CommitAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCommit>
+        }
+        groupBy: {
+          args: Prisma.CommitGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommitGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CommitCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommitCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -617,10 +692,25 @@ export const RepoScalarFieldEnum = {
   fork: 'fork',
   ownerId: 'ownerId',
   autoAudit: 'autoAudit',
+  lastCommitSha: 'lastCommitSha',
+  lastCommitMessage: 'lastCommitMessage',
+  lastCommitDate: 'lastCommitDate',
   createdAt: 'createdAt'
 } as const
 
 export type RepoScalarFieldEnum = (typeof RepoScalarFieldEnum)[keyof typeof RepoScalarFieldEnum]
+
+
+export const CommitScalarFieldEnum = {
+  id: 'id',
+  sha: 'sha',
+  message: 'message',
+  author: 'author',
+  date: 'date',
+  repoId: 'repoId'
+} as const
+
+export type CommitScalarFieldEnum = (typeof CommitScalarFieldEnum)[keyof typeof CommitScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -812,6 +902,7 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   repo?: Prisma.RepoOmit
+  commit?: Prisma.CommitOmit
 }
 
 /* Types for Logging */

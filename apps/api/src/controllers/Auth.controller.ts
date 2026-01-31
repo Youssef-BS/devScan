@@ -46,7 +46,7 @@ export const githubCallback = async (req: Request, res: Response) => {
     if (!state || !sessionState || state !== sessionState) {
       return res.status(400).json({ message: 'Invalid state' });
     }
-    // remove stored state
+
     delete (req.session as any).oauthState;
 
     const clientId = requireEnv('GITHUB_CLIENT_ID');
@@ -66,6 +66,7 @@ export const githubCallback = async (req: Request, res: Response) => {
     );
 
     const accessToken = tokenResponse.data?.access_token;
+    console.log(accessToken)
     if (!accessToken) {
       console.error('No access_token in token response:', tokenResponse.data);
       return res.redirect(`${clientUrl}?error=oauth`);
