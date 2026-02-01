@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import axios from 'axios';
 import { randomBytes } from 'crypto';
 import { prisma } from '../db';
-import { saveGithubRepos } from './Github.controller';
 
 const requireEnv = (key: string) => {
   const val = process.env[key];
@@ -11,12 +10,13 @@ const requireEnv = (key: string) => {
 };
 
 export const githubLogin = async (req: Request, res: Response) => {
+
   try {
     const clientId = requireEnv('GITHUB_CLIENT_ID');
     const callbackUrl = requireEnv('GITHUB_CALLBACK_URL');
+    
 
     const state = randomBytes(16).toString('hex');
-    // store state in session to validate on callback (CSRF protection)
     (req.session as any).oauthState = state;
 
     const redirectUrl =
@@ -80,8 +80,6 @@ export const githubCallback = async (req: Request, res: Response) => {
     });
 
     const githubUser = userResponse.data;
-
-    // GitHub may not return email on /user - fetch emails endpoint as fallback
     let email = githubUser.email;
     if (!email) {
       try {
@@ -98,8 +96,6 @@ export const githubCallback = async (req: Request, res: Response) => {
         console.warn('Could not fetch user emails:', e);
       }
     }
-
-    //problem
 
  const dbUser = await prisma.user.upsert({
     where: { githubId: String(githubUser.id) },
@@ -125,7 +121,6 @@ export const githubCallback = async (req: Request, res: Response) => {
       avatar: githubUser.avatar_url || null,
     };
 
-    // ensure session saved before redirecting
     await new Promise<void>((resolve, reject) =>
       (req.session as any).save((err: any) => (err ? reject(err) : resolve()))
     );

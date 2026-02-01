@@ -32,3 +32,8 @@ export type Repo = Prisma.RepoModel
  * 
  */
 export type Commit = Prisma.CommitModel
+/**
+ * Model CommitFile
+ * 
+ */
+export type CommitFile = Prisma.CommitFileModel

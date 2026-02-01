@@ -128,6 +128,7 @@ export const saveGithubRepos = async (githubUserId: string, repos: any[]) => {
 
 
 export const getAllRepoFromDbByUser = async (req: Request, res: Response) => {
+
   try {
     if (!req.session.user) {
       return res.status(401).json({ message: 'Not authenticated' });
@@ -171,45 +172,6 @@ export const getAllRepoFromDbByUser = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
-export const updateRepoAutoAudit = async (req: Request, res: Response) => {
-  try {
-    if (!req.session.user) {
-      return res.status(401).json({ message: 'Not authenticated' });
-    }
-
-    const { full_name } = req.params;
-    const { auto_audit } = req.body;
-
-    const dbUser = await prisma.user.findUnique({
-      where: { githubId: String(req.session.user.id) },
-      select: { id: true },
-    });
-
-    if (!dbUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    const updatedRepo = await prisma.repo.updateMany({
-      where: {
-        name: String(full_name),
-        ownerId: dbUser.id,
-      },
-      data: {
-        autoAudit: auto_audit,
-      },
-    });
-
-    if (updatedRepo.count === 0) {
-      return res.status(404).json({ message: 'Repository not found' });
-    }
-
-    res.json({ message: 'Repository updated successfully', autoAudit: auto_audit });
-  } catch (error) {
-    console.error('updateRepoAutoAudit error:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-}
 
 
 export const deleteGithubRepo = async (res: Response , req: Request) => {

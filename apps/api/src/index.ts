@@ -2,13 +2,15 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes.js";
-import githubRoutes from "./routes/github.routes.js";
+import githubRoutes from "./routes/repo.routes.js";
 import commitRoutes from "./routes/commit.routes.js";
 import session from "express-session";
+
 
 dotenv.config();
 
 const app = express();
+
 
 app.use(session({
   name: 'sessionId',

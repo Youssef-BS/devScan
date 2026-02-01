@@ -53,7 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Repo: 'Repo',
-  Commit: 'Commit'
+  Commit: 'Commit',
+  CommitFile: 'CommitFile'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -113,6 +114,19 @@ export const CommitScalarFieldEnum = {
 } as const
 
 export type CommitScalarFieldEnum = (typeof CommitScalarFieldEnum)[keyof typeof CommitScalarFieldEnum]
+
+
+export const CommitFileScalarFieldEnum = {
+  id: 'id',
+  sha: 'sha',
+  path: 'path',
+  content: 'content',
+  commitId: 'commitId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommitFileScalarFieldEnum = (typeof CommitFileScalarFieldEnum)[keyof typeof CommitFileScalarFieldEnum]
 
 
 export const SortOrder = {

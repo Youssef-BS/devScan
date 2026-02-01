@@ -11,4 +11,5 @@
 export type * from './models/User'
 export type * from './models/Repo'
 export type * from './models/Commit'
+export type * from './models/CommitFile'
 export type * from './commonInputTypes'

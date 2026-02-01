@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useRepoStore } from "@/store/useRepoStore";
 import { useCommitStore } from "@/store/useCommitStore";
+import SpinnerLoad from "@/components/Spinner";
 
 const RepoDetailsPage = () => {
   const { getRepoDetails, repoDetails, loading: repoLoading } = useRepoStore();
@@ -31,11 +32,7 @@ const RepoDetailsPage = () => {
 
   if (repoLoading || commitsLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <span className="text-gray-500 text-lg">
-          Loading repository details and commits...
-        </span>
-      </div>
+       <SpinnerLoad />
     );
   }
 

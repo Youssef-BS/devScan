@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { deleteAllGithubRepos, getGithubRepos, saveGithubRepos, getAllRepoFromDbByUser, updateRepoAutoAudit, saveGithubRepo, getRepoDetails } from "../controllers/Github.controller.js";
+import { deleteAllGithubRepos, getGithubRepos, saveGithubRepos, getAllRepoFromDbByUser, saveGithubRepo, getRepoDetails } from "../controllers/Repo.controller.js";
 import axios from "axios";
 import { prisma } from "../db.js";
 
@@ -7,7 +7,6 @@ const router : Router = Router();
 
 router.get("/", getGithubRepos);
 
-router.patch("/:full_name/audit", updateRepoAutoAudit);
 
 router.get("/all-db", getAllRepoFromDbByUser);
 
