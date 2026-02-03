@@ -50,16 +50,21 @@ model Commit {
   files     CommitFile[] 
 
   @@index([repoId, date])
+
 }
 
 model CommitFile {
-  id        Int      @id @default(autoincrement())
-  sha       String   @unique
-  path      String
-  content   String
-  commitId  Int
-  Commit    Commit   @relation(fields: [commitId], references: [id], onDelete: Cascade)
+  id       Int    @id @default(autoincrement())
+  sha      String
+  path     String
+  content  Json    
+  commitId Int
+  Commit   Commit @relation(fields: [commitId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@unique([sha, path])   
 }
+
+
+
+
+

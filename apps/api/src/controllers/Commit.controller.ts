@@ -92,3 +92,113 @@ export const getAllCommits = async (req: Request, res: Response) => {
     res.status(500).json({ message: (error as Error).message });
   }
 };
+
+export const commitDetails = async (req: Request, res: Response) => {
+  const shaParam = req.params.sha;
+  if (typeof shaParam !== "string") {
+    return res.status(400).json({ message: "Invalid commit SHA" });
+  }
+  const sha = shaParam;
+
+  try {
+    if (!req.session.user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    // Find the commit and get access token
+    const commit = await prisma.commit.findUnique({
+      where: { sha },
+      include: {
+        Repo: {
+          include: {
+            User: {
+              select: { accessToken: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!commit) {
+      return res.status(404).json({ message: "Commit not found" });
+    }
+
+    const accessToken = commit.Repo.User?.accessToken;
+    if (!accessToken) {
+      return res.status(400).json({ message: "GitHub access token missing" });
+    }
+
+    // Fetch files from GitHub commit
+    const commitRes = await axios.get(
+      `https://api.github.com/repos/${commit.Repo.fullName}/commits/${sha}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: "application/vnd.github+json",
+        },
+      }
+    );
+
+    console.log(JSON.stringify(commitRes.data, null, 2));
+
+    const files = commitRes.data.files;
+    if (!files || files.length === 0) {
+      return res.status(404).json({ message: "No files found in this commit" });
+    }
+
+    const savedFiles = [];
+
+for (const file of files) {
+  const path = file.filename;
+  if (!path) {
+    console.warn("Skipping file with missing filename", file);
+    continue;
+  }
+
+  const contentRaw = file.raw_url
+    ? (await axios.get(file.raw_url, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })).data
+    : "";
+
+  let content: any;
+  try {
+    content = JSON.parse(contentRaw);
+  } catch {
+    content = contentRaw; // fallback to text
+  }
+
+  // Only upsert if commit.id exists
+  if (!commit.id) {
+    console.warn("Skipping upsert because commit.id is missing");
+    continue;
+  }
+
+  try {
+    const commitFile = await prisma.commitFile.upsert({
+      where: { sha_path: { sha, path } },
+      update: { content },
+      create: {
+        sha,
+        path,
+        content,
+        commitId: commit.id,
+      },
+    });
+
+    savedFiles.push({ path: commitFile.path, content: commitFile.content });
+  } catch (err) {
+    console.error(`Failed to upsert file ${path}`, err);
+  }
+}
+
+
+    return res.status(200).json({
+      message: "Commit details fetched successfully",
+      files: savedFiles,
+    });
+  } catch (error: any) {
+    console.error("commitDetails error:", error.response?.data || error.message);
+    return res.status(500).json({ message: error.message });
+  }
+};

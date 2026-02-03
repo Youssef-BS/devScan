@@ -37,3 +37,22 @@ export const getAllCommits = async (githubId: string) => {
     throw err;
   }
 };
+
+export const getCommitDetails = async (sha: string) => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/github/commit/${sha}/details`, {
+      credentials: "include", 
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`HTTP ${res.status}: ${errorText}`);
+    }
+
+    const data = await res.json();
+    return data.files; 
+  } catch (err) {
+    console.error("Error fetching commit details:", err);
+    throw err;
+  }
+};
