@@ -1,21 +1,22 @@
-import {create} from 'zustand' ; 
+import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { AnalyseCardProps } from '@/types/Analyse';
 
-
-export type Service = AnalyseCardProps ;
+export type Service = AnalyseCardProps;
 
 interface ServiceStore {
-    services : Service[] ;
-    setServices : (services : Service[]) => void ;
+  services: Service[];
+  setServices: (services: Service[]) => void;
 }
 
 export const useServiceStore = create<ServiceStore>()(
-    persist (
-        (set)=> ({
-            services : [] ,
-            setServices : (services : Service[]) => set({services}) ,
-        }) , 
-        { name : 'service-store' }
-    )
-)
+  persist(
+    (set) => ({
+      services: [],
+      setServices: (services) => set({ services }),
+    }),
+    {
+      name: 'service-store',
+    }
+  )
+);
