@@ -1,7 +1,9 @@
 "use client"
 import { AnalyseCardProps } from "@/types/Analyse";
 
-const AnalyseCard = ({id , logo , title , desc} : AnalyseCardProps ) => {
+export type Service = AnalyseCardProps;
+
+const AnalyseCard = ({id , logo , title , desc} : Service ) => {
 
   return (
 
