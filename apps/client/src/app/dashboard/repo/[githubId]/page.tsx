@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { useRepoStore } from "@/store/useRepoStore";
 import { useCommitStore } from "@/store/useCommitStore";
 import SpinnerLoad from "@/components/Spinner";
+import Link from "next/link";
 
 const RepoDetailsPage = () => {
   const { getRepoDetails, repoDetails, loading: repoLoading } = useRepoStore();
@@ -64,13 +65,13 @@ const RepoDetailsPage = () => {
       )}
 
       {lastCommit ? (
-        <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
+       <Link href={`/dashboard/commits/${lastCommit.sha}`} key={lastCommit.sha}> <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
           <h2 className="font-semibold text-lg mb-3">Latest Commit</h2>
           <p><strong>SHA:</strong> {lastCommit.sha}</p>
           <p><strong>Message:</strong> {lastCommit.message}</p>
           <p><strong>Author:</strong> {lastCommit.author}</p>
           <p><strong>Date:</strong> {new Date(lastCommit.date).toLocaleString()}</p>
-        </div>
+        </div> </Link>
       ) : (
         !commitsError && (
           <p className="text-center text-gray-500">No commits found</p>
@@ -80,23 +81,29 @@ const RepoDetailsPage = () => {
       {commits.length > 1 && (
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">All Commits ({commits.length})</h2>
-          <ul className="space-y-3">
-            {commits.map((c) => (
-              <li
-                key={c.sha}
-                className="bg-white border border-gray-200 rounded-xl p-4 hover:bg-gray-50"
-              >
-                <p className="truncate text-sm text-gray-500 mb-1">
-                  <strong>SHA:</strong> {c.sha.substring(0, 8)}...
-                </p>
-                <p className="mb-2"><strong>Message:</strong> {c.message}</p>
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span><strong>Author:</strong> {c.author}</span>
-                  <span>{new Date(c.date).toLocaleString()}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
+<ul className="space-y-3">
+  {commits.map((c) => (
+    <Link href={`/dashboard/commits/${c.sha}`} key={c.sha}>
+      <li className="bg-white border border-gray-200 rounded-xl p-4 hover:bg-gray-50 cursor-pointer transition">
+        <p className="truncate text-sm text-gray-500 mb-1">
+          <strong>SHA:</strong> {c.sha.substring(0, 8)}...
+        </p>
+
+        <p className="mb-2">
+          <strong>Message:</strong> {c.message}
+        </p>
+
+        <div className="flex justify-between text-sm text-gray-600">
+          <span>
+            <strong>Author:</strong> {c.author}
+          </span>
+          <span>{new Date(c.date).toLocaleString()}</span>
+        </div>
+      </li>
+    </Link>
+  ))}
+</ul>
+
         </div>
       )}
     </div>

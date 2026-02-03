@@ -40,20 +40,14 @@ export type CommitFileMinAggregateOutputType = {
   id: number | null
   sha: string | null
   path: string | null
-  content: string | null
   commitId: number | null
-  createdAt: Date | null
-  updatedAt: Date | null
 }
 
 export type CommitFileMaxAggregateOutputType = {
   id: number | null
   sha: string | null
   path: string | null
-  content: string | null
   commitId: number | null
-  createdAt: Date | null
-  updatedAt: Date | null
 }
 
 export type CommitFileCountAggregateOutputType = {
@@ -62,8 +56,6 @@ export type CommitFileCountAggregateOutputType = {
   path: number
   content: number
   commitId: number
-  createdAt: number
-  updatedAt: number
   _all: number
 }
 
@@ -82,20 +74,14 @@ export type CommitFileMinAggregateInputType = {
   id?: true
   sha?: true
   path?: true
-  content?: true
   commitId?: true
-  createdAt?: true
-  updatedAt?: true
 }
 
 export type CommitFileMaxAggregateInputType = {
   id?: true
   sha?: true
   path?: true
-  content?: true
   commitId?: true
-  createdAt?: true
-  updatedAt?: true
 }
 
 export type CommitFileCountAggregateInputType = {
@@ -104,8 +90,6 @@ export type CommitFileCountAggregateInputType = {
   path?: true
   content?: true
   commitId?: true
-  createdAt?: true
-  updatedAt?: true
   _all?: true
 }
 
@@ -199,10 +183,8 @@ export type CommitFileGroupByOutputType = {
   id: number
   sha: string
   path: string
-  content: string
+  content: runtime.JsonValue
   commitId: number
-  createdAt: Date
-  updatedAt: Date
   _count: CommitFileCountAggregateOutputType | null
   _avg: CommitFileAvgAggregateOutputType | null
   _sum: CommitFileSumAggregateOutputType | null
@@ -232,10 +214,8 @@ export type CommitFileWhereInput = {
   id?: Prisma.IntFilter<"CommitFile"> | number
   sha?: Prisma.StringFilter<"CommitFile"> | string
   path?: Prisma.StringFilter<"CommitFile"> | string
-  content?: Prisma.StringFilter<"CommitFile"> | string
+  content?: Prisma.JsonFilter<"CommitFile">
   commitId?: Prisma.IntFilter<"CommitFile"> | number
-  createdAt?: Prisma.DateTimeFilter<"CommitFile"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"CommitFile"> | Date | string
   Commit?: Prisma.XOR<Prisma.CommitScalarRelationFilter, Prisma.CommitWhereInput>
 }
 
@@ -245,24 +225,21 @@ export type CommitFileOrderByWithRelationInput = {
   path?: Prisma.SortOrder
   content?: Prisma.SortOrder
   commitId?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
   Commit?: Prisma.CommitOrderByWithRelationInput
 }
 
 export type CommitFileWhereUniqueInput = Prisma.AtLeast<{
   id?: number
-  sha?: string
+  sha_path?: Prisma.CommitFileShaPathCompoundUniqueInput
   AND?: Prisma.CommitFileWhereInput | Prisma.CommitFileWhereInput[]
   OR?: Prisma.CommitFileWhereInput[]
   NOT?: Prisma.CommitFileWhereInput | Prisma.CommitFileWhereInput[]
+  sha?: Prisma.StringFilter<"CommitFile"> | string
   path?: Prisma.StringFilter<"CommitFile"> | string
-  content?: Prisma.StringFilter<"CommitFile"> | string
+  content?: Prisma.JsonFilter<"CommitFile">
   commitId?: Prisma.IntFilter<"CommitFile"> | number
-  createdAt?: Prisma.DateTimeFilter<"CommitFile"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"CommitFile"> | Date | string
   Commit?: Prisma.XOR<Prisma.CommitScalarRelationFilter, Prisma.CommitWhereInput>
-}, "id" | "sha">
+}, "id" | "sha_path">
 
 export type CommitFileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -270,8 +247,6 @@ export type CommitFileOrderByWithAggregationInput = {
   path?: Prisma.SortOrder
   content?: Prisma.SortOrder
   commitId?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
   _count?: Prisma.CommitFileCountOrderByAggregateInput
   _avg?: Prisma.CommitFileAvgOrderByAggregateInput
   _max?: Prisma.CommitFileMaxOrderByAggregateInput
@@ -286,18 +261,14 @@ export type CommitFileScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"CommitFile"> | number
   sha?: Prisma.StringWithAggregatesFilter<"CommitFile"> | string
   path?: Prisma.StringWithAggregatesFilter<"CommitFile"> | string
-  content?: Prisma.StringWithAggregatesFilter<"CommitFile"> | string
+  content?: Prisma.JsonWithAggregatesFilter<"CommitFile">
   commitId?: Prisma.IntWithAggregatesFilter<"CommitFile"> | number
-  createdAt?: Prisma.DateTimeWithAggregatesFilter<"CommitFile"> | Date | string
-  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CommitFile"> | Date | string
 }
 
 export type CommitFileCreateInput = {
   sha: string
   path: string
-  content: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
   Commit: Prisma.CommitCreateNestedOneWithoutFilesInput
 }
 
@@ -305,18 +276,14 @@ export type CommitFileUncheckedCreateInput = {
   id?: number
   sha: string
   path: string
-  content: string
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
   commitId: number
-  createdAt?: Date | string
-  updatedAt?: Date | string
 }
 
 export type CommitFileUpdateInput = {
   sha?: Prisma.StringFieldUpdateOperationsInput | string
   path?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   Commit?: Prisma.CommitUpdateOneRequiredWithoutFilesNestedInput
 }
 
@@ -324,38 +291,30 @@ export type CommitFileUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   sha?: Prisma.StringFieldUpdateOperationsInput | string
   path?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   commitId?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CommitFileCreateManyInput = {
   id?: number
   sha: string
   path: string
-  content: string
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
   commitId: number
-  createdAt?: Date | string
-  updatedAt?: Date | string
 }
 
 export type CommitFileUpdateManyMutationInput = {
   sha?: Prisma.StringFieldUpdateOperationsInput | string
   path?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommitFileUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   sha?: Prisma.StringFieldUpdateOperationsInput | string
   path?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   commitId?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CommitFileListRelationFilter = {
@@ -368,14 +327,17 @@ export type CommitFileOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type CommitFileShaPathCompoundUniqueInput = {
+  sha: string
+  path: string
+}
+
 export type CommitFileCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   sha?: Prisma.SortOrder
   path?: Prisma.SortOrder
   content?: Prisma.SortOrder
   commitId?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
 }
 
 export type CommitFileAvgOrderByAggregateInput = {
@@ -387,20 +349,14 @@ export type CommitFileMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   sha?: Prisma.SortOrder
   path?: Prisma.SortOrder
-  content?: Prisma.SortOrder
   commitId?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
 }
 
 export type CommitFileMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   sha?: Prisma.SortOrder
   path?: Prisma.SortOrder
-  content?: Prisma.SortOrder
   commitId?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
 }
 
 export type CommitFileSumOrderByAggregateInput = {
@@ -453,18 +409,14 @@ export type CommitFileUncheckedUpdateManyWithoutCommitNestedInput = {
 export type CommitFileCreateWithoutCommitInput = {
   sha: string
   path: string
-  content: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommitFileUncheckedCreateWithoutCommitInput = {
   id?: number
   sha: string
   path: string
-  content: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommitFileCreateOrConnectWithoutCommitInput = {
@@ -500,45 +452,35 @@ export type CommitFileScalarWhereInput = {
   id?: Prisma.IntFilter<"CommitFile"> | number
   sha?: Prisma.StringFilter<"CommitFile"> | string
   path?: Prisma.StringFilter<"CommitFile"> | string
-  content?: Prisma.StringFilter<"CommitFile"> | string
+  content?: Prisma.JsonFilter<"CommitFile">
   commitId?: Prisma.IntFilter<"CommitFile"> | number
-  createdAt?: Prisma.DateTimeFilter<"CommitFile"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"CommitFile"> | Date | string
 }
 
 export type CommitFileCreateManyCommitInput = {
   id?: number
   sha: string
   path: string
-  content: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
+  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommitFileUpdateWithoutCommitInput = {
   sha?: Prisma.StringFieldUpdateOperationsInput | string
   path?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommitFileUncheckedUpdateWithoutCommitInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   sha?: Prisma.StringFieldUpdateOperationsInput | string
   path?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommitFileUncheckedUpdateManyWithoutCommitInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   sha?: Prisma.StringFieldUpdateOperationsInput | string
   path?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
 
@@ -549,8 +491,6 @@ export type CommitFileSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   path?: boolean
   content?: boolean
   commitId?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
   Commit?: boolean | Prisma.CommitDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["commitFile"]>
 
@@ -560,8 +500,6 @@ export type CommitFileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   path?: boolean
   content?: boolean
   commitId?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
   Commit?: boolean | Prisma.CommitDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["commitFile"]>
 
@@ -571,8 +509,6 @@ export type CommitFileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   path?: boolean
   content?: boolean
   commitId?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
   Commit?: boolean | Prisma.CommitDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["commitFile"]>
 
@@ -582,11 +518,9 @@ export type CommitFileSelectScalar = {
   path?: boolean
   content?: boolean
   commitId?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
 }
 
-export type CommitFileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sha" | "path" | "content" | "commitId" | "createdAt" | "updatedAt", ExtArgs["result"]["commitFile"]>
+export type CommitFileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sha" | "path" | "content" | "commitId", ExtArgs["result"]["commitFile"]>
 export type CommitFileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   Commit?: boolean | Prisma.CommitDefaultArgs<ExtArgs>
 }
@@ -606,10 +540,8 @@ export type $CommitFilePayload<ExtArgs extends runtime.Types.Extensions.Internal
     id: number
     sha: string
     path: string
-    content: string
+    content: runtime.JsonValue
     commitId: number
-    createdAt: Date
-    updatedAt: Date
   }, ExtArgs["result"]["commitFile"]>
   composites: {}
 }
@@ -1037,10 +969,8 @@ export interface CommitFileFieldRefs {
   readonly id: Prisma.FieldRef<"CommitFile", 'Int'>
   readonly sha: Prisma.FieldRef<"CommitFile", 'String'>
   readonly path: Prisma.FieldRef<"CommitFile", 'String'>
-  readonly content: Prisma.FieldRef<"CommitFile", 'String'>
+  readonly content: Prisma.FieldRef<"CommitFile", 'Json'>
   readonly commitId: Prisma.FieldRef<"CommitFile", 'Int'>
-  readonly createdAt: Prisma.FieldRef<"CommitFile", 'DateTime'>
-  readonly updatedAt: Prisma.FieldRef<"CommitFile", 'DateTime'>
 }
     
 

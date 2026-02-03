@@ -23,7 +23,7 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000 
   }
 
-}))
+})) ;
 
 app.use(cors(
   {
@@ -31,6 +31,7 @@ app.use(cors(
     credentials: true,
   }
 ));
+
 app.use(express.json());
 
 
