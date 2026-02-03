@@ -1,5 +1,5 @@
 "use client"
-import { AnalyseCardProps } from "@/types/Analyse";
+import { AnalyseCardProps } from "../../types/Analyse";
 
 const AnalyseCard = ({id , logo , title , desc} : AnalyseCardProps ) => {
 
