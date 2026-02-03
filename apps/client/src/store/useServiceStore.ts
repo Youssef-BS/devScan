@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { AnalyseCardProps } from '@/types/Analyse';
+import  { AnalyseCardProps } from '@/types/Analyse';
 
 export type Service = AnalyseCardProps;
 
