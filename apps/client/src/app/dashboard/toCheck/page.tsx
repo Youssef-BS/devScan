@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from "react"
+import React , { useEffect } from "react"
 import { useRepoStore } from "@/store/useRepoStore"
 import RepoCard from "@/components/cards/RepoCard"
 import SpinnerLoad from "@/components/Spinner"
@@ -20,7 +20,7 @@ const Page = () => {
   }, [])
 
   return (
-    <>
+    <React.Fragment>
       <div className="justify-between m-16 flex items-center">
         <h1 className="font-bold text-2xl">My Projects to check</h1>
         <button
@@ -52,7 +52,7 @@ const Page = () => {
           No repo found !
         </h1>
       )}
-    </>
+    </React.Fragment>
   )
 }
 
