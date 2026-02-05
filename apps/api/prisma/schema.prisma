@@ -54,15 +54,18 @@ model Commit {
 }
 
 model CommitFile {
-  id       Int    @id @default(autoincrement())
+  id       Int      @id @default(autoincrement())
   sha      String
   path     String
   content  Json    
   commitId Int
-  Commit   Commit @relation(fields: [commitId], references: [id])
+  Commit   Commit   @relation(fields: [commitId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@unique([sha, path])   
+  @@unique([sha, path])
 }
+
 
 
 

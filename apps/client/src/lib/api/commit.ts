@@ -1,57 +1,78 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+import type { CommitFile } from "@/types/CommitFile";
 
-export const fetchCommitsFromGitHub = async (githubId: string) => {
+
+
+export interface CommitDetails {
+  message: string;
+  files: CommitFile[];
+  commitInfo: {
+    sha: string;
+    message: string;
+    author: string;
+    date: string;
+    totalChanges: number;
+  };
+}
+
+export const fetchCommitsFromGitHub = async (githubId: string): Promise<any> => {
   try {
-    const res = await fetch(`${API_BASE_URL}/github/commit/fetch/${githubId}`);
+    const res = await fetch(`${API_BASE_URL}/github/commit/fetch/${githubId}`, {
+      credentials: 'include',
+    });
     
     if (!res.ok) {
       const errorText = await res.text();
-      console.error("Failed to fetch commits from GitHub:", res.status, errorText);
-      throw new Error(`HTTP ${res.status}: ${errorText || 'Failed to fetch commits'}`);
+      throw new Error(`Failed to fetch commits: ${errorText}`);
     }
     
-    const data = await res.json();
-    console.log("Fetched commits from GitHub:", data);
-    return data;
+    return await res.json();
   } catch (err: any) {
     console.error("Error fetching commits from GitHub:", err);
     throw err;
   }
 };
 
-export const getAllCommits = async (githubId: string) => {
+export const getAllCommits = async (githubId: string): Promise<any[]> => {
   try {
-    const res = await fetch(`${API_BASE_URL}/github/commit/${githubId}`);
+    const res = await fetch(`${API_BASE_URL}/github/commit/repo/${githubId}`, {
+      credentials: 'include',
+    });
     
     if (!res.ok) {
       const errorText = await res.text();
-      console.error("Failed to get commits from DB:", res.status, errorText);
-      throw new Error(`HTTP ${res.status}: ${errorText || 'Failed to get commits'}`);
+      throw new Error(`Failed to get commits: ${errorText}`);
     }
     
-    const data = await res.json();
-    console.log("Got commits from DB:", data.length);
-    return data;
+    return await res.json();
   } catch (err: any) {
-    console.error("Error getting commits from DB:", err);
+    console.error(" Error getting commits from DB:", err);
     throw err;
   }
 };
 
-export const getCommitDetails = async (sha: string) => {
+export const getCommitDetails = async (sha: string): Promise<CommitDetails> => {
   try {
-    const res = await fetch(`${API_BASE_URL}/github/commit/${sha}/details`, {
-      credentials: "include", 
+    console.log("🔍 Fetching commit details for SHA:", sha);
+    
+    const res = await fetch(`${API_BASE_URL}/github/commit/details/${sha}`, {
+      credentials: "include",
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
 
     if (!res.ok) {
       const errorText = await res.text();
-      throw new Error(`HTTP ${res.status}: ${errorText}`);
+      console.error(`HTTP ${res.status}: ${errorText}`);
+      throw new Error(`Failed to fetch commit details: ${errorText}`);
     }
 
     const data = await res.json();
-    return data.files; 
-  } catch (err) {
+    console.log("Commit details response received");
+    
+    return data;
+  } catch (err: any) {
     console.error("Error fetching commit details:", err);
     throw err;
   }
