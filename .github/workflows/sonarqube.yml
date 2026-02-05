@@ -2,60 +2,37 @@ name: SonarQube Analysis (Turbo)
 
 on:
   push:
-    branches: [ "main", "develop" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "main", "develop" ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
   pull-requests: read
-  contents: read
-  checks: write
 
 jobs:
   sonar:
     runs-on: ubuntu-latest
-    
-    # Set up environment based on branch
-    env:
-      SONAR_PROJECT_KEY: your-project-name-${{ github.ref_name }}
-    
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Important for SonarQube to get full history
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
 
-      - name: Enable Corepack and setup pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
+      - run: corepack enable
+      - run: corepack prepare pnpm@latest --activate
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - run: pnpm install
+      - run: pnpm turbo run build
 
-      - name: Build project
-        run: pnpm turbo run build
-
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v1
+      - uses: SonarSource/sonarqube-scan-action@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
-            -Dsonar.projectKey=devscan-${{ github.repository }}
-            -Dsonar.projectName=DevScan
-            -Dsonar.projectVersion=1.0.0
+            -Dsonar.projectKey=YOUR_PROJECT_KEY
             -Dsonar.sources=apps,packages
-            -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/build/**,**/.next/**,**/coverage/**,**/*.test.*,**/*.spec.*
-            -Dsonar.tests=apps,packages
-            -Dsonar.test.inclusions=**/*.test.*,**/*.spec.*
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.verbose=true
+
