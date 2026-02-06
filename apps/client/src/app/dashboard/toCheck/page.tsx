@@ -26,7 +26,7 @@ const Page = () => {
         <button
           onClick={deleteAllRepos}
           className={`
-            bg-linear-to-br from-blue-600 to-purple-600 px-4 py-2 text-white rounded-lg  font-bold
+            bg-red-800 px-4 py-2 text-white rounded-lg  font-bold
             ${dataFromDb.length === 0 ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'}
             `}
         >
