@@ -66,7 +66,6 @@ const RepoDetailsPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white p-4 md:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
-        {/* Repository Header */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
             <div className="space-y-4 flex-1">
