@@ -24,7 +24,7 @@ export const useCommitStore = create<CommitStore>((set) => ({
     set({ loading: true, error: null });
 
     try {
-      console.log("🔄 Fetching and loading commits for repo:", githubId);
+      console.log("Fetching and loading commits for repo:", githubId);
       await fetchCommitsFromGitHub(githubId); 
       const commits = await getAllCommits(githubId); 
 
@@ -34,9 +34,9 @@ export const useCommitStore = create<CommitStore>((set) => ({
       }
 
       set({ commits, loading: false, error: null });
-      console.log(`✅ Loaded ${commits.length} commits`);
+      console.log(`Loaded ${commits.length} commits`);
     } catch (err: any) {
-      console.error("❌ Error fetching commits:", err);
+      console.error("Error fetching commits:", err);
       set({ loading: false, error: err.message || "Failed to fetch commits" });
     }
   },
@@ -45,7 +45,7 @@ export const useCommitStore = create<CommitStore>((set) => ({
     set({ loading: true, error: null });
 
     try {
-      console.log("🔄 Loading commits from DB for repo:", githubId);
+      console.log("Loading commits from DB for repo:", githubId);
       const commits = await getAllCommits(githubId);
       
       if (!commits || commits.length === 0) {
@@ -54,9 +54,9 @@ export const useCommitStore = create<CommitStore>((set) => ({
       }
       
       set({ commits, loading: false, error: null });
-      console.log(`✅ Loaded ${commits.length} commits from DB`);
+      console.log(`Loaded ${commits.length} commits from DB`);
     } catch (err: any) {
-      console.error("❌ Error loading commits from DB:", err);
+      console.error("Error loading commits from DB:", err);
       set({ loading: false, error: err.message || "Failed to load commits" });
     }
   },
@@ -65,7 +65,7 @@ export const useCommitStore = create<CommitStore>((set) => ({
     set({ loading: true, error: null, commitDetails: null });
     
     try {
-      console.log("🔄 Loading commit details for SHA:", sha);
+      console.log("Loading commit details for SHA:", sha);
       const details = await getCommitDetails(sha);
       
       if (!details || !details.files || details.files.length === 0) {
@@ -82,9 +82,9 @@ export const useCommitStore = create<CommitStore>((set) => ({
         loading: false,
         error: null
       });
-      console.log(`✅ Loaded ${details.files.length} file changes for commit ${sha}`);
+      console.log(`Loaded ${details.files.length} file changes for commit ${sha}`);
     } catch (err: any) {
-      console.error("❌ Error loading commit details:", err);
+      console.error("Error loading commit details:", err);
       set({ 
         loading: false, 
         error: err.message || "Failed to load commit details",
