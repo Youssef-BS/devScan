@@ -159,7 +159,7 @@ const CommitDetailsPage = () => {
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <Link 
-            href="/repos" 
+            href="/dashboard" 
             className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-4"
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
