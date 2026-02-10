@@ -104,8 +104,6 @@ const RepoDetailsPage = () => {
             </div>
           </div>
         </div>
-
-        {/* Error Alert */}
         {commitsError && (
           <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex items-start gap-3">
             <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
@@ -114,8 +112,6 @@ const RepoDetailsPage = () => {
             <p className="text-amber-800">{commitsError}</p>
           </div>
         )}
-
-        {/* Latest Commit Card */}
         <div className="space-y-4">
           <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
             <GitCommit className="w-5 h-5" />
@@ -181,7 +177,6 @@ const RepoDetailsPage = () => {
           )}
         </div>
 
-        {/* All Commits List */}
         {commits.length > 1 && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
