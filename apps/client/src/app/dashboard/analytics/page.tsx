@@ -15,7 +15,6 @@ import {
 import SpinnerLoad from "@/components/Spinner"
 import { cn } from "@/lib/utils"
 
-// Dummy issues data for realistic analytics
 const DUMMY_ISSUES_DATA = {
   issuesBySeverity: {
     critical: 12,
@@ -72,14 +71,12 @@ const Page = () => {
     }
   }, [dataFromDb.length, getFromDb])
 
-  // Advanced metrics calculations
   const advancedMetrics = useMemo(() => {
     const totalRepos = dataFromDb.length
     const privateRepos = dataFromDb.filter(repo => repo.private).length
     const publicRepos = totalRepos - privateRepos
     const autoAuditEnabled = dataFromDb.filter(repo => repo.auto_audit).length
 
-    // Language distribution with percentages
     const languageStats = new Map<string, { count: number, percentage: number, issues?: number, securityScore?: number }>()
     dataFromDb.forEach(repo => {
       const lang = repo.language || "Unknown"
@@ -88,35 +85,31 @@ const Page = () => {
         ...current, 
         count: current.count + 1, 
         percentage: 0,
-        issues: Math.floor(Math.random() * 20) + 5, // Random issues for realism
-        securityScore: Math.floor(Math.random() * 30) + 65 // Random security score
+        issues: Math.floor(Math.random() * 20) + 5, 
+        securityScore: Math.floor(Math.random() * 30) + 65 
       })
     })
 
-    // Calculate percentages
     for (const [lang, stat] of languageStats) {
       stat.percentage = Math.round((stat.count / totalRepos) * 100)
     }
 
-    // Sort languages by count
     const sortedLanguages = Array.from(languageStats.entries())
       .sort((a, b) => b[1].count - a[1].count)
 
-    // Audit coverage percentage
     const auditCoverage = totalRepos > 0 
       ? Math.round((autoAuditEnabled / totalRepos) * 100) 
       : 0
 
-    // Repository health score with more realistic factors
     const healthScores = dataFromDb.map(repo => {
-      let score = 50 // Base score
+      let score = 50 
       if (repo.auto_audit) score += 25
       if (!repo.private) score += 5
       if (repo.language && repo.language !== "Unknown") score += 10
       if (repo.lastScan !== 'Never') score += 15
-      // Add random factors for realism
-      score += Math.floor(Math.random() * 10) - 5 // Random variation
-      return Math.max(30, Math.min(score, 98)) // Keep between 30-98
+
+      score += Math.floor(Math.random() * 10) - 5 
+      return Math.max(30, Math.min(score, 98)) 
     })
 
     const averageHealthScore = healthScores.length > 0
@@ -251,7 +244,6 @@ const Page = () => {
 
       {viewMode === 'overview' && (
         <>
-          {/* Key Metrics Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card className="relative overflow-hidden">
               <CardHeader className="pb-2">
