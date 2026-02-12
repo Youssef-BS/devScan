@@ -1,0 +1,9 @@
+{
+  "name": "ai",
+  "private": true,
+"scripts": {
+  "dev": "uvicorn main:app --reload --port 8003 --app-dir ."
+}
+
+
+}
