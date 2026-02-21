@@ -17,8 +17,8 @@
 
 import * as runtime from "@prisma/client/runtime/index-browser"
 
-export type * from '../models'
-export type * from './prismaNamespace'
+export type * from '../models.js'
+export type * from './prismaNamespace.js'
 
 export const Decimal = runtime.Decimal
 
@@ -54,7 +54,9 @@ export const ModelName = {
   User: 'User',
   Repo: 'Repo',
   Commit: 'Commit',
-  CommitFile: 'CommitFile'
+  CommitFile: 'CommitFile',
+  CodeAnalysis: 'CodeAnalysis',
+  CodeIssue: 'CodeIssue'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -121,10 +123,44 @@ export const CommitFileScalarFieldEnum = {
   sha: 'sha',
   path: 'path',
   content: 'content',
-  commitId: 'commitId'
+  commitId: 'commitId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type CommitFileScalarFieldEnum = (typeof CommitFileScalarFieldEnum)[keyof typeof CommitFileScalarFieldEnum]
+
+
+export const CodeAnalysisScalarFieldEnum = {
+  id: 'id',
+  commitId: 'commitId',
+  grade: 'grade',
+  summary: 'summary',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CodeAnalysisScalarFieldEnum = (typeof CodeAnalysisScalarFieldEnum)[keyof typeof CodeAnalysisScalarFieldEnum]
+
+
+export const CodeIssueScalarFieldEnum = {
+  id: 'id',
+  analysisId: 'analysisId',
+  type: 'type',
+  severity: 'severity',
+  title: 'title',
+  description: 'description',
+  filePath: 'filePath',
+  lineNumber: 'lineNumber',
+  originalCode: 'originalCode',
+  suggestedFix: 'suggestedFix',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CodeIssueScalarFieldEnum = (typeof CodeIssueScalarFieldEnum)[keyof typeof CodeIssueScalarFieldEnum]
 
 
 export const SortOrder = {

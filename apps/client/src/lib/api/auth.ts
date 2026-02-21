@@ -1,6 +1,7 @@
 export const getCurrentUserApi = async ({setUser, setLoading} : {setUser : (user:any) => void , setLoading : (loading:boolean) => void}) => {
   try {
-        const res = await fetch("http://localhost:4000/auth/current-user", {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+        const res = await fetch(`${apiUrl}/auth/current-user`, {
           credentials: "include",
         });
         if (!res.ok) {
@@ -17,7 +18,8 @@ export const getCurrentUserApi = async ({setUser, setLoading} : {setUser : (user
 }
 
 export const logout = () => {
-    const res = fetch('http://localhost:4000/auth/logout', {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+    const res = fetch(`${apiUrl}/auth/logout`, {
         method: 'POST',
         credentials: 'include',
     });

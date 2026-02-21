@@ -4,12 +4,24 @@ import { useEffect, useState } from "react";
 import { useCommitStore } from "@/store/useCommitStore";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import AIChatbot from "@/components/AIChatbot";
+import AIAnalysisPanel from "@/components/AIAnalysisPanel";
+import CommitFileAnalysis from "@/components/CommitFileAnalysis";
+import { useAIAnalysis } from "@/hooks/useAIAnalysis";
 
 const CommitDetailsPage = () => {
   const { sha } = useParams<{ sha: string }>();
   const router = useRouter();
   const { commitDetails, loadCommitDetails, loading, error, clearError } = useCommitStore();
-  const [activeTab, setActiveTab] = useState<'files' | 'overview'>('files');
+  const { analyzeCode, loading: analysisLoading, error: analysisError, result: analysisResult } = useAIAnalysis();
+  const [activeTab, setActiveTab] = useState<'files' | 'overview' | 'ai'>('files');
+  const [isChatbotOpen, setIsChatbotOpen] = useState(true);
+  const [codeContent, setCodeContent] = useState("");
+  const [activeFileIndex, setActiveFileIndex] = useState<number | null>(null);
+  const [fileAnalyses, setFileAnalyses] = useState<{ [key: number]: any }>({});
+  const [analysisType, setAnalysisType] = useState<"audit" | "file_fix">("file_fix");
+  const [fullCommitAnalysis, setFullCommitAnalysis] = useState<any>(null);
+  const [fullCommitAnalysisLoading, setFullCommitAnalysisLoading] = useState(false);
 
   useEffect(() => {
     if (sha) {
@@ -22,10 +34,81 @@ const CommitDetailsPage = () => {
     };
   }, [sha, loadCommitDetails, clearError]);
 
+  // Prepare code content for AI analysis
+  useEffect(() => {
+    if (commitDetails && commitDetails.files) {
+      console.log(`📊 Commit Details Updated:`, {
+        files: commitDetails.files.length,
+        message: commitDetails.commitInfo.message,
+        totalChanges: commitDetails.commitInfo.totalChanges
+      });
+      
+      commitDetails.files.forEach((file, idx) => {
+        console.log(`  File ${idx + 1}: ${file.path}`, {
+          status: file.status,
+          changes: `+${file.additions} -${file.deletions}`,
+          hasPatch: !!file.patch && file.patch.trim().length > 0
+        });
+      });
+      
+      const allCode = commitDetails.files
+        .map((file) => {
+          return `\n\n--- File: ${file.path} (${file.status}) ---\n${file.patch || '// Binary file or no diff available'}`;
+        })
+        .join("\n");
+      setCodeContent(allCode);
+    }
+  }, [commitDetails]);
+
+  const handleAnalyzeWithAI = async () => {
+    if (codeContent) {
+      await analyzeCode(codeContent, sha);
+    }
+  };
+
   const handleRetry = () => {
     if (sha) {
       loadCommitDetails(sha);
     }
+  };
+
+  const handleAnalyzeFile = async (fileIndex: number, filePath: string, patch: string) => {
+    setActiveFileIndex(fileIndex);
+    const fileContext = `File: ${filePath}\n\n${patch || '// Binary file or no diff available'}`;
+    await analyzeCode(fileContext, sha, "file_fix");
+    
+    // Store the analysis result
+    setFileAnalyses(prev => ({
+      ...prev,
+      [fileIndex]: analysisResult
+    }));
+  };
+
+  const handleAnalyzeAllFiles = async () => {
+    if (!commitDetails) return;
+    
+    setFullCommitAnalysisLoading(true);
+    
+    // Combine all files into one comprehensive context
+    const allFilesContext = commitDetails.files
+      .map((file, idx) => {
+        return `\n${'='.repeat(80)}\nFile ${idx + 1}: ${file.path} (${file.status})\n${'-'.repeat(80)}\nAdditions: +${file.additions} | Deletions: -${file.deletions} | Changes: ${file.changes}\n${'-'.repeat(80)}\n${file.patch || '// Binary file or no diff available'}`;
+      })
+      .join("\n");
+    
+    const commitContext = `Commit: ${commitDetails.commitInfo.message}
+Author: ${commitDetails.commitInfo.author}
+Date: ${commitDetails.commitInfo.date}
+Total Files Changed: ${commitDetails.files.length}
+Total Additions: +${commitDetails.files.reduce((sum, f) => sum + f.additions, 0)}
+Total Deletions: -${commitDetails.files.reduce((sum, f) => sum + f.deletions, 0)}
+
+Analysis: Please review all these files together and identify any issues across the entire commit, including integration issues between files.
+${allFilesContext}`;
+    
+    await analyzeCode(commitContext, sha, "commit");
+    setFullCommitAnalysis(analysisResult);
+    setFullCommitAnalysisLoading(false);
   };
 
   const formatDate = (dateString: string) => {
@@ -41,6 +124,19 @@ const CommitDetailsPage = () => {
 
   const renderPatch = (patch: string) => {
     if (!patch) return null;
+    
+    // Check if it's a binary/non-diff file notice
+    if (patch.startsWith('//') && patch.includes('Binary')) {
+      return (
+        <div className="p-8 text-center text-yellow-600 bg-yellow-50">
+          <svg className="w-12 h-12 mx-auto text-yellow-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M12 9v2m0 4v2m0 6v2M9 3h6m0 0a9 9 0 019 9H0a9 9 0 019-9zm0 0V1m0 18a9 9 0 01-9-9m9 9v2m0-6V9m-6 0h6m-6 0V3" />
+          </svg>
+          <p className="font-semibold">{patch.split('\n')[2]}</p>
+          <p className="text-sm mt-2">This file cannot be displayed as a text diff</p>
+        </div>
+      );
+    }
     
     return patch.split('\n').map((line, index) => {
       let bgColor = 'bg-transparent';
@@ -65,6 +161,9 @@ const CommitDetailsPage = () => {
       } else if (line.startsWith('index')) {
         bgColor = 'bg-gray-50';
         textColor = 'text-gray-500';
+      } else if (line.startsWith('//')) {
+        bgColor = 'bg-purple-50';
+        textColor = 'text-purple-700';
       }
       
       return (
@@ -234,7 +333,7 @@ const CommitDetailsPage = () => {
           </div>
         </div>
         <div className="mb-6">
-          <div className="border-b border-gray-200">
+          <div className="border-b border-gray-200 flex justify-between items-center">
             <nav className="flex space-x-8">
               <button
                 onClick={() => setActiveTab('files')}
@@ -256,11 +355,70 @@ const CommitDetailsPage = () => {
               >
                 Overview
               </button>
+              <button
+                onClick={() => setActiveTab('ai')}
+                className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${
+                  activeTab === 'ai'
+                    ? 'border-purple-500 text-purple-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <span>⚡</span> AI Analysis
+              </button>
             </nav>
+            
+            {activeTab === 'files' && (
+              <button
+                onClick={handleAnalyzeAllFiles}
+                disabled={fullCommitAnalysisLoading}
+                className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap font-medium"
+              >
+                {fullCommitAnalysisLoading ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Analyzing...
+                  </>
+                ) : (
+                  <>
+                    <span>🔍</span>
+                    Analyze All Files
+                  </>
+                )}
+              </button>
+            )}
           </div>
         </div>
         {activeTab === 'files' ? (
           <div className="space-y-4">
+            {fullCommitAnalysis && (
+              <div className="bg-white rounded-lg shadow-lg border-2 border-blue-300 overflow-hidden">
+                <div className="bg-blue-600 text-white p-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className="font-bold text-lg">📊 Full Commit Analysis</h3>
+                      <p className="text-sm text-blue-100">Comprehensive review of all {commitDetails.files.length} files</p>
+                    </div>
+                    <button
+                      onClick={() => setFullCommitAnalysis(null)}
+                      className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div className="p-6 max-h-96 overflow-y-auto">
+                  <div className="text-gray-700 whitespace-pre-wrap font-mono text-sm leading-relaxed">
+                    {fullCommitAnalysis.analysis || "Analyzing..."}
+                  </div>
+                </div>
+              </div>
+            )}
+            
             {commitDetails.files.map((file, index) => (
               <div
                 key={`${file.sha}-${file.path}-${index}`}
@@ -286,26 +444,69 @@ const CommitDetailsPage = () => {
                       <span>{file.changes} changes</span>
                     </div>
                   </div>
+                  <button
+                    onClick={() => handleAnalyzeFile(index, file.path, file.patch)}
+                    disabled={analysisLoading && activeFileIndex === index}
+                    className="ml-4 px-3 py-2 bg-purple-600 text-white text-xs rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
+                  >
+                    {analysisLoading && activeFileIndex === index ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Analyzing...
+                      </>
+                    ) : (
+                      <>
+                        <span>🤖</span>
+                        Analyze & Fix
+                      </>
+                    )}
+                  </button>
                 </div>
                 <div className="max-h-96 overflow-y-auto">
-                  {file.patch ? (
+                  {file.patch && file.patch.trim() ? (
                     <div className="divide-y divide-gray-100">
                       {renderPatch(file.patch)}
                     </div>
                   ) : (
-                    <div className="p-8 text-center text-gray-500">
-                      <svg className="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" />
-                      </svg>
-                      <p>No diff available for this file</p>
-                      <p className="text-sm mt-1">The file may be binary or have no textual changes</p>
+                    <div className="p-6 text-center text-gray-600 bg-gray-50">
+                      <pre className="text-xs text-left bg-gray-100 p-3 rounded overflow-x-auto">
+                        {file.patch || '// No patch data available - you can still analyze with AI'}
+                      </pre>
+                      <button
+                        onClick={() => handleAnalyzeFile(index, file.path, file.patch || '')}
+                        className="mt-3 px-3 py-2 bg-purple-600 text-white text-xs rounded hover:bg-purple-700 transition-colors"
+                      >
+                        🤖 Analyze This File
+                      </button>
                     </div>
                   )}
                 </div>
+
+                {/* AI Analysis for this file */}
+                {activeFileIndex === index && analysisResult && (
+                  <div className="border-t bg-gray-50 p-4">
+                    <CommitFileAnalysis
+                      fileName={file.path}
+                      analysis={analysisResult.analysis || ""}
+                      loading={analysisLoading && activeFileIndex === index}
+                      onClose={() => {
+                        setActiveFileIndex(null);
+                        setFileAnalyses(prev => {
+                          const newAnalyses = { ...prev };
+                          delete newAnalyses[index];
+                          return newAnalyses;
+                        });
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>
-        ) : (
+        ) : activeTab === 'overview' ? (
           <div className="bg-white rounded-lg shadow-sm border p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Commit Overview</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -348,6 +549,20 @@ const CommitDetailsPage = () => {
                 </ul>
               </div>
             </div>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <AIAnalysisPanel
+              analysis={analysisResult?.analysis || ""}
+              loading={analysisLoading}
+              error={analysisError}
+              onAnalyzeClick={handleAnalyzeWithAI}
+            />
+            <AIChatbot
+              codeContext={codeContent}
+              isOpen={isChatbotOpen}
+              onClose={() => setIsChatbotOpen(false)}
+            />
           </div>
         )}
       </div>

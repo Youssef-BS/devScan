@@ -9,8 +9,8 @@
  * 🟢 You can import this file directly.
  */
 import type * as runtime from "@prisma/client/runtime/client"
-import type * as $Enums from "../enums"
-import type * as Prisma from "../internal/prismaNamespace"
+import type * as $Enums from "../enums.js"
+import type * as Prisma from "../internal/prismaNamespace.js"
 
 /**
  * Model Commit
@@ -230,6 +230,7 @@ export type CommitWhereInput = {
   repoId?: Prisma.IntFilter<"Commit"> | number
   Repo?: Prisma.XOR<Prisma.RepoScalarRelationFilter, Prisma.RepoWhereInput>
   files?: Prisma.CommitFileListRelationFilter
+  analysis?: Prisma.XOR<Prisma.CodeAnalysisNullableScalarRelationFilter, Prisma.CodeAnalysisWhereInput> | null
 }
 
 export type CommitOrderByWithRelationInput = {
@@ -241,6 +242,7 @@ export type CommitOrderByWithRelationInput = {
   repoId?: Prisma.SortOrder
   Repo?: Prisma.RepoOrderByWithRelationInput
   files?: Prisma.CommitFileOrderByRelationAggregateInput
+  analysis?: Prisma.CodeAnalysisOrderByWithRelationInput
 }
 
 export type CommitWhereUniqueInput = Prisma.AtLeast<{
@@ -255,6 +257,7 @@ export type CommitWhereUniqueInput = Prisma.AtLeast<{
   repoId?: Prisma.IntFilter<"Commit"> | number
   Repo?: Prisma.XOR<Prisma.RepoScalarRelationFilter, Prisma.RepoWhereInput>
   files?: Prisma.CommitFileListRelationFilter
+  analysis?: Prisma.XOR<Prisma.CodeAnalysisNullableScalarRelationFilter, Prisma.CodeAnalysisWhereInput> | null
 }, "id" | "sha">
 
 export type CommitOrderByWithAggregationInput = {
@@ -290,6 +293,7 @@ export type CommitCreateInput = {
   date: Date | string
   Repo: Prisma.RepoCreateNestedOneWithoutCommitsInput
   files?: Prisma.CommitFileCreateNestedManyWithoutCommitInput
+  analysis?: Prisma.CodeAnalysisCreateNestedOneWithoutCommitInput
 }
 
 export type CommitUncheckedCreateInput = {
@@ -300,6 +304,7 @@ export type CommitUncheckedCreateInput = {
   date: Date | string
   repoId: number
   files?: Prisma.CommitFileUncheckedCreateNestedManyWithoutCommitInput
+  analysis?: Prisma.CodeAnalysisUncheckedCreateNestedOneWithoutCommitInput
 }
 
 export type CommitUpdateInput = {
@@ -309,6 +314,7 @@ export type CommitUpdateInput = {
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   Repo?: Prisma.RepoUpdateOneRequiredWithoutCommitsNestedInput
   files?: Prisma.CommitFileUpdateManyWithoutCommitNestedInput
+  analysis?: Prisma.CodeAnalysisUpdateOneWithoutCommitNestedInput
 }
 
 export type CommitUncheckedUpdateInput = {
@@ -319,6 +325,7 @@ export type CommitUncheckedUpdateInput = {
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repoId?: Prisma.IntFieldUpdateOperationsInput | number
   files?: Prisma.CommitFileUncheckedUpdateManyWithoutCommitNestedInput
+  analysis?: Prisma.CodeAnalysisUncheckedUpdateOneWithoutCommitNestedInput
 }
 
 export type CommitCreateManyInput = {
@@ -454,12 +461,27 @@ export type CommitUpdateOneRequiredWithoutFilesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CommitUpdateToOneWithWhereWithoutFilesInput, Prisma.CommitUpdateWithoutFilesInput>, Prisma.CommitUncheckedUpdateWithoutFilesInput>
 }
 
+export type CommitCreateNestedOneWithoutAnalysisInput = {
+  create?: Prisma.XOR<Prisma.CommitCreateWithoutAnalysisInput, Prisma.CommitUncheckedCreateWithoutAnalysisInput>
+  connectOrCreate?: Prisma.CommitCreateOrConnectWithoutAnalysisInput
+  connect?: Prisma.CommitWhereUniqueInput
+}
+
+export type CommitUpdateOneRequiredWithoutAnalysisNestedInput = {
+  create?: Prisma.XOR<Prisma.CommitCreateWithoutAnalysisInput, Prisma.CommitUncheckedCreateWithoutAnalysisInput>
+  connectOrCreate?: Prisma.CommitCreateOrConnectWithoutAnalysisInput
+  upsert?: Prisma.CommitUpsertWithoutAnalysisInput
+  connect?: Prisma.CommitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CommitUpdateToOneWithWhereWithoutAnalysisInput, Prisma.CommitUpdateWithoutAnalysisInput>, Prisma.CommitUncheckedUpdateWithoutAnalysisInput>
+}
+
 export type CommitCreateWithoutRepoInput = {
   sha: string
   message: string
   author: string
   date: Date | string
   files?: Prisma.CommitFileCreateNestedManyWithoutCommitInput
+  analysis?: Prisma.CodeAnalysisCreateNestedOneWithoutCommitInput
 }
 
 export type CommitUncheckedCreateWithoutRepoInput = {
@@ -469,6 +491,7 @@ export type CommitUncheckedCreateWithoutRepoInput = {
   author: string
   date: Date | string
   files?: Prisma.CommitFileUncheckedCreateNestedManyWithoutCommitInput
+  analysis?: Prisma.CodeAnalysisUncheckedCreateNestedOneWithoutCommitInput
 }
 
 export type CommitCreateOrConnectWithoutRepoInput = {
@@ -515,6 +538,7 @@ export type CommitCreateWithoutFilesInput = {
   author: string
   date: Date | string
   Repo: Prisma.RepoCreateNestedOneWithoutCommitsInput
+  analysis?: Prisma.CodeAnalysisCreateNestedOneWithoutCommitInput
 }
 
 export type CommitUncheckedCreateWithoutFilesInput = {
@@ -524,6 +548,7 @@ export type CommitUncheckedCreateWithoutFilesInput = {
   author: string
   date: Date | string
   repoId: number
+  analysis?: Prisma.CodeAnalysisUncheckedCreateNestedOneWithoutCommitInput
 }
 
 export type CommitCreateOrConnectWithoutFilesInput = {
@@ -548,6 +573,7 @@ export type CommitUpdateWithoutFilesInput = {
   author?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   Repo?: Prisma.RepoUpdateOneRequiredWithoutCommitsNestedInput
+  analysis?: Prisma.CodeAnalysisUpdateOneWithoutCommitNestedInput
 }
 
 export type CommitUncheckedUpdateWithoutFilesInput = {
@@ -557,6 +583,61 @@ export type CommitUncheckedUpdateWithoutFilesInput = {
   author?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repoId?: Prisma.IntFieldUpdateOperationsInput | number
+  analysis?: Prisma.CodeAnalysisUncheckedUpdateOneWithoutCommitNestedInput
+}
+
+export type CommitCreateWithoutAnalysisInput = {
+  sha: string
+  message: string
+  author: string
+  date: Date | string
+  Repo: Prisma.RepoCreateNestedOneWithoutCommitsInput
+  files?: Prisma.CommitFileCreateNestedManyWithoutCommitInput
+}
+
+export type CommitUncheckedCreateWithoutAnalysisInput = {
+  id?: number
+  sha: string
+  message: string
+  author: string
+  date: Date | string
+  repoId: number
+  files?: Prisma.CommitFileUncheckedCreateNestedManyWithoutCommitInput
+}
+
+export type CommitCreateOrConnectWithoutAnalysisInput = {
+  where: Prisma.CommitWhereUniqueInput
+  create: Prisma.XOR<Prisma.CommitCreateWithoutAnalysisInput, Prisma.CommitUncheckedCreateWithoutAnalysisInput>
+}
+
+export type CommitUpsertWithoutAnalysisInput = {
+  update: Prisma.XOR<Prisma.CommitUpdateWithoutAnalysisInput, Prisma.CommitUncheckedUpdateWithoutAnalysisInput>
+  create: Prisma.XOR<Prisma.CommitCreateWithoutAnalysisInput, Prisma.CommitUncheckedCreateWithoutAnalysisInput>
+  where?: Prisma.CommitWhereInput
+}
+
+export type CommitUpdateToOneWithWhereWithoutAnalysisInput = {
+  where?: Prisma.CommitWhereInput
+  data: Prisma.XOR<Prisma.CommitUpdateWithoutAnalysisInput, Prisma.CommitUncheckedUpdateWithoutAnalysisInput>
+}
+
+export type CommitUpdateWithoutAnalysisInput = {
+  sha?: Prisma.StringFieldUpdateOperationsInput | string
+  message?: Prisma.StringFieldUpdateOperationsInput | string
+  author?: Prisma.StringFieldUpdateOperationsInput | string
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Repo?: Prisma.RepoUpdateOneRequiredWithoutCommitsNestedInput
+  files?: Prisma.CommitFileUpdateManyWithoutCommitNestedInput
+}
+
+export type CommitUncheckedUpdateWithoutAnalysisInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  sha?: Prisma.StringFieldUpdateOperationsInput | string
+  message?: Prisma.StringFieldUpdateOperationsInput | string
+  author?: Prisma.StringFieldUpdateOperationsInput | string
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repoId?: Prisma.IntFieldUpdateOperationsInput | number
+  files?: Prisma.CommitFileUncheckedUpdateManyWithoutCommitNestedInput
 }
 
 export type CommitCreateManyRepoInput = {
@@ -573,6 +654,7 @@ export type CommitUpdateWithoutRepoInput = {
   author?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   files?: Prisma.CommitFileUpdateManyWithoutCommitNestedInput
+  analysis?: Prisma.CodeAnalysisUpdateOneWithoutCommitNestedInput
 }
 
 export type CommitUncheckedUpdateWithoutRepoInput = {
@@ -582,6 +664,7 @@ export type CommitUncheckedUpdateWithoutRepoInput = {
   author?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   files?: Prisma.CommitFileUncheckedUpdateManyWithoutCommitNestedInput
+  analysis?: Prisma.CodeAnalysisUncheckedUpdateOneWithoutCommitNestedInput
 }
 
 export type CommitUncheckedUpdateManyWithoutRepoInput = {
@@ -632,6 +715,7 @@ export type CommitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   repoId?: boolean
   Repo?: boolean | Prisma.RepoDefaultArgs<ExtArgs>
   files?: boolean | Prisma.Commit$filesArgs<ExtArgs>
+  analysis?: boolean | Prisma.Commit$analysisArgs<ExtArgs>
   _count?: boolean | Prisma.CommitCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["commit"]>
 
@@ -668,6 +752,7 @@ export type CommitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type CommitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   Repo?: boolean | Prisma.RepoDefaultArgs<ExtArgs>
   files?: boolean | Prisma.Commit$filesArgs<ExtArgs>
+  analysis?: boolean | Prisma.Commit$analysisArgs<ExtArgs>
   _count?: boolean | Prisma.CommitCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CommitIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -682,6 +767,7 @@ export type $CommitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   objects: {
     Repo: Prisma.$RepoPayload<ExtArgs>
     files: Prisma.$CommitFilePayload<ExtArgs>[]
+    analysis: Prisma.$CodeAnalysisPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1086,6 +1172,7 @@ export interface Prisma__CommitClient<T, Null = never, ExtArgs extends runtime.T
   readonly [Symbol.toStringTag]: "PrismaPromise"
   Repo<T extends Prisma.RepoDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RepoDefaultArgs<ExtArgs>>): Prisma.Prisma__RepoClient<runtime.Types.Result.GetResult<Prisma.$RepoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   files<T extends Prisma.Commit$filesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Commit$filesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommitFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  analysis<T extends Prisma.Commit$analysisArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Commit$analysisArgs<ExtArgs>>): Prisma.Prisma__CodeAnalysisClient<runtime.Types.Result.GetResult<Prisma.$CodeAnalysisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1538,6 +1625,25 @@ export type Commit$filesArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.CommitFileScalarFieldEnum | Prisma.CommitFileScalarFieldEnum[]
+}
+
+/**
+ * Commit.analysis
+ */
+export type Commit$analysisArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CodeAnalysis
+   */
+  select?: Prisma.CodeAnalysisSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CodeAnalysis
+   */
+  omit?: Prisma.CodeAnalysisOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CodeAnalysisInclude<ExtArgs> | null
+  where?: Prisma.CodeAnalysisWhereInput
 }
 
 /**

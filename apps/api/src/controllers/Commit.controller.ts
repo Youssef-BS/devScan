@@ -2,6 +2,8 @@ import axios from "axios";
 import { Request, Response } from "express";
 import { prisma } from "../db";
 
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || "http://localhost:8003";
+
 export const fetchAndSaveAllCommits = async (req: Request, res: Response) => {
   const { githubId } = req.params;
 
@@ -115,6 +117,7 @@ export const getCommitDetails = async (req: Request, res: Response) => {
     console.log("Fetching commit details for SHA:", sha);
     const existingFiles = await prisma.commitFile.findMany({
       where: { sha },
+      orderBy: { path: 'asc' }
     });
 
     if (existingFiles.length > 0) {
@@ -202,7 +205,11 @@ export const getCommitDetails = async (req: Request, res: Response) => {
 
     console.log(`Processing ${githubFiles.length} file changes from GitHub...`);
     const savedFiles = [];
-    for (const file of githubFiles) {
+    
+    // Sort files by path for consistency
+    const sortedFiles = githubFiles.sort((a: any, b: any) => (a.filename || '').localeCompare(b.filename || ''));
+    
+    for (const file of sortedFiles) {
       const path = file.filename;
       if (!path) {
         console.warn("Skipping file with missing filename");
@@ -210,13 +217,51 @@ export const getCommitDetails = async (req: Request, res: Response) => {
       }
       const normalizedPath = path.replace(/\\/g, '/');
       console.log(`Processing: ${normalizedPath}`);
+      
+      // Get raw content from GitHub if patch is empty (binary files, etc)
+      let patch = file.patch || '';
+      let fileContent = '';
+      
+      if (!patch && file.raw_url) {
+        try {
+          console.log(`Fetching raw content for: ${normalizedPath}`);
+          const rawRes = await axios.get(file.raw_url, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+            timeout: 10000,
+          });
+          fileContent = rawRes.data;
+          // For binary/non-text files, show first 1000 chars as preview
+          if (fileContent && typeof fileContent === 'string' && fileContent.length > 0) {
+            patch = `// File: ${normalizedPath}\n// Status: ${file.status}\n\n${fileContent.substring(0, 1000)}${fileContent.length > 1000 ? '\n// ... (content truncated)' : ''}`;
+          }
+        } catch (err: any) {
+          console.warn(`Could not fetch raw content for ${normalizedPath}:`, err.message);
+          patch = `// Binary or inaccessible file: ${normalizedPath}`;
+        }
+      }
+      
+      // Ensure patch always has value, even if empty
+      if (!patch) {
+        if (file.status === 'added') {
+          patch = `// NEW FILE: ${normalizedPath}`;
+        } else if (file.status === 'removed') {
+          patch = `// DELETED FILE: ${normalizedPath}`;
+        } else if (file.status === 'renamed') {
+          patch = `// RENAMED FILE: ${normalizedPath}`;
+        } else {
+          patch = `// Modified file with no text diff - possibly binary: ${normalizedPath}`;
+        }
+      }
+      
       const fileData = {
         path: normalizedPath,
         status: file.status || 'modified',
         additions: file.additions || 0,
         deletions: file.deletions || 0,
         changes: file.changes || 0,
-        patch: file.patch || '', 
+        patch: patch, 
         raw_url: file.raw_url || '',
         filename: file.filename
       };
@@ -309,6 +354,43 @@ export const getCommitDetails = async (req: Request, res: Response) => {
       message: "Failed to fetch commit details",
       error: error.message,
       sha: sha,
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
+export const analyzeCommitWithAI = async (req: Request, res: Response) => {
+  const { code, sha, analysisType = "chatbot" } = req.body;
+
+  if (!code) {
+    return res.status(400).json({ message: "Code is required for analysis" });
+  }
+
+  try {
+    console.log("Sending code to AI service for analysis...", { analysisType });
+    
+    const aiResponse = await axios.post(`${AI_SERVICE_URL}/analyze`, {
+      code: code,
+      analysis_type: analysisType
+    }, {
+      timeout: 30000
+    });
+
+    const analysis = aiResponse.data.analysis;
+
+    res.status(200).json({
+      message: "Code analysis completed",
+      analysis: analysis,
+      analysisType: analysisType,
+      sha: sha || null,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error: any) {
+    console.error("AI analysis error:", error.message);
+    res.status(500).json({ 
+      message: "Failed to analyze code with AI",
+      error: error.message,
+      serviceUrl: AI_SERVICE_URL,
       timestamp: new Date().toISOString()
     });
   }

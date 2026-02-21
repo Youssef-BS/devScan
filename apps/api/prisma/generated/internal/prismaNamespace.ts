@@ -16,10 +16,10 @@
  */
 
 import * as runtime from "@prisma/client/runtime/client"
-import type * as Prisma from "../models"
-import { type PrismaClient } from "./class"
+import type * as Prisma from "../models.js"
+import { type PrismaClient } from "./class.js"
 
-export type * from '../models'
+export type * from '../models.js'
 
 export type DMMF = typeof runtime.DMMF
 
@@ -387,7 +387,9 @@ export const ModelName = {
   User: 'User',
   Repo: 'Repo',
   Commit: 'Commit',
-  CommitFile: 'CommitFile'
+  CommitFile: 'CommitFile',
+  CodeAnalysis: 'CodeAnalysis',
+  CodeIssue: 'CodeIssue'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -403,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "repo" | "commit" | "commitFile"
+    modelProps: "user" | "repo" | "commit" | "commitFile" | "codeAnalysis" | "codeIssue"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -703,6 +705,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CodeAnalysis: {
+      payload: Prisma.$CodeAnalysisPayload<ExtArgs>
+      fields: Prisma.CodeAnalysisFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CodeAnalysisFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeAnalysisPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CodeAnalysisFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeAnalysisPayload>
+        }
+        findFirst: {
+          args: Prisma.CodeAnalysisFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeAnalysisPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CodeAnalysisFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeAnalysisPayload>
+        }
+        findMany: {
+          args: Prisma.CodeAnalysisFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeAnalysisPayload>[]
+        }
+        create: {
+          args: Prisma.CodeAnalysisCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeAnalysisPayload>
+        }
+        createMany: {
+          args: Prisma.CodeAnalysisCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CodeAnalysisCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeAnalysisPayload>[]
+        }
+        delete: {
+          args: Prisma.CodeAnalysisDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeAnalysisPayload>
+        }
+        update: {
+          args: Prisma.CodeAnalysisUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeAnalysisPayload>
+        }
+        deleteMany: {
+          args: Prisma.CodeAnalysisDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CodeAnalysisUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CodeAnalysisUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeAnalysisPayload>[]
+        }
+        upsert: {
+          args: Prisma.CodeAnalysisUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeAnalysisPayload>
+        }
+        aggregate: {
+          args: Prisma.CodeAnalysisAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCodeAnalysis>
+        }
+        groupBy: {
+          args: Prisma.CodeAnalysisGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CodeAnalysisGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CodeAnalysisCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CodeAnalysisCountAggregateOutputType> | number
+        }
+      }
+    }
+    CodeIssue: {
+      payload: Prisma.$CodeIssuePayload<ExtArgs>
+      fields: Prisma.CodeIssueFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CodeIssueFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeIssuePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CodeIssueFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeIssuePayload>
+        }
+        findFirst: {
+          args: Prisma.CodeIssueFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeIssuePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CodeIssueFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeIssuePayload>
+        }
+        findMany: {
+          args: Prisma.CodeIssueFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeIssuePayload>[]
+        }
+        create: {
+          args: Prisma.CodeIssueCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeIssuePayload>
+        }
+        createMany: {
+          args: Prisma.CodeIssueCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CodeIssueCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeIssuePayload>[]
+        }
+        delete: {
+          args: Prisma.CodeIssueDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeIssuePayload>
+        }
+        update: {
+          args: Prisma.CodeIssueUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeIssuePayload>
+        }
+        deleteMany: {
+          args: Prisma.CodeIssueDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CodeIssueUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CodeIssueUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeIssuePayload>[]
+        }
+        upsert: {
+          args: Prisma.CodeIssueUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeIssuePayload>
+        }
+        aggregate: {
+          args: Prisma.CodeIssueAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCodeIssue>
+        }
+        groupBy: {
+          args: Prisma.CodeIssueGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CodeIssueGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CodeIssueCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CodeIssueCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -790,10 +940,44 @@ export const CommitFileScalarFieldEnum = {
   sha: 'sha',
   path: 'path',
   content: 'content',
-  commitId: 'commitId'
+  commitId: 'commitId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type CommitFileScalarFieldEnum = (typeof CommitFileScalarFieldEnum)[keyof typeof CommitFileScalarFieldEnum]
+
+
+export const CodeAnalysisScalarFieldEnum = {
+  id: 'id',
+  commitId: 'commitId',
+  grade: 'grade',
+  summary: 'summary',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CodeAnalysisScalarFieldEnum = (typeof CodeAnalysisScalarFieldEnum)[keyof typeof CodeAnalysisScalarFieldEnum]
+
+
+export const CodeIssueScalarFieldEnum = {
+  id: 'id',
+  analysisId: 'analysisId',
+  type: 'type',
+  severity: 'severity',
+  title: 'title',
+  description: 'description',
+  filePath: 'filePath',
+  lineNumber: 'lineNumber',
+  originalCode: 'originalCode',
+  suggestedFix: 'suggestedFix',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CodeIssueScalarFieldEnum = (typeof CodeIssueScalarFieldEnum)[keyof typeof CodeIssueScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1017,6 +1201,8 @@ export type GlobalOmitConfig = {
   repo?: Prisma.RepoOmit
   commit?: Prisma.CommitOmit
   commitFile?: Prisma.CommitFileOmit
+  codeAnalysis?: Prisma.CodeAnalysisOmit
+  codeIssue?: Prisma.CodeIssueOmit
 }
 
 /* Types for Logging */

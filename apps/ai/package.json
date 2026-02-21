@@ -1,9 +1,10 @@
 {
   "name": "ai",
   "private": true,
-"scripts": {
-  "dev": "uvicorn main:app --reload --port 8003 --app-dir ."
-}
-
-
+  "scripts": {
+    "dev": "venv\\Scripts\\python -m uvicorn main:app --reload --port 8003 --host 0.0.0.0",
+    "setup": "python -m venv venv && venv\\Scripts\\pip install -r requirements.txt",
+    "install": "venv\\Scripts\\pip install -r requirements.txt",
+    "start": "venv\\Scripts\\python -m uvicorn main:app --port 8003 --host 0.0.0.0"
+  }
 }

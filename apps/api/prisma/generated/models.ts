@@ -8,8 +8,10 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/User'
-export type * from './models/Repo'
-export type * from './models/Commit'
-export type * from './models/CommitFile'
-export type * from './commonInputTypes'
+export type * from './models/User.js'
+export type * from './models/Repo.js'
+export type * from './models/Commit.js'
+export type * from './models/CommitFile.js'
+export type * from './models/CodeAnalysis.js'
+export type * from './models/CodeIssue.js'
+export type * from './commonInputTypes.js'

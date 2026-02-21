@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useRepoStore } from "@/store/useRepoStore";
 import { useCommitStore } from "@/store/useCommitStore";
 import SpinnerLoad from "@/components/Spinner";
+import AIChatbot from "@/components/AIChatbot";
 import Link from "next/link";
 import { 
   CalendarDays, 
@@ -249,6 +250,10 @@ const RepoDetailsPage = () => {
           </div>
         )}
       </div>
+      <AIChatbot
+        codeContext={`Repository: ${repoDetails?.name || 'Unknown'}\nLanguage: ${repoDetails?.language || 'Unknown'}\nTotal Commits: ${commits.length}`}
+        isOpen={true}
+      />
     </div>
   );
 };
