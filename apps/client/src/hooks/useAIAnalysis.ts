@@ -3,6 +3,10 @@ import { useState } from "react";
 interface AnalysisResult {
   analysis: string;
   timestamp: string;
+  correctedExamples?: Array<{
+    issue: number;
+    code: string;
+  }>;
   error?: string;
 }
 
@@ -30,7 +34,25 @@ export const useAIAnalysis = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`Analysis failed: ${response.statusText}`);
+        // Try to parse error message from response
+        let errorMsg = response.statusText;
+        try {
+          const errorData = await response.json();
+          errorMsg = errorData.error || errorData.message || response.statusText;
+        } catch (e) {
+          // Fallback to status text if response is not JSON
+        }
+        
+        // Map status codes to user-friendly messages
+        if (response.status === 408) {
+          errorMsg = "⏱️ Analysis timeout: The AI took too long. Try analyzing smaller code chunks.";
+        } else if (response.status === 503) {
+          errorMsg = "⚠️ AI service is not available. Please try again later.";
+        } else if (response.status === 400) {
+          errorMsg = "Code is required for analysis";
+        }
+        
+        throw new Error(errorMsg);
       }
 
       const data = await response.json();

@@ -53,7 +53,7 @@ export const getAllCommits = async (githubId: string): Promise<any[]> => {
 
 export const getCommitDetails = async (sha: string): Promise<CommitDetails> => {
   try {
-    console.log("🔍 Fetching commit details for SHA:", sha);
+    console.log("Fetching commit details for SHA:", sha);
     
     const res = await fetch(`${API_BASE_URL}/github/commit/details/${sha}`, {
       credentials: "include",
@@ -69,7 +69,12 @@ export const getCommitDetails = async (sha: string): Promise<CommitDetails> => {
     }
 
     const data = await res.json();
-    console.log("Commit details response received");
+    console.log("Commit details response received:", {
+      filesCount: data.files?.length || 0,
+      message: data.commitInfo?.message || data.message,
+      sha: data.commitInfo?.sha || sha
+    });
+    console.log("Full response:", data);
     
     return data;
   } catch (err: any) {

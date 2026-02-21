@@ -7,6 +7,7 @@ interface AIAnalysisPanelProps {
   analysis: string;
   loading?: boolean;
   error?: string | null;
+  correctedExamples?: Array<{ issue: number; code: string }>;
   onAnalyzeClick?: () => void;
 }
 
@@ -14,13 +15,14 @@ const AIAnalysisPanel: React.FC<AIAnalysisPanelProps> = ({
   analysis,
   loading = false,
   error = null,
+  correctedExamples = [],
   onAnalyzeClick,
 }) => {
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6 md:p-8">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-linear-to-br from-purple-500 to-pink-500 flex items-center justify-center">
             <Zap className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -32,7 +34,7 @@ const AIAnalysisPanel: React.FC<AIAnalysisPanelProps> = ({
           <button
             onClick={onAnalyzeClick}
             disabled={loading}
-            className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-4 py-2 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {loading ? (
               <>
@@ -51,10 +53,11 @@ const AIAnalysisPanel: React.FC<AIAnalysisPanelProps> = ({
 
       {error && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-          <XCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+          <XCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-medium text-red-900">Analysis Error</p>
             <p className="text-sm text-red-700 mt-1">{error}</p>
+            <p className="text-xs text-red-600 mt-2">💡 Tip: If this error persists, try analyzing smaller file chunks or check if the AI service is running (port 8003).</p>
           </div>
         </div>
       )}
@@ -66,7 +69,8 @@ const AIAnalysisPanel: React.FC<AIAnalysisPanelProps> = ({
               <Loader className="w-6 h-6 text-purple-600 animate-spin" />
             </div>
             <p className="text-gray-600 font-medium">Analyzing code with AI...</p>
-            <p className="text-sm text-gray-500 mt-2">This may take a few seconds</p>
+            <p className="text-sm text-gray-500 mt-2">This may take 30-120 seconds for large code samples</p>
+            <p className="text-xs text-gray-400 mt-3">Processing: analyzing code structure, security issues, performance suggestions...</p>
           </div>
         </div>
       )}
@@ -108,6 +112,28 @@ const AIAnalysisPanel: React.FC<AIAnalysisPanelProps> = ({
             </div>
           </div>
 
+          {/* Corrected Code Examples */}
+          {correctedExamples.length > 0 && (
+            <div className="bg-green-50 rounded-lg p-6 border border-green-200">
+              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <span className="text-lg">💡</span>
+                Corrected Code Examples
+              </h3>
+              <div className="space-y-3">
+                {correctedExamples.map((example, idx) => (
+                  <div key={idx} className="bg-white rounded-lg border border-green-300 overflow-hidden">
+                    <div className="bg-green-100 px-4 py-2 border-b border-green-200">
+                      <span className="text-xs font-semibold text-green-900">✓ Issue #{example.issue}</span>
+                    </div>
+                    <pre className="p-4 overflow-x-auto text-xs text-gray-800 bg-white">
+                      <code>{example.code}</code>
+                    </pre>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
             <p className="text-xs text-blue-700">
               💡 <span className="font-medium">Tip:</span> Use the chat assistant below to ask specific questions about this analysis.
@@ -126,7 +152,7 @@ const AIAnalysisPanel: React.FC<AIAnalysisPanelProps> = ({
           {onAnalyzeClick && (
             <button
               onClick={onAnalyzeClick}
-              className="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all duration-300"
+              className="px-6 py-2 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all duration-300"
             >
               Start Analysis
             </button>

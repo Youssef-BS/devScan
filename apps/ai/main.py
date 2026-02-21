@@ -3,7 +3,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from audit.analyzer import analyze_code
+from audit.analyzer import analyze_code, extract_corrected_code
 
 app = FastAPI(
     title="DevScan AI Service",
@@ -11,7 +11,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Enable CORS for client and API
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,7 +21,7 @@ app.add_middleware(
 
 class CodeRequest(BaseModel):
     code: str
-    analysis_type: str = "audit"  # Default to audit, can be 'audit', 'chatbot', or 'commit'
+    analysis_type: str = "audit"  
 
 @app.get("/health")
 async def health():
@@ -38,11 +37,19 @@ async def analyze(request: CodeRequest):
     """
     Analyze code using specified prompt template.
     
-    - analysis_type: 'audit' (default), 'chatbot', or 'commit'
+    - analysis_type: 'audit' (default), 'chatbot', 'commit', or 'file_fix'
+    
+    Returns:
+    - analysis: cleaned analysis text
+    - corrected_examples: list of corrected code snippets extracted from analysis
+    - analysis_type: the type of analysis performed
     """
     result = analyze_code(request.code, analysis_type=request.analysis_type)
+    parsed_result = extract_corrected_code(result)
+    
     return {
-        "analysis": result,
+        "analysis": parsed_result['analysis'],
+        "corrected_examples": parsed_result['corrected_examples'],
         "analysis_type": request.analysis_type
     }
 

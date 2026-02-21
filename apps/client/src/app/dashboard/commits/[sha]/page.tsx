@@ -9,6 +9,9 @@ import AIAnalysisPanel from "@/components/AIAnalysisPanel";
 import CommitFileAnalysis from "@/components/CommitFileAnalysis";
 import { useAIAnalysis } from "@/hooks/useAIAnalysis";
 
+type AnalysisMode = "individual" | "batch" | "comprehensive";
+type AnalysisType = "audit" | "file_fix" | "comprehensive_review";
+
 const CommitDetailsPage = () => {
   const { sha } = useParams<{ sha: string }>();
   const router = useRouter();
@@ -19,9 +22,14 @@ const CommitDetailsPage = () => {
   const [codeContent, setCodeContent] = useState("");
   const [activeFileIndex, setActiveFileIndex] = useState<number | null>(null);
   const [fileAnalyses, setFileAnalyses] = useState<{ [key: number]: any }>({});
-  const [analysisType, setAnalysisType] = useState<"audit" | "file_fix">("file_fix");
+  const [analysisMode, setAnalysisMode] = useState<AnalysisMode>("individual");
+  const [analysisType, setAnalysisType] = useState<AnalysisType>("file_fix");
   const [fullCommitAnalysis, setFullCommitAnalysis] = useState<any>(null);
   const [fullCommitAnalysisLoading, setFullCommitAnalysisLoading] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<Set<number>>(new Set());
+  const [batchAnalysisProgress, setBatchAnalysisProgress] = useState(0);
+  const [batchAnalysisResults, setBatchAnalysisResults] = useState<{ [key: number]: any }>({});
+  const [allFilesToggle, setAllFilesToggle] = useState(false);
 
   useEffect(() => {
     if (sha) {
@@ -38,15 +46,19 @@ const CommitDetailsPage = () => {
   useEffect(() => {
     if (commitDetails && commitDetails.files) {
       console.log(`📊 Commit Details Updated:`, {
-        files: commitDetails.files.length,
+        totalFiles: commitDetails.files.length,
         message: commitDetails.commitInfo.message,
-        totalChanges: commitDetails.commitInfo.totalChanges
+        totalChanges: commitDetails.commitInfo.totalChanges,
+        fullResponse: commitDetails
       });
       
+      console.log(`🗂️ All ${commitDetails.files.length} Files:`);
       commitDetails.files.forEach((file, idx) => {
-        console.log(`  File ${idx + 1}: ${file.path}`, {
+        console.log(`  File ${idx + 1}/${commitDetails.files.length}: ${file.path}`, {
           status: file.status,
-          changes: `+${file.additions} -${file.deletions}`,
+          additions: file.additions,
+          deletions: file.deletions,
+          changes: file.changes,
           hasPatch: !!file.patch && file.patch.trim().length > 0
         });
       });
@@ -254,202 +266,144 @@ ${allFilesContext}`;
   const removedFiles = commitDetails.files.filter(f => f.status === 'removed').length;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6">
-          <Link 
-            href="/dashboard" 
-            className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-4"
-          >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to Repositories
-          </Link>
-          
-          <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                  {commitDetails.commitInfo.message}
-                </h1>
-                <div className="flex items-center flex-wrap gap-4 text-gray-600">
-                  <div className="flex items-center">
-                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-sm">{commitDetails.commitInfo.author}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span className="text-sm">{formatDate(commitDetails.commitInfo.date)}</span>
+    <div className="min-h-screen bg-white">
+      {/* Background accent */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-linear-to-br from-gray-100/50 to-gray-200/50 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-linear-to-tr from-gray-100/50 to-gray-100/50 rounded-full blur-3xl"></div>
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 p-4 md:p-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <Link 
+              href="/dashboard" 
+              className="inline-flex items-center px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-gray-800 transition-all mb-6 border border-gray-300 hover:border-gray-400"
+            >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Back to Repositories
+            </Link>
+
+            {/* Commit Header Card */}
+            <div className="bg-linear-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl border border-white/20 p-8 shadow-2xl">
+              <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-4xl font-bold text-gray-800 mb-4 wrap-break-word">
+                    {commitDetails.commitInfo.message}
+                  </h1>
+                  
+                  <div className="flex flex-wrap gap-6 text-gray-600">
+                    <div className="flex items-center gap-2 hover:text-gray-800 transition-colors">
+                      <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-400 uppercase tracking-wider">Author</p>
+                        <p className="font-semibold text-white">{commitDetails.commitInfo.author}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 hover:text-gray-800 transition-colors">
+                      <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 uppercase tracking-wider">Date</p>
+                        <p className="font-semibold text-gray-800">{formatDate(commitDetails.commitInfo.date)}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
+
+                {/* SHA Badge */}
+                <div className="flex flex-col items-end gap-2">
+                  <p className="text-xs text-gray-500 uppercase tracking-wider">Commit SHA</p>
+                  <code className="bg-gray-100 px-4 py-2 rounded-lg text-mono text-sm font-semibold text-gray-800 border border-gray-300 font-mono break-all text-right">
+                    {sha.substring(0, 12)}
+                  </code>
+                </div>
               </div>
-              
-              <div className="flex items-center">
-                <code className="bg-gray-100 px-3 py-1 rounded text-sm font-mono text-gray-700">
-                  {sha.substring(0, 8)}
-                </code>
+
+              {/* Stats Row */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-gray-200">
+                <div className="p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
+                  <p className="text-gray-500 text-sm uppercase tracking-wider mb-1">Files Changed</p>
+                  <p className="text-3xl font-bold text-gray-800">{commitDetails.files.length}</p>
+                </div>
+                <div className="p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
+                  <p className="text-gray-500 text-sm uppercase tracking-wider mb-1">Additions</p>
+                  <p className="text-3xl font-bold text-gray-800">+{totalAdditions}</p>
+                </div>
+                <div className="p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
+                  <p className="text-gray-500 text-sm uppercase tracking-wider mb-1">Deletions</p>
+                  <p className="text-3xl font-bold text-gray-800">-{totalDeletions}</p>
+                </div>
+                <div className="p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
+                  <p className="text-gray-500 text-sm uppercase tracking-wider mb-1">Net Change</p>
+                  <p className="text-3xl font-bold text-gray-800">
+                    {totalAdditions - totalDeletions > 0 ? '+' : ''}{totalAdditions - totalDeletions}
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
-                <div className="text-2xl font-bold text-blue-700">{commitDetails.files.length}</div>
-                <div className="text-sm text-blue-600">Files Changed</div>
-              </div>
-              <div className="bg-green-50 border border-green-100 rounded-lg p-4">
-                <div className="text-2xl font-bold text-green-700">+{totalAdditions}</div>
-                <div className="text-sm text-green-600">Additions</div>
-              </div>
-              <div className="bg-red-50 border border-red-100 rounded-lg p-4">
-                <div className="text-2xl font-bold text-red-700">-{totalDeletions}</div>
-                <div className="text-sm text-red-600">Deletions</div>
-              </div>
-              <div className="bg-purple-50 border border-purple-100 rounded-lg p-4">
-                <div className="text-2xl font-bold text-purple-700">{totalAdditions + totalDeletions}</div>
-                <div className="text-sm text-purple-600">Total Changes</div>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {addedFiles > 0 && (
-                <span className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">
-                  +{addedFiles} added
-                </span>
-              )}
-              {modifiedFiles > 0 && (
-                <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
-                  ~{modifiedFiles} modified
-                </span>
-              )}
-              {removedFiles > 0 && (
-                <span className="px-3 py-1 bg-red-100 text-red-800 text-sm rounded-full">
-                  -{removedFiles} removed
-                </span>
-              )}
             </div>
           </div>
-        </div>
-        <div className="mb-6">
-          <div className="border-b border-gray-200 flex justify-between items-center">
-            <nav className="flex space-x-8">
-              <button
-                onClick={() => setActiveTab('files')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'files'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                Files Changed ({commitDetails.files.length})
-              </button>
-              <button
-                onClick={() => setActiveTab('overview')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'overview'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                Overview
-              </button>
-              <button
-                onClick={() => setActiveTab('ai')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${
-                  activeTab === 'ai'
-                    ? 'border-purple-500 text-purple-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                <span>⚡</span> AI Analysis
-              </button>
-            </nav>
-            
-            {activeTab === 'files' && (
-              <button
-                onClick={handleAnalyzeAllFiles}
-                disabled={fullCommitAnalysisLoading}
-                className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap font-medium"
-              >
-                {fullCommitAnalysisLoading ? (
-                  <>
-                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Analyzing...
-                  </>
-                ) : (
-                  <>
-                    <span>🔍</span>
-                    Analyze All Files
-                  </>
-                )}
-              </button>
-            )}
-          </div>
-        </div>
-        {activeTab === 'files' ? (
-          <div className="space-y-4">
-            {fullCommitAnalysis && (
-              <div className="bg-white rounded-lg shadow-lg border-2 border-blue-300 overflow-hidden">
-                <div className="bg-blue-600 text-white p-4">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h3 className="font-bold text-lg">📊 Full Commit Analysis</h3>
-                      <p className="text-sm text-blue-100">Comprehensive review of all {commitDetails.files.length} files</p>
-                    </div>
+
+          {/* Tab Navigation */}
+          <div className="mb-8">
+            <div className="bg-white rounded-t-2xl border border-gray-200 border-b-0 p-4 shadow-md">
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <nav className="flex gap-1">
+                  {['files', 'overview', 'ai'].map((tab) => (
                     <button
-                      onClick={() => setFullCommitAnalysis(null)}
-                      className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                      key={tab}
+                      onClick={() => setActiveTab(tab as any)}
+                      className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 text-sm md:text-base ${
+                        activeTab === tab
+                          ? 'bg-gray-800 text-white shadow-lg'
+                          : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+                      }`}
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
+                      {tab === 'files' && (
+                        <>
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M4 4a2 2 0 012-2h6a2 2 0 012 2v1h2a1 1 0 110 2h-.023L16.914 8.5h.005a1 1 0 11-.005 2h-.005l-.032.532A2 2 0 0114.5 13H14h-.5a1.5 1.5 0 01-1.5-1.5V11h-3v1.5a1.5 1.5 0 01-1.5 1.5H8a2 2 0 01-2-2v-1H4a2 2 0 01-2-2V4z" />
+                          </svg>
+                          Files ({commitDetails.files.length})
+                        </>
+                      )}
+                      {tab === 'overview' && (
+                        <>
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+                          </svg>
+                          Overview
+                        </>
+                      )}
+                      {tab === 'ai' && (
+                        <>
+                          <span>⚡</span>
+                          AI Analysis
+                        </>
+                      )}
                     </button>
-                  </div>
-                </div>
-                <div className="p-6 max-h-96 overflow-y-auto">
-                  <div className="text-gray-700 whitespace-pre-wrap font-mono text-sm leading-relaxed">
-                    {fullCommitAnalysis.analysis || "Analyzing..."}
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            {commitDetails.files.map((file, index) => (
-              <div
-                key={`${file.sha}-${file.path}-${index}`}
-                className="bg-white rounded-lg shadow-sm border overflow-hidden"
-              >
-                <div className="border-b px-6 py-4 flex items-center justify-between bg-gray-50">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-1">
-                      <span className={`px-2 py-1 text-xs rounded font-medium ${
-                        file.status === 'added' ? 'bg-green-100 text-green-800' :
-                        file.status === 'removed' ? 'bg-red-100 text-red-800' :
-                        'bg-blue-100 text-blue-800'
-                      }`}>
-                        {file.status.toUpperCase()}
-                      </span>
-                      <code className="font-mono text-sm text-gray-900 truncate" title={file.path}>
-                        {file.path}
-                      </code>
-                    </div>
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
-                      <span className="text-green-600 font-medium">+{file.additions}</span>
-                      <span className="text-red-600 font-medium">-{file.deletions}</span>
-                      <span>{file.changes} changes</span>
-                    </div>
-                  </div>
+                  ))}
+                </nav>
+
+                {activeTab === 'files' && (
                   <button
-                    onClick={() => handleAnalyzeFile(index, file.path, file.patch)}
-                    disabled={analysisLoading && activeFileIndex === index}
-                    className="ml-4 px-3 py-2 bg-purple-600 text-white text-xs rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
+                    onClick={handleAnalyzeAllFiles}
+                    disabled={fullCommitAnalysisLoading}
+                    className="px-6 py-3 rounded-xl bg-gray-800 hover:bg-gray-900 text-white font-medium text-sm md:text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md hover:shadow-lg"
                   >
-                    {analysisLoading && activeFileIndex === index ? (
+                    {fullCommitAnalysisLoading ? (
                       <>
                         <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -459,101 +413,292 @@ ${allFilesContext}`;
                       </>
                     ) : (
                       <>
-                        <span>🤖</span>
-                        Analyze & Fix
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M10.5 1.5H19a1 1 0 011 1v15a1 1 0 01-1 1h-9.5M3 4h7m-7 3h7m-7 3h7m-7 3h7" />
+                        </svg>
+                        Analyze All Files
                       </>
                     )}
                   </button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Tab Content */}
+          {activeTab === 'files' ? (
+          <div className="space-y-6">
+            {/* Files Changed Summary Card */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-md">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="group">
+                  <p className="text-gray-500 text-sm uppercase tracking-wider mb-2">Added Files</p>
+                  <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 group-hover:border-gray-300 transition-colors">
+                    <p className="text-2xl font-bold text-gray-800">+{addedFiles}</p>
+                  </div>
                 </div>
-                <div className="max-h-96 overflow-y-auto">
-                  {file.patch && file.patch.trim() ? (
-                    <div className="divide-y divide-gray-100">
-                      {renderPatch(file.patch)}
+                <div className="group">
+                  <p className="text-gray-500 text-sm uppercase tracking-wider mb-2">Modified</p>
+                  <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 group-hover:border-gray-300 transition-colors">
+                    <p className="text-2xl font-bold text-gray-800">~{modifiedFiles}</p>
+                  </div>
+                </div>
+                <div className="group">
+                  <p className="text-gray-500 text-sm uppercase tracking-wider mb-2">Removed</p>
+                  <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 group-hover:border-gray-300 transition-colors">
+                    <p className="text-2xl font-bold text-gray-800">-{removedFiles}</p>
+                  </div>
+                </div>
+                <div className="group">
+                  <p className="text-gray-500 text-sm uppercase tracking-wider mb-2">Total Files</p>
+                  <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 group-hover:border-gray-300 transition-colors">
+                    <p className="text-2xl font-bold text-gray-800">{commitDetails.files.length}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Files List */}
+            <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-md">
+              <div className="sticky top-0 bg-gray-50 px-6 py-4 border-b border-gray-200 z-10">
+                <h3 className="text-lg font-semibold text-gray-800">All Files Changed ({commitDetails.files.length})</h3>
+              </div>
+
+              <div className="divide-y divide-gray-200 max-h-96 overflow-y-auto">
+                {commitDetails.files.length === 0 ? (
+                  <div className="p-8 text-center text-gray-500">
+                    <svg className="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <p>No files found for this commit</p>
+                  </div>
+                ) : (
+                  commitDetails.files.map((file, index) => (
+                    <div
+                      key={`file-${file.sha}-${index}`}
+                      onClick={() => document.getElementById(`file-detail-${index}`)?.scrollIntoView({ behavior: 'smooth' })}
+                      className="px-6 py-4 hover:bg-gray-50 transition-colors cursor-pointer group border-l-4 border-l-transparent hover:border-l-gray-800 hover:pl-5"
+                    >
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-4 flex-1 min-w-0">
+                          {/* Status Badge */}
+                          <div className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm bg-gray-200 text-gray-700">
+                            {file.status === 'added' ? '+' :
+                             file.status === 'removed' ? '−' :
+                             file.status === 'renamed' ? '↻' : '~'}
+                          </div>
+
+                          {/* File Path */}
+                          <div className="flex-1 min-w-0">
+                            <code className="text-gray-800 font-mono text-sm break-all group-hover:text-gray-600 transition-colors" title={file.path}>
+                              {file.path}
+                            </code>
+                            <p className="text-xs text-gray-500 mt-1">{file.status.charAt(0).toUpperCase() + file.status.slice(1)}</p>
+                          </div>
+                        </div>
+
+                        {/* Stats */}
+                        <div className="flex items-center gap-4 shrink-0 text-sm">
+                          <div className="text-right">
+                            <p className="text-gray-800 font-semibold">+{file.additions}</p>
+                            <p className="text-gray-800 font-semibold">-{file.deletions}</p>
+                          </div>
+                          <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
                     </div>
-                  ) : (
-                    <div className="p-6 text-center text-gray-600 bg-gray-50">
-                      <pre className="text-xs text-left bg-gray-100 p-3 rounded overflow-x-auto">
-                        {file.patch || '// No patch data available - you can still analyze with AI'}
-                      </pre>
-                      <button
-                        onClick={() => handleAnalyzeFile(index, file.path, file.patch || '')}
-                        className="mt-3 px-3 py-2 bg-purple-600 text-white text-xs rounded hover:bg-purple-700 transition-colors"
-                      >
-                        🤖 Analyze This File
-                      </button>
+                  ))
+                )}
+              </div>
+            </div>
+            
+            {/* Full Commit Analysis */}
+            {fullCommitAnalysis && (
+              <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-md">
+                <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                  <div>
+                    <h3 className="font-bold text-lg text-gray-800">📊 Full Commit Analysis</h3>
+                    <p className="text-sm text-gray-500 mt-1">Comprehensive review of all {commitDetails.files.length} files</p>
+                  </div>
+                  <button
+                    onClick={() => setFullCommitAnalysis(null)}
+                    className="p-2 hover:bg-gray-200 rounded-lg transition-colors text-gray-600 hover:text-gray-800"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="p-6 max-h-96 overflow-y-auto">
+                  <div className="text-gray-700 whitespace-pre-wrap font-mono text-sm leading-relaxed bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    {fullCommitAnalysis.analysis || "Analyzing..."}
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Detailed File Views */}
+            <div className="space-y-4">
+              {commitDetails.files.map((file, index) => (
+                <div
+                  key={`${file.sha}-${file.path}-${index}`}
+                  id={`file-detail-${index}`}
+                  className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+                >
+                  <div className="border-b border-gray-200 px-6 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-3 mb-2 flex-wrap">
+                        <span className="shrink-0 px-2.5 py-1.5 text-xs rounded-lg font-bold bg-gray-200 text-gray-700 border border-gray-300">
+                          {file.status.toUpperCase()}
+                        </span>
+                        <code className="font-mono text-sm font-semibold text-gray-800 break-all" title={file.path}>
+                          {file.path}
+                        </code>
+                      </div>
+                      <div className="flex items-center gap-4 text-xs text-gray-500 flex-wrap">
+                        <span className="text-gray-800 font-semibold">+{file.additions} additions</span>
+                        <span className="text-gray-800 font-semibold">-{file.deletions} deletions</span>
+                        <span className="text-gray-600">{file.changes} total changes</span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleAnalyzeFile(index, file.path, file.patch)}
+                      disabled={analysisLoading && activeFileIndex === index}
+                      className="ml-4 px-4 py-2 bg-gray-800 hover:bg-gray-900 text-white text-sm rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap font-medium shadow-md hover:shadow-lg"
+                    >
+                      {analysisLoading && activeFileIndex === index ? (
+                        <>
+                          <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Analyzing...
+                        </>
+                      ) : (
+                        <>
+                          <span>🤖</span>
+                          Analyze
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  
+                  {/* Code Display */}
+                  <div className="max-h-96 overflow-y-auto bg-gray-50">
+                    {file.patch && file.patch.trim() ? (
+                      <div className="divide-y divide-gray-200">
+                        {renderPatch(file.patch)}
+                      </div>
+                    ) : (
+                      <div className="p-6 text-center text-gray-500">
+                        <div className="bg-gray-50 rounded-lg border border-gray-200 p-4 inline-block">
+                          <div className="font-mono text-xs bg-gray-100 p-3 rounded mb-3 max-w-md mx-auto overflow-x-auto text-gray-700 border border-gray-200">
+                            {file.patch ? file.patch : '// No patch data available - you can still analyze with AI'}
+                          </div>
+                          <button
+                            onClick={() => handleAnalyzeFile(index, file.path, file.patch || '')}
+                            className="px-4 py-2 bg-gray-800 hover:bg-gray-900 text-white text-sm rounded-lg transition-all font-medium shadow-md hover:shadow-lg"
+                          >
+                            🤖 Analyze This File
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* AI Analysis for this file */}
+                  {activeFileIndex === index && analysisResult && (
+                    <div className="border-t border-gray-200 bg-gray-50 p-4">
+                      <CommitFileAnalysis
+                        fileName={file.path}
+                        analysis={analysisResult.analysis || ""}
+                        correctedExamples={analysisResult.correctedExamples || []}
+                        loading={analysisLoading && activeFileIndex === index}
+                        onClose={() => {
+                          setActiveFileIndex(null);
+                          setFileAnalyses(prev => {
+                            const newAnalyses = { ...prev };
+                            delete newAnalyses[index];
+                            return newAnalyses;
+                          });
+                        }}
+                      />
                     </div>
                   )}
                 </div>
-
-                {/* AI Analysis for this file */}
-                {activeFileIndex === index && analysisResult && (
-                  <div className="border-t bg-gray-50 p-4">
-                    <CommitFileAnalysis
-                      fileName={file.path}
-                      analysis={analysisResult.analysis || ""}
-                      loading={analysisLoading && activeFileIndex === index}
-                      onClose={() => {
-                        setActiveFileIndex(null);
-                        setFileAnalyses(prev => {
-                          const newAnalyses = { ...prev };
-                          delete newAnalyses[index];
-                          return newAnalyses;
-                        });
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         ) : activeTab === 'overview' ? (
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Commit Overview</h3>
+          <div className="space-y-6">
+            {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-medium text-gray-700 mb-2">Statistics</h4>
-                <ul className="space-y-2">
-                  <li className="flex justify-between">
+              {/* Code Changes Card */}
+              <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-md">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-semibold text-gray-800">Code Changes</h3>
+                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M11 4a2 2 0 114 0v14a2 2 0 11-4 0V4z" />
+                  </svg>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors">
                     <span className="text-gray-600">Total Files</span>
-                    <span className="font-medium">{commitDetails.files.length}</span>
-                  </li>
-                  <li className="flex justify-between">
+                    <span className="text-2xl font-bold text-gray-800">{commitDetails.files.length}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors">
                     <span className="text-gray-600">Lines Added</span>
-                    <span className="font-medium text-green-600">+{totalAdditions}</span>
-                  </li>
-                  <li className="flex justify-between">
+                    <span className="text-2xl font-bold text-gray-800">+{totalAdditions}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors">
                     <span className="text-gray-600">Lines Removed</span>
-                    <span className="font-medium text-red-600">-{totalDeletions}</span>
-                  </li>
-                  <li className="flex justify-between">
+                    <span className="text-2xl font-bold text-gray-800">-{totalDeletions}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors">
                     <span className="text-gray-600">Net Change</span>
-                    <span className="font-medium">{totalAdditions - totalDeletions > 0 ? '+' : ''}{totalAdditions - totalDeletions}</span>
-                  </li>
-                </ul>
+                    <span className="text-2xl font-bold text-gray-800">
+                      {totalAdditions - totalDeletions > 0 ? '+' : ''}{totalAdditions - totalDeletions}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h4 className="font-medium text-gray-700 mb-2">File Types</h4>
-                <ul className="space-y-2">
-                  <li className="flex justify-between">
+
+              {/* File Statistics Card */}
+              <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-md">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-semibold text-gray-800">File Statistics</h3>
+                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                  </svg>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors">
                     <span className="text-gray-600">Added Files</span>
-                    <span className="font-medium text-green-600">{addedFiles}</span>
-                  </li>
-                  <li className="flex justify-between">
+                    <span className="text-2xl font-bold text-gray-800">+{addedFiles}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors">
                     <span className="text-gray-600">Modified Files</span>
-                    <span className="font-medium text-blue-600">{modifiedFiles}</span>
-                  </li>
-                  <li className="flex justify-between">
+                    <span className="text-2xl font-bold text-gray-800">~{modifiedFiles}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors">
                     <span className="text-gray-600">Removed Files</span>
-                    <span className="font-medium text-red-600">{removedFiles}</span>
-                  </li>
-                </ul>
+                    <span className="text-2xl font-bold text-gray-800">-{removedFiles}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors">
+                    <span className="text-gray-600">Change Density</span>
+                    <span className="text-2xl font-bold text-gray-800">{commitDetails.files.length > 0 ? ((totalAdditions + totalDeletions) / commitDetails.files.length).toFixed(1) : 0}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-md">
             <AIAnalysisPanel
               analysis={analysisResult?.analysis || ""}
+              correctedExamples={analysisResult?.correctedExamples || []}
               loading={analysisLoading}
               error={analysisError}
               onAnalyzeClick={handleAnalyzeWithAI}
@@ -565,6 +710,7 @@ ${allFilesContext}`;
             />
           </div>
         )}
+        </div>
       </div>
     </div>
   );

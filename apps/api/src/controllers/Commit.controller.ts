@@ -114,55 +114,10 @@ export const getCommitDetails = async (req: Request, res: Response) => {
   }
 
   try {
-    console.log("Fetching commit details for SHA:", sha);
-    const existingFiles = await prisma.commitFile.findMany({
-      where: { sha },
-      orderBy: { path: 'asc' }
-    });
-
-    if (existingFiles.length > 0) {
-      console.log(`Found ${existingFiles.length} files in database for SHA: ${sha}`);
-      const formattedFiles = existingFiles.map(file => {
-        let content = file.content;
-        let patch = '';
-        let status = 'modified';
-        if (typeof content === 'object' && content !== null) {
-          patch = (content as any).patch || '';
-          status = (content as any).status || 'modified';
-        } else if (typeof content === 'string') {
-          patch = content;
-        }
-        
-        return {
-          path: file.path,
-          status: status,
-          additions: (content as any)?.additions || 0,
-          deletions: (content as any)?.deletions || 0,
-          changes: (content as any)?.changes || 0,
-          patch: patch,
-          sha: file.sha,
-          id: file.id
-        };
-      });
-      
-      const commit = await prisma.commit.findUnique({
-        where: { sha },
-      });
-      
-      return res.status(200).json({
-        message: "Commit changes retrieved from database",
-        files: formattedFiles,
-        commitInfo: {
-          sha: sha,
-          message: commit?.message || '',
-          author: commit?.author || '',
-          date: commit?.date || new Date(),
-          totalChanges: formattedFiles.reduce((sum, file) => sum + (file.changes || 0), 0)
-        }
-      });
-    }
-
-    console.log("No files in database, fetching from GitHub...");
+    console.log("\n================== FETCHING COMMIT DETAILS ==================");
+    console.log("📌 Commit SHA:", sha);
+    
+    // Get commit info
     const commit = await prisma.commit.findUnique({
       where: { sha },
       include: {
@@ -175,18 +130,21 @@ export const getCommitDetails = async (req: Request, res: Response) => {
     });
 
     if (!commit) {
+      console.error("❌ Commit not found in database");
       return res.status(404).json({ message: "Commit not found in database" });
     }
+
     const accessToken = commit.Repo.User?.accessToken || process.env.GITHUB_ACCESS_TOKEN;
     
     if (!accessToken) {
-      console.error("No GitHub access token available");
+      console.error("❌ No GitHub access token available");
       return res.status(400).json({ 
         message: "GitHub access token missing. Please reconnect your GitHub account." 
       });
     }
 
-    console.log(`Fetching from GitHub: ${commit.Repo.fullName}/commits/${sha}`);
+    // ALWAYS fetch from GitHub to get complete list
+    console.log(`🌐 Fetching from GitHub: ${commit.Repo.fullName}/commits/${sha}`);
     const commitRes = await axios.get(
       `https://api.github.com/repos/${commit.Repo.fullName}/commits/${sha}`,
       {
@@ -200,49 +158,64 @@ export const getCommitDetails = async (req: Request, res: Response) => {
 
     const githubFiles = commitRes.data.files;
     if (!githubFiles || githubFiles.length === 0) {
+      console.log("⚠️ No file changes found in this commit");
       return res.status(404).json({ message: "No file changes found in this commit" });
     }
 
-    console.log(`Processing ${githubFiles.length} file changes from GitHub...`);
-    const savedFiles = [];
+    console.log(`📥 GitHub returned ${githubFiles.length} files`);
+    console.log("📂 GitHub files:");
+    githubFiles.forEach((file: any, idx: number) => {
+      console.log(`   ${idx + 1}/${githubFiles.length}. ${file.filename} (${file.status}) +${file.additions}/-${file.deletions}`);
+    });
+
+    // Get existing files from database
+    const existingFiles = await prisma.commitFile.findMany({
+      where: { sha },
+      orderBy: { path: 'asc' }
+    });
+
+    console.log(`\n💾 Found ${existingFiles.length} files in database for SHA: ${sha}`);
     
-    // Sort files by path for consistency
-    const sortedFiles = githubFiles.sort((a: any, b: any) => (a.filename || '').localeCompare(b.filename || ''));
+    // Create a map of existing files for quick lookup
+    const existingFilesMap = new Map(existingFiles.map(f => [f.path, f]));
     
-    for (const file of sortedFiles) {
-      const path = file.filename;
-      if (!path) {
-        console.warn("Skipping file with missing filename");
+    const allFiles = [];
+    const filesToSave = [];
+
+    // Process all files from GitHub
+    for (const file of githubFiles) {
+      const normalizedPath = (file.filename || '').replace(/\\/g, '/');
+      
+      if (!normalizedPath) {
+        console.warn("⚠️ Skipping file with missing filename");
         continue;
       }
-      const normalizedPath = path.replace(/\\/g, '/');
-      console.log(`Processing: ${normalizedPath}`);
-      
-      // Get raw content from GitHub if patch is empty (binary files, etc)
+
+      console.log(`\n🔄 Processing: ${normalizedPath}`);
+
       let patch = file.patch || '';
-      let fileContent = '';
       
+      // Try to fetch raw content if patch is empty
       if (!patch && file.raw_url) {
         try {
-          console.log(`Fetching raw content for: ${normalizedPath}`);
+          console.log(`  📄 Fetching raw content...`);
           const rawRes = await axios.get(file.raw_url, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
             timeout: 10000,
           });
-          fileContent = rawRes.data;
-          // For binary/non-text files, show first 1000 chars as preview
+          const fileContent = rawRes.data;
           if (fileContent && typeof fileContent === 'string' && fileContent.length > 0) {
             patch = `// File: ${normalizedPath}\n// Status: ${file.status}\n\n${fileContent.substring(0, 1000)}${fileContent.length > 1000 ? '\n// ... (content truncated)' : ''}`;
           }
         } catch (err: any) {
-          console.warn(`Could not fetch raw content for ${normalizedPath}:`, err.message);
+          console.warn(`  ⚠️ Could not fetch raw content:`, err.message);
           patch = `// Binary or inaccessible file: ${normalizedPath}`;
         }
       }
       
-      // Ensure patch always has value, even if empty
+      // Fallback patch if still empty
       if (!patch) {
         if (file.status === 'added') {
           patch = `// NEW FILE: ${normalizedPath}`;
@@ -261,95 +234,91 @@ export const getCommitDetails = async (req: Request, res: Response) => {
         additions: file.additions || 0,
         deletions: file.deletions || 0,
         changes: file.changes || 0,
-        patch: patch, 
+        patch: patch,
         raw_url: file.raw_url || '',
         filename: file.filename
       };
-      try {
-        const commitFile = await prisma.commitFile.create({
-          data: {
-            sha,
-            path: normalizedPath,
-            content: fileData,
-            commitId: commit.id,
-          },
-        });
-        
-        savedFiles.push({
+
+      // Check if file already exists in database
+      if (!existingFilesMap.has(normalizedPath)) {
+        console.log(`  ✅ New file - will save to database`);
+        filesToSave.push({
+          sha,
           path: normalizedPath,
-          status: fileData.status,
-          additions: fileData.additions,
-          deletions: fileData.deletions,
-          changes: fileData.changes,
-          patch: fileData.patch,
-          sha: sha,
-          id: commitFile.id
+          content: fileData,
+          commitId: commit.id,
         });
-        
-        console.log(`Saved file: ${normalizedPath}`);
-      } catch (err: any) {
-        console.error(`Failed to save file ${normalizedPath}:`, err.message);
+      } else {
+        console.log(`  ℹ️ Already in database - will use existing record`);
+      }
+
+      // Add to response list
+      allFiles.push({
+        path: normalizedPath,
+        status: fileData.status,
+        additions: fileData.additions,
+        deletions: fileData.deletions,
+        changes: fileData.changes,
+        patch: fileData.patch,
+        sha: sha,
+        id: existingFilesMap.get(normalizedPath)?.id || 0
+      });
+    }
+
+    // Save new files to database
+    if (filesToSave.length > 0) {
+      console.log(`\n💾 Saving ${filesToSave.length} new files to database...`);
+      
+      for (const fileToSave of filesToSave) {
         try {
-          const updatedFile = await prisma.commitFile.update({
-            where: { sha_path: { sha, path: normalizedPath } },
-            data: { content: fileData },
+          const savedFile = await prisma.commitFile.create({
+            data: fileToSave,
           });
+          console.log(`  ✅ Saved: ${fileToSave.path}`);
           
-          savedFiles.push({
-            path: normalizedPath,
-            status: fileData.status,
-            additions: fileData.additions,
-            deletions: fileData.deletions,
-            changes: fileData.changes,
-            patch: fileData.patch,
-            sha: sha,
-            id: updatedFile.id
-          });
-          
-          console.log(`Updated file: ${normalizedPath}`);
-        } catch (updateErr: any) {
-          console.error(`Failed to update file ${normalizedPath}:`, updateErr.message);
-          savedFiles.push({
-            path: normalizedPath,
-            status: file.status || 'unknown',
-            additions: file.additions || 0,
-            deletions: file.deletions || 0,
-            changes: file.changes || 0,
-            patch: file.patch || 'No diff available',
-            sha: sha,
-            id: 0
-          });
+          // Update ID in allFiles
+          const fileIndex = allFiles.findIndex(f => f.path === fileToSave.path);
+          if (fileIndex >= 0) {
+            allFiles[fileIndex].id = savedFile.id;
+          }
+        } catch (err: any) {
+          console.error(`  ❌ Failed to save ${fileToSave.path}:`, err.message);
+          // Try to update if it already exists
+          try {
+            await prisma.commitFile.update({
+              where: { sha_path: { sha, path: fileToSave.path } },
+              data: { content: fileToSave.content },
+            });
+            console.log(`  ✅ Updated: ${fileToSave.path}`);
+          } catch (updateErr: any) {
+            console.error(`  ❌ Failed to update ${fileToSave.path}:`, updateErr.message);
+          }
         }
       }
     }
 
-    if (savedFiles.length === 0) {
-      return res.status(200).json({
-        message: "No files could be saved from this commit",
-        files: [],
-        commitInfo: {
-          sha: sha,
-          message: commitRes.data.commit?.message || '',
-          author: commitRes.data.commit?.author?.name || '',
-          date: commitRes.data.commit?.author?.date || new Date(),
-          totalChanges: 0
-        }
-      });
-    }
+    console.log(`\n📤 Response Summary:`);
+    console.log(`   Total files: ${allFiles.length}`);
+    console.log(`   Added: ${allFiles.filter(f => f.status === 'added').length}`);
+    console.log(`   Modified: ${allFiles.filter(f => f.status === 'modified').length}`);
+    console.log(`   Removed: ${allFiles.filter(f => f.status === 'removed').length}`);
+    console.log(`   Renamed: ${allFiles.filter(f => f.status === 'renamed').length}`);
+    console.log("===========================================================\n");
 
     return res.status(200).json({
       message: "Commit details fetched successfully",
-      files: savedFiles,
+      files: allFiles,
       commitInfo: {
         sha: commitRes.data.sha,
         message: commitRes.data.commit?.message || '',
         author: commitRes.data.commit?.author?.name || '',
         date: commitRes.data.commit?.author?.date || new Date(),
-        totalChanges: savedFiles.reduce((sum, file) => sum + (file.changes || 0), 0)
+        totalChanges: allFiles.reduce((sum, file) => sum + (file.changes || 0), 0)
       }
     });
   } catch (error: any) {
-    console.error("getCommitDetails error:", error.response?.data || error.message);
+    console.error("\n❌ getCommitDetails error:", error.response?.data || error.message);
+    console.log("===========================================================\n");
     return res.status(500).json({ 
       message: "Failed to fetch commit details",
       error: error.message,
@@ -367,29 +336,52 @@ export const analyzeCommitWithAI = async (req: Request, res: Response) => {
   }
 
   try {
-    console.log("Sending code to AI service for analysis...", { analysisType });
+    console.log("⏳ Sending code to AI service for analysis...", { 
+      analysisType,
+      codeLength: code.length,
+      estimatedTime: `${Math.ceil(code.length / 1000)}s`
+    });
+    
+    const codeLength = code.length;
+    const calculatedTimeout = Math.max(60000, Math.min(120000, Math.ceil(codeLength / 50)));
     
     const aiResponse = await axios.post(`${AI_SERVICE_URL}/analyze`, {
       code: code,
       analysis_type: analysisType
     }, {
-      timeout: 30000
+      timeout: calculatedTimeout
     });
 
     const analysis = aiResponse.data.analysis;
+    const correctedExamples = aiResponse.data.corrected_examples || [];
+    console.log("✅ AI analysis completed successfully", { 
+      examplesCount: correctedExamples.length 
+    });
 
     res.status(200).json({
       message: "Code analysis completed",
       analysis: analysis,
+      correctedExamples: correctedExamples,
       analysisType: analysisType,
       sha: sha || null,
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    console.error("AI analysis error:", error.message);
-    res.status(500).json({ 
+    let errorMessage = error.message;
+    let statusCode = 500;
+    
+    if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+      errorMessage = `Analysis timeout: The AI service took too long to analyze this code. This usually happens with very large code samples. Try analyzing smaller chunks or individual files.`;
+      statusCode = 408; // Request Timeout
+    } else if (error.message?.includes('ECONNREFUSED')) {
+      errorMessage = `AI service is not available at ${AI_SERVICE_URL}. Please check if the AI service is running.`;
+      statusCode = 503; // Service Unavailable
+    }
+    
+    console.error("AI analysis error:", statusCode, errorMessage);
+    res.status(statusCode).json({ 
       message: "Failed to analyze code with AI",
-      error: error.message,
+      error: errorMessage,
       serviceUrl: AI_SERVICE_URL,
       timestamp: new Date().toISOString()
     });
