@@ -91,7 +91,8 @@ function MainContent() {
                   <Button
                     className="w-full bg-gray-900 hover:bg-gray-800"
                     onClick={() => {
-                      window.location.href = "http://localhost:4000/auth/github"
+                      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+                      window.location.href = `${apiUrl}/auth/github`
                     }}
                   >
                     <Github className="h-5 w-5 mr-2" />
