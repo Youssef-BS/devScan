@@ -8,10 +8,15 @@ Tasks:
 2. Identify logic bugs and edge cases.
 3. Spot performance issues and optimization opportunities.
 4. Provide an overall grade from A to F based on code quality and security.
-5. Suggest corrected secure code blocks with explanations.
+5. For EACH issue, provide corrected/secure code examples.
 6. Offer best practices recommendations.
 
-Format your response clearly with sections for each area.
+IMPORTANT: When providing corrected code, use this format:
+```corrected-code-[issue-number]
+[corrected code here]
+```
+
+This helps us extract and display your corrected code examples.
 
 Code:
 {code}
@@ -68,7 +73,10 @@ Rate each issue as CRITICAL, HIGH, MEDIUM, or LOW.
 For each issue, provide:
 1. Description of the problem
 2. Why it's problematic
-3. Fixed code snippet
+3. Fixed code in this format:
+```corrected-code-[issue-number]
+[corrected code here]
+```
 4. Explanation of the fix
 
 ## Best Practices
@@ -76,6 +84,8 @@ Suggest any best practices or improvements for this file.
 
 ## Overall Assessment
 Provide a grade (A-F) and summary.
+
+IMPORTANT: Always use the ```corrected-code-[number] code blocks so we can extract and display your corrected code examples.
 
 File Content:
 {code}

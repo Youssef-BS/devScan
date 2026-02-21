@@ -593,7 +593,7 @@ const Page = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4 max-h-[500px] overflow-y-auto">
+              <div className="space-y-4 max-h-125 overflow-y-auto">
                 {dataFromDb.map((repo, index) => {
                   const score = advancedMetrics.healthScores[index] ?? 0
                   const issuesCount = Math.floor(Math.random() * 15) + 1
@@ -692,7 +692,7 @@ const Page = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[300px] flex items-end gap-3 pt-8">
+              <div className="h-75 flex items-end gap-3 pt-8">
                 {trendData.map((day, index) => (
                   <div key={index} className="flex-1 flex flex-col items-center">
                     <div className="text-center mb-2">

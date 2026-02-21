@@ -16,7 +16,6 @@ const IntroDashboard = () => {
 
   return (
     <>
-      {/* Header */}
       <section className="m-12 flex flex-col gap-4 text-center lg:flex-row lg:items-center lg:justify-between lg:text-left">
         <div>
           <h1 className="text-4xl font-bold">Your Repositories</h1>
@@ -27,7 +26,6 @@ const IntroDashboard = () => {
 
       </section>
 
-      {/* Filters */}
       <section className="mx-1 mb-4 flex justify-center lg:mx-12 lg:justify-start">
         <div className="flex w-fit gap-1.5 rounded-2xl bg-gray-200 p-1">
           <button

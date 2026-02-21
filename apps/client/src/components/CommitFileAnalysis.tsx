@@ -13,6 +13,7 @@ interface CommitFileAnalysisProps {
   fileName: string;
   analysis: string;
   loading?: boolean;
+  correctedExamples?: Array<{ issue: number; code: string }>;
   onClose?: () => void;
 }
 
@@ -20,6 +21,7 @@ const CommitFileAnalysis: React.FC<CommitFileAnalysisProps> = ({
   fileName,
   analysis,
   loading = false,
+  correctedExamples = [],
   onClose = () => {},
 }) => {
   const [copied, setCopied] = React.useState(false);
@@ -146,6 +148,25 @@ const CommitFileAnalysis: React.FC<CommitFileAnalysisProps> = ({
         ) : (
           <div className="text-gray-700 whitespace-pre-wrap font-mono text-sm leading-relaxed">
             {analysis}
+          </div>
+        )}
+
+        {/* Corrected Code Examples */}
+        {correctedExamples.length > 0 && (
+          <div className="mt-6 pt-4 border-t border-gray-200">
+            <h4 className="font-semibold text-gray-900 mb-3 text-base">💡 Corrected Code Examples</h4>
+            <div className="space-y-3">
+              {correctedExamples.map((example, idx) => (
+                <div key={idx} className="bg-green-50 border border-green-200 rounded-lg overflow-hidden">
+                  <div className="bg-green-100 px-4 py-2 border-b border-green-200">
+                    <span className="text-xs font-semibold text-green-900">Issue #{example.issue}</span>
+                  </div>
+                  <pre className="p-4 overflow-x-auto text-xs text-green-900 bg-white">
+                    <code>{example.code}</code>
+                  </pre>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
