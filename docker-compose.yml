@@ -1,4 +1,3 @@
-
 services:
   postgres:
     image: postgres:15
@@ -17,10 +16,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfiles/Dockerfile.api
+    container_name: devscan_api
     ports:
       - "4000:4000"
     env_file:
       - ./apps/api/.env
+    environment:
+      DATABASE_URL: postgresql://devscan:devscan@postgres:5432/devscan_db
     depends_on:
       - postgres
 
@@ -28,13 +30,37 @@ services:
     build:
       context: .
       dockerfile: Dockerfiles/Dockerfile.client
+    container_name: devscan_client
     ports:
       - "3000:3000"
     env_file:
       - ./apps/client/.env
     depends_on:
       - api
-    command: sh -c "next dev --turbopack --port 3000 --hostname 0.0.0.0"
+
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfiles/Dockerfile.admin
+    container_name: devscan_admin
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./apps/admin/.env
+    depends_on:
+      - api
+
+  ai:
+    build:
+      context: .
+      dockerfile: Dockerfiles/Dockerfile.ai
+    container_name: devscan_ai
+    ports:
+      - "8003:8003"
+    env_file:
+      - ./apps/ai/.env
+    environment:
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
 
 volumes:
   postgres_data:

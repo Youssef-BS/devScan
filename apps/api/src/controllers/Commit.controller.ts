@@ -354,7 +354,7 @@ export const analyzeCommitWithAI = async (req: Request, res: Response) => {
 
     const analysis = aiResponse.data.analysis;
     const correctedExamples = aiResponse.data.corrected_examples || [];
-    console.log("✅ AI analysis completed successfully", { 
+    console.log("AI analysis completed successfully", { 
       examplesCount: correctedExamples.length 
     });
 

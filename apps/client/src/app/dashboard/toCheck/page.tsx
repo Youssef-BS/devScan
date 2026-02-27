@@ -60,7 +60,7 @@ const Page = () => {
 
             <AlertDialogFooter>
               <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={deleteAllRepos} className="bg-red-800 hover:bg-red-800 cursor-pointer">
+              <AlertDialogAction onClick={()=> deleteAllRepos()} className="bg-red-800 hover:bg-red-800 cursor-pointer">
                 Continue
               </AlertDialogAction>
             </AlertDialogFooter>

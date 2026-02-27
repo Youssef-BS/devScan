@@ -69,7 +69,7 @@ export const deleteAllGithubRepos = async () => {
     throw new Error(error.message || "Failed to delete repos");
  }
 
- return res.json()
+ return res.json() ;
 
 }
 

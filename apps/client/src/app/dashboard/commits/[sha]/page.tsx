@@ -42,7 +42,6 @@ const CommitDetailsPage = () => {
     };
   }, [sha, loadCommitDetails, clearError]);
 
-  // Prepare code content for AI analysis
   useEffect(() => {
     if (commitDetails && commitDetails.files) {
       console.log(`📊 Commit Details Updated:`, {
@@ -52,7 +51,7 @@ const CommitDetailsPage = () => {
         fullResponse: commitDetails
       });
       
-      console.log(`🗂️ All ${commitDetails.files.length} Files:`);
+      console.log(`All ${commitDetails.files.length} Files:`);
       commitDetails.files.forEach((file, idx) => {
         console.log(`  File ${idx + 1}/${commitDetails.files.length}: ${file.path}`, {
           status: file.status,

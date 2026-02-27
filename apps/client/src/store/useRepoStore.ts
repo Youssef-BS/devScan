@@ -138,7 +138,7 @@ export const useRepoStore = create<RepoStore>()(
 
       deleteAllRepos: async () => {
         await deleteAllGithubRepos();
-        set({ repos: [] });
+        set({ repos: [], dataFromDb: [] });
       },
 
       toggleAutoAudit: async (repoName: string) => {
