@@ -10,28 +10,36 @@ import PlanCard from "@/components/cards/PlanCard";
 import { usePlanStore } from "@/store/usePlanStore";
 import { useServiceStore } from "@/store/useServiceStore";
 
+
+const logoMap: Record<string, React.ReactNode> = {
+  fingerprint: <FingerprintPattern />,
+  zap: <Zap />,
+  code: <Code />,
+  brain: <BrainCircuit />,
+};
+
 const data = [
   {
     id: 1,
-    logo: <FingerprintPattern />,
+    logo: "fingerprint",
     title: "Security Analysis",
     desc: "Detect OWASP vulnerabilities, SQL injections, and security flaws automatically"
   },
   {
     id: 2,
-    logo: <Zap />,
+    logo: "zap",
     title: "Performance Optimization",
     desc: "Identify bottlenecks, memory leaks, and performance issues in real-time"
   },
   {
     id: 3,
-    logo: <Code />,
+    logo: "code",
     title: "Code Quality",
     desc: "Enforce clean code principles and best practices across your codebase"
   },
   {
     id: 4,
-    logo: <BrainCircuit />,
+    logo: "brain",
     title: "AI-Powered Fixes",
     desc: "Get intelligent code suggestions and auto-fix pull requests powered by GPT-4"
   }
@@ -127,7 +135,7 @@ function MainContent() {
         </div>
         <div className="flex flex-row mt-16 mx-24 justify-center">
           {services?.map((item) =>
-            <AnalyseCard key={item.id} id={item.id} title={item.title} logo={item.logo} desc={item.desc} />
+            <AnalyseCard key={item.id} id={item.id} title={item.title} logo={logoMap[item.logo] ?? item.logo} desc={item.desc} />
           )}
         </div>
       </section>
@@ -235,7 +243,6 @@ function MainContent() {
   )
 }
 
-// Main page component with Suspense
 const Page = () => {
   return (
     <Suspense fallback={

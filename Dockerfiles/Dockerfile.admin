@@ -8,13 +8,12 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 COPY packages/typescript-config/package.json packages/typescript-config/
 COPY packages/eslint-config/package.json packages/eslint-config/
-COPY apps/client/package.json apps/client/
+COPY apps/admin/package.json apps/admin/
 
 RUN pnpm install --frozen-lockfile
 
-COPY packages/ packages/
-COPY apps/client/ apps/client/
+COPY . .
 
-EXPOSE 3000
+EXPOSE 3001
 
-CMD ["pnpm", "run", "--filter", "client", "dev"]
+CMD ["pnpm", "run", "--filter", "admin", "dev"]

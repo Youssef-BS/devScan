@@ -59,13 +59,3 @@ export type Commit = Prisma.CommitModel
  * 
  */
 export type CommitFile = Prisma.CommitFileModel
-/**
- * Model CodeAnalysis
- * 
- */
-export type CodeAnalysis = Prisma.CodeAnalysisModel
-/**
- * Model CodeIssue
- * 
- */
-export type CodeIssue = Prisma.CodeIssueModel
