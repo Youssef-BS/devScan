@@ -1,13 +1,6 @@
 "use client"
 
-export type AnalyseCardProps = {
-  id: number;
-  logo: any;
-  title: string;
-  desc: string;
-};
-
-
+import type { AnalyseCardProps } from "@/types/analyse";
 
 const AnalyseCard = ({ id, logo, title, desc }: AnalyseCardProps) => {
   return (

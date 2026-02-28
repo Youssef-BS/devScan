@@ -1,19 +1,5 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-import type { CommitFile } from "@/types/CommitFile";
-
-
-
-export interface CommitDetails {
-  message: string;
-  files: CommitFile[];
-  commitInfo: {
-    sha: string;
-    message: string;
-    author: string;
-    date: string;
-    totalChanges: number;
-  };
-}
+import { CommitDetails } from "@/types/Commit";
 
 export const fetchCommitsFromGitHub = async (githubId: string): Promise<any> => {
   try {
