@@ -1,14 +1,6 @@
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
-export interface AnalysisResult {
-  analysis: string;
-  timestamp: string;
-  correctedExamples?: Array<{
-    issue: number;
-    code: string;
-  }>;
-  error?: string;
-}
+import {AnalysisResult} from "@/types/AnalyseResult";
 
 export const analyseCodeApi = async (
   code: string,

@@ -8,6 +8,11 @@ import AIChatbot from "@/components/AIChatbot";
 import AIAnalysisPanel from "@/components/AIAnalysisPanel";
 import CommitFileAnalysis from "@/components/CommitFileAnalysis";
 import { useAIAnalysis } from "@/hooks/useAIAnalysis";
+import CommitFileCard from "@/components/cards/CommitFileCard";
+import { Bot , Zap  , Kanban , File , User , Clock, Files, RefreshCcwDot} from "lucide-react";
+import SpinnerLoad from "@/components/Spinner";
+import Overview from "../Overview";
+
 
 type AnalysisMode = "individual" | "batch" | "comprehensive";
 type AnalysisType = "audit" | "file_fix" | "comprehensive_review";
@@ -52,7 +57,7 @@ const CommitDetailsPage = () => {
       });
       
       console.log(`All ${commitDetails.files.length} Files:`);
-      commitDetails.files.forEach((file, idx) => {
+      commitDetails.files.forEach((file , idx) => {
         console.log(`  File ${idx + 1}/${commitDetails.files.length}: ${file.path}`, {
           status: file.status,
           additions: file.additions,
@@ -236,7 +241,7 @@ ${allFilesContext}`;
               onClick={handleRetry}
               className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
             >
-              🔄 Retry Loading
+              <RefreshCcwDot /> Retry Loading
             </button>
             <button 
               onClick={() => router.back()}
@@ -298,9 +303,7 @@ ${allFilesContext}`;
                   <div className="flex flex-wrap gap-6 text-gray-600">
                     <div className="flex items-center gap-2 hover:text-gray-800 transition-colors">
                       <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center">
-                        <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                        </svg>
+                        <User className="w-5 h-5 text-white" />
                       </div>
                       <div>
                         <p className="text-xs text-slate-400 uppercase tracking-wider">Author</p>
@@ -310,9 +313,7 @@ ${allFilesContext}`;
 
                     <div className="flex items-center gap-2 hover:text-gray-800 transition-colors">
                       <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
-                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                        <Clock className="w-5 h-5 text-white" />
                       </div>
                       <div>
                         <p className="text-xs text-gray-500 uppercase tracking-wider">Date</p>
@@ -372,23 +373,19 @@ ${allFilesContext}`;
                     >
                       {tab === 'files' && (
                         <>
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M4 4a2 2 0 012-2h6a2 2 0 012 2v1h2a1 1 0 110 2h-.023L16.914 8.5h.005a1 1 0 11-.005 2h-.005l-.032.532A2 2 0 0114.5 13H14h-.5a1.5 1.5 0 01-1.5-1.5V11h-3v1.5a1.5 1.5 0 01-1.5 1.5H8a2 2 0 01-2-2v-1H4a2 2 0 01-2-2V4z" />
-                          </svg>
+                          <span><File /></span>
                           Files ({commitDetails.files.length})
                         </>
                       )}
                       {tab === 'overview' && (
                         <>
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
-                          </svg>
+                          <span><Kanban /></span>
                           Overview
                         </>
                       )}
                       {tab === 'ai' && (
                         <>
-                          <span>⚡</span>
+                          <span><Zap /></span>
                           AI Analysis
                         </>
                       )}
@@ -404,17 +401,12 @@ ${allFilesContext}`;
                   >
                     {fullCommitAnalysisLoading ? (
                       <>
-                        <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
+                        <SpinnerLoad />
                         Analyzing...
                       </>
                     ) : (
                       <>
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M10.5 1.5H19a1 1 0 011 1v15a1 1 0 01-1 1h-9.5M3 4h7m-7 3h7m-7 3h7m-7 3h7" />
-                        </svg>
+                        <span><Files /></span>
                         Analyze All Files
                       </>
                     )}
@@ -473,42 +465,12 @@ ${allFilesContext}`;
                   </div>
                 ) : (
                   commitDetails.files.map((file, index) => (
-                    <div
-                      key={`file-${file.sha}-${index}`}
-                      onClick={() => document.getElementById(`file-detail-${index}`)?.scrollIntoView({ behavior: 'smooth' })}
-                      className="px-6 py-4 hover:bg-gray-50 transition-colors cursor-pointer group border-l-4 border-l-transparent hover:border-l-gray-800 hover:pl-5"
-                    >
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-4 flex-1 min-w-0">
-                          {/* Status Badge */}
-                          <div className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm bg-gray-200 text-gray-700">
-                            {file.status === 'added' ? '+' :
-                             file.status === 'removed' ? '−' :
-                             file.status === 'renamed' ? '↻' : '~'}
-                          </div>
-
-                          {/* File Path */}
-                          <div className="flex-1 min-w-0">
-                            <code className="text-gray-800 font-mono text-sm break-all group-hover:text-gray-600 transition-colors" title={file.path}>
-                              {file.path}
-                            </code>
-                            <p className="text-xs text-gray-500 mt-1">{file.status.charAt(0).toUpperCase() + file.status.slice(1)}</p>
-                          </div>
-                        </div>
-
-                        {/* Stats */}
-                        <div className="flex items-center gap-4 shrink-0 text-sm">
-                          <div className="text-right">
-                            <p className="text-gray-800 font-semibold">+{file.additions}</p>
-                            <p className="text-gray-800 font-semibold">-{file.deletions}</p>
-                          </div>
-                          <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  ))
+  <CommitFileCard
+    key={`file-${file.sha}-${index}`}
+    file={file}
+    index={index}
+  />
+))
                 )}
               </div>
             </div>
@@ -577,7 +539,7 @@ ${allFilesContext}`;
                         </>
                       ) : (
                         <>
-                          <span>🤖</span>
+                          <span><Bot /></span>
                           Analyze
                         </>
                       )}
@@ -600,7 +562,7 @@ ${allFilesContext}`;
                             onClick={() => handleAnalyzeFile(index, file.path, file.patch || '')}
                             className="px-4 py-2 bg-gray-800 hover:bg-gray-900 text-white text-sm rounded-lg transition-all font-medium shadow-md hover:shadow-lg"
                           >
-                            🤖 Analyze This File
+                            <Bot /> Analyze This File
                           </button>
                         </div>
                       </div>
@@ -631,68 +593,7 @@ ${allFilesContext}`;
             </div>
           </div>
         ) : activeTab === 'overview' ? (
-          <div className="space-y-6">
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Code Changes Card */}
-              <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-md">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-semibold text-gray-800">Code Changes</h3>
-                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M11 4a2 2 0 114 0v14a2 2 0 11-4 0V4z" />
-                  </svg>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors">
-                    <span className="text-gray-600">Total Files</span>
-                    <span className="text-2xl font-bold text-gray-800">{commitDetails.files.length}</span>
-                  </div>
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors">
-                    <span className="text-gray-600">Lines Added</span>
-                    <span className="text-2xl font-bold text-gray-800">+{totalAdditions}</span>
-                  </div>
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors">
-                    <span className="text-gray-600">Lines Removed</span>
-                    <span className="text-2xl font-bold text-gray-800">-{totalDeletions}</span>
-                  </div>
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors">
-                    <span className="text-gray-600">Net Change</span>
-                    <span className="text-2xl font-bold text-gray-800">
-                      {totalAdditions - totalDeletions > 0 ? '+' : ''}{totalAdditions - totalDeletions}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* File Statistics Card */}
-              <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-md">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-semibold text-gray-800">File Statistics</h3>
-                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                  </svg>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors">
-                    <span className="text-gray-600">Added Files</span>
-                    <span className="text-2xl font-bold text-gray-800">+{addedFiles}</span>
-                  </div>
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors">
-                    <span className="text-gray-600">Modified Files</span>
-                    <span className="text-2xl font-bold text-gray-800">~{modifiedFiles}</span>
-                  </div>
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors">
-                    <span className="text-gray-600">Removed Files</span>
-                    <span className="text-2xl font-bold text-gray-800">-{removedFiles}</span>
-                  </div>
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors">
-                    <span className="text-gray-600">Change Density</span>
-                    <span className="text-2xl font-bold text-gray-800">{commitDetails.files.length > 0 ? ((totalAdditions + totalDeletions) / commitDetails.files.length).toFixed(1) : 0}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <Overview addedFiles={addedFiles} modifiedFiles={modifiedFiles} removedFiles={removedFiles} totalAdditions={totalAdditions} totalDeletions={totalDeletions} commitDetails={commitDetails} />
         ) : (
           <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-md">
             <AIAnalysisPanel
