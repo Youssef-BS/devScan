@@ -12,6 +12,7 @@ import CommitFileCard from "@/components/cards/CommitFileCard";
 import { Bot , Zap  , Kanban , File , User , Clock, Files, RefreshCcwDot} from "lucide-react";
 import SpinnerLoad from "@/components/Spinner";
 import Overview from "../Overview";
+import FileView from "../FileView";
 
 
 type AnalysisMode = "individual" | "batch" | "comprehensive";
@@ -271,16 +272,13 @@ ${allFilesContext}`;
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Background accent */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 right-0 w-96 h-96 bg-linear-to-br from-gray-100/50 to-gray-200/50 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-linear-to-tr from-gray-100/50 to-gray-100/50 rounded-full blur-3xl"></div>
       </div>
 
-      {/* Content */}
       <div className="relative z-10 p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
           <div className="mb-8">
             <Link 
               href="/dashboard" 
@@ -292,7 +290,6 @@ ${allFilesContext}`;
               Back to Repositories
             </Link>
 
-            {/* Commit Header Card */}
             <div className="bg-linear-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl border border-white/20 p-8 shadow-2xl">
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
                 <div className="flex-1 min-w-0">
@@ -323,7 +320,6 @@ ${allFilesContext}`;
                   </div>
                 </div>
 
-                {/* SHA Badge */}
                 <div className="flex flex-col items-end gap-2">
                   <p className="text-xs text-gray-500 uppercase tracking-wider">Commit SHA</p>
                   <code className="bg-gray-100 px-4 py-2 rounded-lg text-mono text-sm font-semibold text-gray-800 border border-gray-300 font-mono break-all text-right">
@@ -332,7 +328,6 @@ ${allFilesContext}`;
                 </div>
               </div>
 
-              {/* Stats Row */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-gray-200">
                 <div className="p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
                   <p className="text-gray-500 text-sm uppercase tracking-wider mb-1">Files Changed</p>
@@ -355,8 +350,6 @@ ${allFilesContext}`;
               </div>
             </div>
           </div>
-
-          {/* Tab Navigation */}
           <div className="mb-8">
             <div className="bg-white rounded-t-2xl border border-gray-200 border-b-0 p-4 shadow-md">
               <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -416,182 +409,20 @@ ${allFilesContext}`;
             </div>
           </div>
 
-          {/* Tab Content */}
           {activeTab === 'files' ? (
-          <div className="space-y-6">
-            {/* Files Changed Summary Card */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-md">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="group">
-                  <p className="text-gray-500 text-sm uppercase tracking-wider mb-2">Added Files</p>
-                  <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 group-hover:border-gray-300 transition-colors">
-                    <p className="text-2xl font-bold text-gray-800">+{addedFiles}</p>
-                  </div>
-                </div>
-                <div className="group">
-                  <p className="text-gray-500 text-sm uppercase tracking-wider mb-2">Modified</p>
-                  <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 group-hover:border-gray-300 transition-colors">
-                    <p className="text-2xl font-bold text-gray-800">~{modifiedFiles}</p>
-                  </div>
-                </div>
-                <div className="group">
-                  <p className="text-gray-500 text-sm uppercase tracking-wider mb-2">Removed</p>
-                  <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 group-hover:border-gray-300 transition-colors">
-                    <p className="text-2xl font-bold text-gray-800">-{removedFiles}</p>
-                  </div>
-                </div>
-                <div className="group">
-                  <p className="text-gray-500 text-sm uppercase tracking-wider mb-2">Total Files</p>
-                  <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 group-hover:border-gray-300 transition-colors">
-                    <p className="text-2xl font-bold text-gray-800">{commitDetails.files.length}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Files List */}
-            <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-md">
-              <div className="sticky top-0 bg-gray-50 px-6 py-4 border-b border-gray-200 z-10">
-                <h3 className="text-lg font-semibold text-gray-800">All Files Changed ({commitDetails.files.length})</h3>
-              </div>
-
-              <div className="divide-y divide-gray-200 max-h-96 overflow-y-auto">
-                {commitDetails.files.length === 0 ? (
-                  <div className="p-8 text-center text-gray-500">
-                    <svg className="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <p>No files found for this commit</p>
-                  </div>
-                ) : (
-                  commitDetails.files.map((file, index) => (
-  <CommitFileCard
-    key={`file-${file.sha}-${index}`}
-    file={file}
-    index={index}
-  />
-))
-                )}
-              </div>
-            </div>
-            
-            {/* Full Commit Analysis */}
-            {fullCommitAnalysis && (
-              <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-md">
-                <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                  <div>
-                    <h3 className="font-bold text-lg text-gray-800">📊 Full Commit Analysis</h3>
-                    <p className="text-sm text-gray-500 mt-1">Comprehensive review of all {commitDetails.files.length} files</p>
-                  </div>
-                  <button
-                    onClick={() => setFullCommitAnalysis(null)}
-                    className="p-2 hover:bg-gray-200 rounded-lg transition-colors text-gray-600 hover:text-gray-800"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-                <div className="p-6 max-h-96 overflow-y-auto">
-                  <div className="text-gray-700 whitespace-pre-wrap font-mono text-sm leading-relaxed bg-gray-50 p-4 rounded-lg border border-gray-200">
-                    {fullCommitAnalysis.analysis || "Analyzing..."}
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            {/* Detailed File Views */}
-            <div className="space-y-4">
-              {commitDetails.files.map((file, index) => (
-                <div
-                  key={`${file.sha}-${file.path}-${index}`}
-                  id={`file-detail-${index}`}
-                  className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-md hover:shadow-lg transition-shadow"
-                >
-                  <div className="border-b border-gray-200 px-6 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-2 flex-wrap">
-                        <span className="shrink-0 px-2.5 py-1.5 text-xs rounded-lg font-bold bg-gray-200 text-gray-700 border border-gray-300">
-                          {file.status.toUpperCase()}
-                        </span>
-                        <code className="font-mono text-sm font-semibold text-gray-800 break-all" title={file.path}>
-                          {file.path}
-                        </code>
-                      </div>
-                      <div className="flex items-center gap-4 text-xs text-gray-500 flex-wrap">
-                        <span className="text-gray-800 font-semibold">+{file.additions} additions</span>
-                        <span className="text-gray-800 font-semibold">-{file.deletions} deletions</span>
-                        <span className="text-gray-600">{file.changes} total changes</span>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleAnalyzeFile(index, file.path, file.patch)}
-                      disabled={analysisLoading && activeFileIndex === index}
-                      className="ml-4 px-4 py-2 bg-gray-800 hover:bg-gray-900 text-white text-sm rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap font-medium shadow-md hover:shadow-lg"
-                    >
-                      {analysisLoading && activeFileIndex === index ? (
-                        <>
-                          <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          Analyzing...
-                        </>
-                      ) : (
-                        <>
-                          <span><Bot /></span>
-                          Analyze
-                        </>
-                      )}
-                    </button>
-                  </div>
-                  
-                  {/* Code Display */}
-                  <div className="max-h-96 overflow-y-auto bg-gray-50">
-                    {file.patch && file.patch.trim() ? (
-                      <div className="divide-y divide-gray-200">
-                        {renderPatch(file.patch)}
-                      </div>
-                    ) : (
-                      <div className="p-6 text-center text-gray-500">
-                        <div className="bg-gray-50 rounded-lg border border-gray-200 p-4 inline-block">
-                          <div className="font-mono text-xs bg-gray-100 p-3 rounded mb-3 max-w-md mx-auto overflow-x-auto text-gray-700 border border-gray-200">
-                            {file.patch ? file.patch : '// No patch data available - you can still analyze with AI'}
-                          </div>
-                          <button
-                            onClick={() => handleAnalyzeFile(index, file.path, file.patch || '')}
-                            className="px-4 py-2 bg-gray-800 hover:bg-gray-900 text-white text-sm rounded-lg transition-all font-medium shadow-md hover:shadow-lg"
-                          >
-                            <Bot /> Analyze This File
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* AI Analysis for this file */}
-                  {activeFileIndex === index && analysisResult && (
-                    <div className="border-t border-gray-200 bg-gray-50 p-4">
-                      <CommitFileAnalysis
-                        fileName={file.path}
-                        analysis={analysisResult.analysis || ""}
-                        correctedExamples={analysisResult.correctedExamples || []}
-                        loading={analysisLoading && activeFileIndex === index}
-                        onClose={() => {
-                          setActiveFileIndex(null);
-                          setFileAnalyses(prev => {
-                            const newAnalyses = { ...prev };
-                            delete newAnalyses[index];
-                            return newAnalyses;
-                          });
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
+           <FileView
+  files={commitDetails.files}
+  addedFiles={addedFiles}
+  modifiedFiles={modifiedFiles}
+  removedFiles={removedFiles}
+  activeFileIndex={activeFileIndex}
+  analysisLoading={analysisLoading}
+  analysisResult={analysisResult}
+  fullCommitAnalysis={fullCommitAnalysis}
+  setFullCommitAnalysis={setFullCommitAnalysis}
+  handleAnalyzeFile={handleAnalyzeFile}
+  renderPatch={renderPatch}
+/>
         ) : activeTab === 'overview' ? (
           <Overview addedFiles={addedFiles} modifiedFiles={modifiedFiles} removedFiles={removedFiles} totalAdditions={totalAdditions} totalDeletions={totalDeletions} commitDetails={commitDetails} />
         ) : (
