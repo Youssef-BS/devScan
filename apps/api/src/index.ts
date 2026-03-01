@@ -4,12 +4,15 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes.js";
 import githubRoutes from "./routes/repo.routes.js";
 import commitRoutes from "./routes/commit.routes.js";
+import adminRoutes from "./routes/admin.route.js";
 import session from "express-session";
+import cookieParser from "cookie-parser";
 
 
 dotenv.config();
 
 const app = express();
+app.use(cookieParser()) ;
 
 
 app.use(session({
@@ -55,6 +58,7 @@ app.get("/health", (req, res) => {
 app.use("/auth", authRoutes);
 app.use("/github/repos", githubRoutes);
 app.use("/github/commit" , commitRoutes); 
+app.use("/admin" , adminRoutes) ;
 
 
 app.listen(process.env.PORT, () => {
