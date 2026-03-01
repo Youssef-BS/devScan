@@ -572,6 +572,10 @@ export type RepoUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.RepoScalarWhereInput | Prisma.RepoScalarWhereInput[]
 }
 
+export type StringFieldUpdateOperationsInput = {
+  set?: string
+}
+
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }

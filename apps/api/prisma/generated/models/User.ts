@@ -205,7 +205,7 @@ export type UserGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 
 export type UserGroupByOutputType = {
   id: number
-  githubId: string
+  githubId: string | null
   username: string | null
   email: string | null
   password: string | null
@@ -240,7 +240,7 @@ export type UserWhereInput = {
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   id?: Prisma.IntFilter<"User"> | number
-  githubId?: Prisma.StringFilter<"User"> | string
+  githubId?: Prisma.StringNullableFilter<"User"> | string | null
   username?: Prisma.StringNullableFilter<"User"> | string | null
   email?: Prisma.StringNullableFilter<"User"> | string | null
   password?: Prisma.StringNullableFilter<"User"> | string | null
@@ -253,7 +253,7 @@ export type UserWhereInput = {
 
 export type UserOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  githubId?: Prisma.SortOrder
+  githubId?: Prisma.SortOrderInput | Prisma.SortOrder
   username?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   password?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -282,7 +282,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  githubId?: Prisma.SortOrder
+  githubId?: Prisma.SortOrderInput | Prisma.SortOrder
   username?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   password?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -302,7 +302,7 @@ export type UserScalarWhereWithAggregatesInput = {
   OR?: Prisma.UserScalarWhereWithAggregatesInput[]
   NOT?: Prisma.UserScalarWhereWithAggregatesInput | Prisma.UserScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"User"> | number
-  githubId?: Prisma.StringWithAggregatesFilter<"User"> | string
+  githubId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   username?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   email?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   password?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
@@ -313,7 +313,7 @@ export type UserScalarWhereWithAggregatesInput = {
 }
 
 export type UserCreateInput = {
-  githubId: string
+  githubId?: string | null
   username?: string | null
   email?: string | null
   password?: string | null
@@ -326,7 +326,7 @@ export type UserCreateInput = {
 
 export type UserUncheckedCreateInput = {
   id?: number
-  githubId: string
+  githubId?: string | null
   username?: string | null
   email?: string | null
   password?: string | null
@@ -338,7 +338,7 @@ export type UserUncheckedCreateInput = {
 }
 
 export type UserUpdateInput = {
-  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -351,7 +351,7 @@ export type UserUpdateInput = {
 
 export type UserUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -364,7 +364,7 @@ export type UserUncheckedUpdateInput = {
 
 export type UserCreateManyInput = {
   id?: number
-  githubId: string
+  githubId?: string | null
   username?: string | null
   email?: string | null
   password?: string | null
@@ -375,7 +375,7 @@ export type UserCreateManyInput = {
 }
 
 export type UserUpdateManyMutationInput = {
-  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -387,7 +387,7 @@ export type UserUpdateManyMutationInput = {
 
 export type UserUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -446,10 +446,6 @@ export type UserScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
-}
-
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
 }
@@ -485,7 +481,7 @@ export type UserUpdateOneRequiredWithoutReposNestedInput = {
 }
 
 export type UserCreateWithoutReposInput = {
-  githubId: string
+  githubId?: string | null
   username?: string | null
   email?: string | null
   password?: string | null
@@ -497,7 +493,7 @@ export type UserCreateWithoutReposInput = {
 
 export type UserUncheckedCreateWithoutReposInput = {
   id?: number
-  githubId: string
+  githubId?: string | null
   username?: string | null
   email?: string | null
   password?: string | null
@@ -524,7 +520,7 @@ export type UserUpdateToOneWithWhereWithoutReposInput = {
 }
 
 export type UserUpdateWithoutReposInput = {
-  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -536,7 +532,7 @@ export type UserUpdateWithoutReposInput = {
 
 export type UserUncheckedUpdateWithoutReposInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -642,7 +638,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
-    githubId: string
+    githubId: string | null
     username: string | null
     email: string | null
     password: string | null
@@ -1301,7 +1297,7 @@ export type UserCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
   /**
    * The data needed to create a User.
    */
-  data: Prisma.XOR<Prisma.UserCreateInput, Prisma.UserUncheckedCreateInput>
+  data?: Prisma.XOR<Prisma.UserCreateInput, Prisma.UserUncheckedCreateInput>
 }
 
 /**
