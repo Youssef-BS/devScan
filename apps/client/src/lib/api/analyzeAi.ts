@@ -31,10 +31,10 @@ export const analyseCodeApi = async (
 
     if (response.status === 408) {
       errorMsg =
-        "⏱️ Analysis timeout: The AI took too long. Try analyzing smaller code chunks.";
+        "Analysis timeout: The AI took too long. Try analyzing smaller code chunks.";
     } else if (response.status === 503) {
       errorMsg =
-        "⚠️ AI service is not available. Please try again later.";
+        "AI service is not available. Please try again later.";
     } else if (response.status === 400) {
       errorMsg = "Code is required for analysis";
     }

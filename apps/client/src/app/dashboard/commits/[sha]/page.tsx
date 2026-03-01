@@ -6,17 +6,11 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import AIChatbot from "@/components/AIChatbot";
 import AIAnalysisPanel from "@/components/AIAnalysisPanel";
-import CommitFileAnalysis from "@/components/CommitFileAnalysis";
 import { useAIAnalysis } from "@/hooks/useAIAnalysis";
-import CommitFileCard from "@/components/cards/CommitFileCard";
-import { Bot , Zap  , Kanban , File , User , Clock, Files, RefreshCcwDot} from "lucide-react";
+import { Zap  , Kanban , File , User , Clock, Files, RefreshCcwDot} from "lucide-react";
 import SpinnerLoad from "@/components/Spinner";
 import Overview from "../Overview";
 import FileView from "../FileView";
-
-
-type AnalysisMode = "individual" | "batch" | "comprehensive";
-type AnalysisType = "audit" | "file_fix" | "comprehensive_review";
 
 const CommitDetailsPage = () => {
   const { sha } = useParams<{ sha: string }>();
@@ -28,14 +22,8 @@ const CommitDetailsPage = () => {
   const [codeContent, setCodeContent] = useState("");
   const [activeFileIndex, setActiveFileIndex] = useState<number | null>(null);
   const [fileAnalyses, setFileAnalyses] = useState<{ [key: number]: any }>({});
-  const [analysisMode, setAnalysisMode] = useState<AnalysisMode>("individual");
-  const [analysisType, setAnalysisType] = useState<AnalysisType>("file_fix");
   const [fullCommitAnalysis, setFullCommitAnalysis] = useState<any>(null);
   const [fullCommitAnalysisLoading, setFullCommitAnalysisLoading] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState<Set<number>>(new Set());
-  const [batchAnalysisProgress, setBatchAnalysisProgress] = useState(0);
-  const [batchAnalysisResults, setBatchAnalysisResults] = useState<{ [key: number]: any }>({});
-  const [allFilesToggle, setAllFilesToggle] = useState(false);
 
   useEffect(() => {
     if (sha) {
@@ -50,15 +38,14 @@ const CommitDetailsPage = () => {
 
   useEffect(() => {
     if (commitDetails && commitDetails.files) {
-      console.log(`📊 Commit Details Updated:`, {
+      console.log(`Commit Details Updated:`, {
         totalFiles: commitDetails.files.length,
         message: commitDetails.commitInfo.message,
         totalChanges: commitDetails.commitInfo.totalChanges,
         fullResponse: commitDetails
       });
-      
       console.log(`All ${commitDetails.files.length} Files:`);
-      commitDetails.files.forEach((file , idx) => {
+      commitDetails.files.forEach((file : any , idx : any) => {
         console.log(`  File ${idx + 1}/${commitDetails.files.length}: ${file.path}`, {
           status: file.status,
           additions: file.additions,
@@ -69,7 +56,7 @@ const CommitDetailsPage = () => {
       });
       
       const allCode = commitDetails.files
-        .map((file) => {
+        .map((file :any) => {
           return `\n\n--- File: ${file.path} (${file.status}) ---\n${file.patch || '// Binary file or no diff available'}`;
         })
         .join("\n");
@@ -94,7 +81,6 @@ const CommitDetailsPage = () => {
     const fileContext = `File: ${filePath}\n\n${patch || '// Binary file or no diff available'}`;
     await analyzeCode(fileContext, sha, "file_fix");
     
-    // Store the analysis result
     setFileAnalyses(prev => ({
       ...prev,
       [fileIndex]: analysisResult
@@ -102,13 +88,10 @@ const CommitDetailsPage = () => {
   };
 
   const handleAnalyzeAllFiles = async () => {
-    if (!commitDetails) return;
-    
+    if (!commitDetails) return;   
     setFullCommitAnalysisLoading(true);
-    
-    // Combine all files into one comprehensive context
     const allFilesContext = commitDetails.files
-      .map((file, idx) => {
+      .map((file : any, idx : any) => {
         return `\n${'='.repeat(80)}\nFile ${idx + 1}: ${file.path} (${file.status})\n${'-'.repeat(80)}\nAdditions: +${file.additions} | Deletions: -${file.deletions} | Changes: ${file.changes}\n${'-'.repeat(80)}\n${file.patch || '// Binary file or no diff available'}`;
       })
       .join("\n");
@@ -117,9 +100,8 @@ const CommitDetailsPage = () => {
 Author: ${commitDetails.commitInfo.author}
 Date: ${commitDetails.commitInfo.date}
 Total Files Changed: ${commitDetails.files.length}
-Total Additions: +${commitDetails.files.reduce((sum, f) => sum + f.additions, 0)}
-Total Deletions: -${commitDetails.files.reduce((sum, f) => sum + f.deletions, 0)}
-
+Total Additions: +${commitDetails.files.reduce((sum : number, f : any) => sum + f.additions, 0)}
+Total Deletions: -${commitDetails.files.reduce((sum : number, f : any) => sum + f.deletions, 0)}
 Analysis: Please review all these files together and identify any issues across the entire commit, including integration issues between files.
 ${allFilesContext}`;
     
@@ -141,8 +123,6 @@ ${allFilesContext}`;
 
   const renderPatch = (patch: string) => {
     if (!patch) return null;
-    
-    // Check if it's a binary/non-diff file notice
     if (patch.startsWith('//') && patch.includes('Binary')) {
       return (
         <div className="p-8 text-center text-yellow-600 bg-yellow-50">
@@ -264,11 +244,11 @@ ${allFilesContext}`;
     </div>
   );
 
-  const totalAdditions = commitDetails.files.reduce((sum, file) => sum + file.additions, 0);
-  const totalDeletions = commitDetails.files.reduce((sum, file) => sum + file.deletions, 0);
-  const addedFiles = commitDetails.files.filter(f => f.status === 'added').length;
-  const modifiedFiles = commitDetails.files.filter(f => f.status === 'modified').length;
-  const removedFiles = commitDetails.files.filter(f => f.status === 'removed').length;
+  const totalAdditions = commitDetails.files.reduce((sum : number, file : any) => sum + file.additions, 0);
+  const totalDeletions = commitDetails.files.reduce((sum : number, file : any) => sum + file.deletions, 0);
+  const addedFiles = commitDetails.files.filter((f : any) => f.status === 'added').length;
+  const modifiedFiles = commitDetails.files.filter((f : any) => f.status === 'modified').length;
+  const removedFiles = commitDetails.files.filter((f : any) => f.status === 'removed').length;
 
   return (
     <div className="min-h-screen bg-white">
@@ -409,20 +389,20 @@ ${allFilesContext}`;
             </div>
           </div>
 
-          {activeTab === 'files' ? (
+  {activeTab === 'files' ? (
            <FileView
-  files={commitDetails.files}
-  addedFiles={addedFiles}
-  modifiedFiles={modifiedFiles}
-  removedFiles={removedFiles}
-  activeFileIndex={activeFileIndex}
-  analysisLoading={analysisLoading}
-  analysisResult={analysisResult}
-  fullCommitAnalysis={fullCommitAnalysis}
-  setFullCommitAnalysis={setFullCommitAnalysis}
-  handleAnalyzeFile={handleAnalyzeFile}
-  renderPatch={renderPatch}
-/>
+              files={commitDetails.files}
+              addedFiles={addedFiles}
+              modifiedFiles={modifiedFiles}
+              removedFiles={removedFiles}
+              activeFileIndex={activeFileIndex}
+              analysisLoading={analysisLoading}
+              analysisResult={analysisResult}
+              fullCommitAnalysis={fullCommitAnalysis}
+              setFullCommitAnalysis={setFullCommitAnalysis}
+              handleAnalyzeFile={handleAnalyzeFile}
+              renderPatch={renderPatch}
+            />
         ) : activeTab === 'overview' ? (
           <Overview addedFiles={addedFiles} modifiedFiles={modifiedFiles} removedFiles={removedFiles} totalAdditions={totalAdditions} totalDeletions={totalDeletions} commitDetails={commitDetails} />
         ) : (

@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import CommitFileCard from "@/components/cards/CommitFileCard";
 import CommitFileAnalysis from "@/components/CommitFileAnalysis";
 import { Bot } from "lucide-react";
 
