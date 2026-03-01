@@ -59,3 +59,16 @@ export const Logout = async (req: Request, res: Response) => {
     res.clearCookie("token");
     return res.json({message : "Logged out successfully"});
 }
+
+export const getCurrentAdmin = async (req: Request, res: Response) => {
+        const token = req.cookies.token ;
+        if(!token) {
+            return res.status(401).json({message : "Not authenticated"});
+         }
+         try {
+            
+
+         }  catch (error) {
+                return res.status(500).json({ message: 'Internal Server Error' });
+         }      
+}
