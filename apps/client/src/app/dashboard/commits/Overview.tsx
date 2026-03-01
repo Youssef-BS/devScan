@@ -1,5 +1,4 @@
 "use client"
-import type { CommitDetails } from "@/types/Commit";
 
 const Overview = ({ addedFiles, modifiedFiles, removedFiles, totalAdditions, totalDeletions, commitDetails } : any) => {
   return (
