@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { fetchCommitsFromGitHub, getAllCommits, getCommitDetails, CommitDetails } from "@/lib/api/commit";
+import { fetchCommitsFromGitHub, getAllCommits, getCommitDetails } from "@/lib/api/commit";
+import type { CommitDetails } from "@/types/Commit";
 import type { Commit } from "@/types/Commit";
 
 interface CommitStore {
