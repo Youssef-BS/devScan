@@ -8,8 +8,3 @@ export const generateToken = (payload : object) => {
         expiresIn : "1d"
     }) ; 
 }
-
-
-export const verifyToken = (token : string) => {
- return jwt.verify(token , JWT_SECRET) ; 
-} 
