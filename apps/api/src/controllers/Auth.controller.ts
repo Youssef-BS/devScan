@@ -119,6 +119,7 @@ export const githubCallback = async (req: Request, res: Response) => {
       name: githubUser.name || githubUser.login || null,
       email: email || null,
       avatar: githubUser.avatar_url || null,
+      role : dbUser.role ,
     };
 
     await new Promise<void>((resolve, reject) =>
