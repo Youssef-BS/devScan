@@ -39,9 +39,11 @@ export type UserMinAggregateOutputType = {
   githubId: string | null
   username: string | null
   email: string | null
+  password: string | null
   avatarUrl: string | null
   accessToken: string | null
   createdAt: Date | null
+  role: $Enums.Role | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -49,9 +51,11 @@ export type UserMaxAggregateOutputType = {
   githubId: string | null
   username: string | null
   email: string | null
+  password: string | null
   avatarUrl: string | null
   accessToken: string | null
   createdAt: Date | null
+  role: $Enums.Role | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -59,9 +63,11 @@ export type UserCountAggregateOutputType = {
   githubId: number
   username: number
   email: number
+  password: number
   avatarUrl: number
   accessToken: number
   createdAt: number
+  role: number
   _all: number
 }
 
@@ -79,9 +85,11 @@ export type UserMinAggregateInputType = {
   githubId?: true
   username?: true
   email?: true
+  password?: true
   avatarUrl?: true
   accessToken?: true
   createdAt?: true
+  role?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -89,9 +97,11 @@ export type UserMaxAggregateInputType = {
   githubId?: true
   username?: true
   email?: true
+  password?: true
   avatarUrl?: true
   accessToken?: true
   createdAt?: true
+  role?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -99,9 +109,11 @@ export type UserCountAggregateInputType = {
   githubId?: true
   username?: true
   email?: true
+  password?: true
   avatarUrl?: true
   accessToken?: true
   createdAt?: true
+  role?: true
   _all?: true
 }
 
@@ -196,9 +208,11 @@ export type UserGroupByOutputType = {
   githubId: string
   username: string | null
   email: string | null
+  password: string | null
   avatarUrl: string | null
   accessToken: string | null
   createdAt: Date
+  role: $Enums.Role
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -229,9 +243,11 @@ export type UserWhereInput = {
   githubId?: Prisma.StringFilter<"User"> | string
   username?: Prisma.StringNullableFilter<"User"> | string | null
   email?: Prisma.StringNullableFilter<"User"> | string | null
+  password?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   accessToken?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   repos?: Prisma.RepoListRelationFilter
 }
 
@@ -240,9 +256,11 @@ export type UserOrderByWithRelationInput = {
   githubId?: Prisma.SortOrder
   username?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
+  password?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   accessToken?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   repos?: Prisma.RepoOrderByRelationAggregateInput
 }
 
@@ -254,9 +272,11 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   username?: Prisma.StringNullableFilter<"User"> | string | null
+  password?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   accessToken?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   repos?: Prisma.RepoListRelationFilter
 }, "id" | "githubId" | "email">
 
@@ -265,9 +285,11 @@ export type UserOrderByWithAggregationInput = {
   githubId?: Prisma.SortOrder
   username?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
+  password?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   accessToken?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -283,18 +305,22 @@ export type UserScalarWhereWithAggregatesInput = {
   githubId?: Prisma.StringWithAggregatesFilter<"User"> | string
   username?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   email?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  password?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   accessToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
 }
 
 export type UserCreateInput = {
   githubId: string
   username?: string | null
   email?: string | null
+  password?: string | null
   avatarUrl?: string | null
   accessToken?: string | null
   createdAt?: Date | string
+  role?: $Enums.Role
   repos?: Prisma.RepoCreateNestedManyWithoutUserInput
 }
 
@@ -303,9 +329,11 @@ export type UserUncheckedCreateInput = {
   githubId: string
   username?: string | null
   email?: string | null
+  password?: string | null
   avatarUrl?: string | null
   accessToken?: string | null
   createdAt?: Date | string
+  role?: $Enums.Role
   repos?: Prisma.RepoUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -313,9 +341,11 @@ export type UserUpdateInput = {
   githubId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   repos?: Prisma.RepoUpdateManyWithoutUserNestedInput
 }
 
@@ -324,9 +354,11 @@ export type UserUncheckedUpdateInput = {
   githubId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   repos?: Prisma.RepoUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -335,18 +367,22 @@ export type UserCreateManyInput = {
   githubId: string
   username?: string | null
   email?: string | null
+  password?: string | null
   avatarUrl?: string | null
   accessToken?: string | null
   createdAt?: Date | string
+  role?: $Enums.Role
 }
 
 export type UserUpdateManyMutationInput = {
   githubId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -354,9 +390,11 @@ export type UserUncheckedUpdateManyInput = {
   githubId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -364,9 +402,11 @@ export type UserCountOrderByAggregateInput = {
   githubId?: Prisma.SortOrder
   username?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  password?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   accessToken?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  role?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
@@ -378,9 +418,11 @@ export type UserMaxOrderByAggregateInput = {
   githubId?: Prisma.SortOrder
   username?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  password?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   accessToken?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  role?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -388,9 +430,11 @@ export type UserMinOrderByAggregateInput = {
   githubId?: Prisma.SortOrder
   username?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  password?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   accessToken?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  role?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
@@ -412,6 +456,10 @@ export type NullableStringFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type EnumRoleFieldUpdateOperationsInput = {
+  set?: $Enums.Role
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -440,9 +488,11 @@ export type UserCreateWithoutReposInput = {
   githubId: string
   username?: string | null
   email?: string | null
+  password?: string | null
   avatarUrl?: string | null
   accessToken?: string | null
   createdAt?: Date | string
+  role?: $Enums.Role
 }
 
 export type UserUncheckedCreateWithoutReposInput = {
@@ -450,9 +500,11 @@ export type UserUncheckedCreateWithoutReposInput = {
   githubId: string
   username?: string | null
   email?: string | null
+  password?: string | null
   avatarUrl?: string | null
   accessToken?: string | null
   createdAt?: Date | string
+  role?: $Enums.Role
 }
 
 export type UserCreateOrConnectWithoutReposInput = {
@@ -475,9 +527,11 @@ export type UserUpdateWithoutReposInput = {
   githubId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
 }
 
 export type UserUncheckedUpdateWithoutReposInput = {
@@ -485,9 +539,11 @@ export type UserUncheckedUpdateWithoutReposInput = {
   githubId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
 }
 
 
@@ -526,9 +582,11 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   githubId?: boolean
   username?: boolean
   email?: boolean
+  password?: boolean
   avatarUrl?: boolean
   accessToken?: boolean
   createdAt?: boolean
+  role?: boolean
   repos?: boolean | Prisma.User$reposArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -538,9 +596,11 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   githubId?: boolean
   username?: boolean
   email?: boolean
+  password?: boolean
   avatarUrl?: boolean
   accessToken?: boolean
   createdAt?: boolean
+  role?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -548,9 +608,11 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   githubId?: boolean
   username?: boolean
   email?: boolean
+  password?: boolean
   avatarUrl?: boolean
   accessToken?: boolean
   createdAt?: boolean
+  role?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -558,12 +620,14 @@ export type UserSelectScalar = {
   githubId?: boolean
   username?: boolean
   email?: boolean
+  password?: boolean
   avatarUrl?: boolean
   accessToken?: boolean
   createdAt?: boolean
+  role?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "githubId" | "username" | "email" | "avatarUrl" | "accessToken" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "githubId" | "username" | "email" | "password" | "avatarUrl" | "accessToken" | "createdAt" | "role", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   repos?: boolean | Prisma.User$reposArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -581,9 +645,11 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     githubId: string
     username: string | null
     email: string | null
+    password: string | null
     avatarUrl: string | null
     accessToken: string | null
     createdAt: Date
+    role: $Enums.Role
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1012,9 +1078,11 @@ export interface UserFieldRefs {
   readonly githubId: Prisma.FieldRef<"User", 'String'>
   readonly username: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
+  readonly password: Prisma.FieldRef<"User", 'String'>
   readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
   readonly accessToken: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly role: Prisma.FieldRef<"User", 'Role'>
 }
     
 

@@ -78,9 +78,11 @@ export const UserScalarFieldEnum = {
   githubId: 'githubId',
   username: 'username',
   email: 'email',
+  password: 'password',
   avatarUrl: 'avatarUrl',
   accessToken: 'accessToken',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  role: 'role'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
