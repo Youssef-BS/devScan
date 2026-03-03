@@ -2,14 +2,14 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAdminStore } from "./store/adminAuth";
+import { useAdminStore } from "@/store/adminAuth";
 
 interface ProtectedLayoutProps {
   children: React.ReactNode;
 }
 
 export default function ProtectedLayout({ children }: ProtectedLayoutProps) {
-  const { admin, loading } = useAdminStore(); 
+  const { admin, loading } = useAdminStore();
   const router = useRouter();
 
   useEffect(() => {

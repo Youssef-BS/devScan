@@ -1,14 +1,14 @@
-import { Response , NextFunction } from "express";
-import { AuthRequest } from "./auth";
+import { Response, NextFunction } from 'express';
+import { AuthRequest } from './auth';
 
-export const isAdmin = (req : AuthRequest , res : Response , next : NextFunction) => {
-    try { 
+export const isAdmin = (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'Authentication required' });
+  }
 
-        if(req.user?.role === "ADMIN")
-            return res.status(403).json({message : "Forbidden: Admins only"}) ;
-        next() ;
+  if (req.user.role !== 'ADMIN') {
+    return res.status(403).json({ message: 'Access denied. Admin only.' });
+  }
 
-    }catch(error : any) {
-       return res.status(500).json({ message: 'Internal Server Error' });
-    }
-}
+  next();
+};

@@ -1,7 +1,7 @@
 "use client";
 
 import { useAdminStore } from "@/store/adminAuth";
-import ProtectedLayout from "../protected-layout";
+import ProtectedLayout from "../../protected-layout";
 
 export default function Home() {
   const { logout } = useAdminStore();
