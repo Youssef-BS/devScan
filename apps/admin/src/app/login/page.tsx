@@ -1,30 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { useAuth } from "../../auth-context";
 import { useRouter } from "next/navigation";
+import { useAdminStore } from "@/store/adminAuth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const { login } = useAuth();
+  const { login , loading } = useAdminStore();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
 
-    const success = await login(email, password);
-    if (success) {
-      router.push("/");
-    } else {
-      setError("Invalid email or password");
-    }
-    setLoading(false);
+    await login(email, password);
+    router.push("/");
+    
   };
 
   return (

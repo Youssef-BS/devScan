@@ -1,10 +1,10 @@
 "use client";
 
-import { useAuth } from "../auth-context";
+import { useAdminStore } from "@/store/adminAuth";
 import ProtectedLayout from "../protected-layout";
 
 export default function Home() {
-  const { logout } = useAuth();
+  const { logout } = useAdminStore();
 
   return (
     <ProtectedLayout>

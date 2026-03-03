@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { prisma } from '../db';
 import bcrypt from 'bcrypt';
 import { generateToken } from '../utils/jwt';
+import { AuthRequest } from 'src/middleware/auth';
 
 
 export const adminLogin = async (req: Request, res: Response) => {
@@ -60,15 +61,35 @@ export const Logout = async (req: Request, res: Response) => {
     return res.json({message : "Logged out successfully"});
 }
 
-export const getCurrentAdmin = async (req: Request, res: Response) => {
-        const token = req.cookies.token ;
-        if(!token) {
+export const getCurrentAdmin = async (req: AuthRequest, res: Response) => {
+    try {
+          if(!req.user) {
             return res.status(401).json({message : "Not authenticated"});
          }
-         try {
-            
 
-         }  catch (error) {
+         if(req.user?.role !== "ADMIN") {
+            return res.status(403).json({message : "Access denied"});
+         }
+
+         const admin = await prisma.user.findUnique({
+            where : {
+               id : req.user.userId ,
+                
+            } ,
+            select : {
+                email : true , 
+                role : true
+            }
+         })
+
+         if(!admin) {
+            return res.status(404).json({message : "Admin not found"});
+         }
+
+         return res.json({admin}) ;
+
+
+    }catch (error) {
                 return res.status(500).json({ message: 'Internal Server Error' });
          }      
 }
