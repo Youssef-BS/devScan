@@ -30,6 +30,7 @@ export const AdminLogin = async (email : string , password : string) : Promise<A
 export const fetchCurrentAdmin = async () => {
     try {
         const token = Cookies.get("token");
+        console.log("Token from cookie:", token);
         const response = await axios.get<AdminLoginResponse>(
             `${API_BASE_URL}/admin/current`, 
             { 
