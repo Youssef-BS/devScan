@@ -2,23 +2,23 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "./auth-context";
+import { useAdminStore } from "./store/adminAuth";
 
 interface ProtectedLayoutProps {
   children: React.ReactNode;
 }
 
 export default function ProtectedLayout({ children }: ProtectedLayoutProps) {
-  const { isAuthenticated } = useAuth();
+  const { fetchCurrentAdmin } = useAdminStore();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!fetchCurrentAdmin) {
       router.push("/login");
     }
-  }, [isAuthenticated, router]);
+  }, [fetchCurrentAdmin, router]);
 
-  if (!isAuthenticated) {
+  if (!fetchCurrentAdmin) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-white">Redirecting to login...</div>
