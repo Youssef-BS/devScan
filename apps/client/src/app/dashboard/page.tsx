@@ -14,7 +14,7 @@ import {
 import { useRepoStore } from "@/store/useRepoStore";
 import SpinnerLoad from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
-import { saveReposInDB } from "@/lib/api/github";
+import { saveReposInDB } from "../../services/github.service";
 import {
   Pagination,
   PaginationContent,

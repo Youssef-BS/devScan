@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { analyseCodeApi, AnalysisResult } from "@/lib/api/analyzeAi";
+import { analyseCodeApi, AnalysisResult } from "../services/analyzeAi.service";
 
 export const useAIAnalysis = () => {
   const [loading, setLoading] = useState(false);

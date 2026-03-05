@@ -9,7 +9,7 @@ import {
   saveGithubRepo,
   getAllFromDb,
   getRepoDetails
-} from '@/lib/api/github';
+} from '../services/github.service';
 
 interface RepoStore {
   repos: Repo[];

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { getCurrentUserApi } from "@/lib/api/auth";
+import { getCurrentUserApi } from "../services/auth.service";
 
 export const useAuth = () => {
   const [user, setUser] = useState<any>(null);
