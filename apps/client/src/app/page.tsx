@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import PlanCard from "@/components/cards/PlanCard";
 import { usePlanStore } from "@/store/usePlanStore";
 import { useServiceStore } from "@/store/useServiceStore";
+import SpinnerLoad from "@/components/Spinner";
 
 
 const logoMap: Record<string, React.ReactNode> = {
@@ -249,7 +250,7 @@ const Page = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <SpinnerLoad />
         </div>
       </div>
     }>
