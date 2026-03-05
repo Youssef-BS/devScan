@@ -28,24 +28,22 @@ export const AdminLogin = async (email : string , password : string) : Promise<A
 
 
 export const fetchCurrentAdmin = async () => {
-    try {
-        const token = Cookies.get("token");
-        console.log("Token from cookie:", token);
-        const response = await axios.get<AdminLoginResponse>(
-            `${API_BASE_URL}/admin/current`, 
-            { 
-                withCredentials: true,
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        );
-        return response.data.admin || null;
-    } catch(error: any) {
-        console.error("Failed to fetch current admin:", error.response?.data?.message || error.message);
-        return null;
-    }
-}
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/admin/current`,
+      { withCredentials: true }
+    );
+
+    return response.data.admin || null;
+
+  } catch (error: any) {
+    console.error(
+      "Failed to fetch current admin:",
+      error.response?.data?.message || error.message
+    );
+    return null;
+  }
+};
 
 export const logoutAdmin = async () => {
     try {

@@ -5,35 +5,27 @@ import { useRouter } from "next/navigation";
 import { useAdminStore } from "@/store/adminAuth";
 import SpinnerLoad from "@/components/Spinner";
 
-interface ProtectedLayoutProps {
-  children: React.ReactNode;
-}
-
-export default function ProtectedLayout({ children }: ProtectedLayoutProps) {
-  const { admin, loading } = useAdminStore();
+export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
+  const { admin, loading, initialized, fetchCurrentAdmin } = useAdminStore();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !admin) {
+    if (!initialized) {
+      fetchCurrentAdmin();
+    }
+  }, [initialized]);
+
+  useEffect(() => {
+    if (initialized && !admin) {
       router.push("/login");
     }
-  }, [admin, loading, router]);
+  }, [initialized, admin, router]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <SpinnerLoad />
-      </div>
-    );
+  if (!initialized) {
+    return <SpinnerLoad />;
   }
 
-  if (!admin) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <SpinnerLoad />
-      </div>
-    );
-  }
+  if (!admin) return null;
 
   return <>{children}</>;
 }
