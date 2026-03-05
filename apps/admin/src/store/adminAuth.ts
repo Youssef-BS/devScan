@@ -4,6 +4,7 @@ import { AdminLogin , fetchCurrentAdmin , logoutAdmin } from "../api/Auth";
 export interface AdminState {
     admin : {email : string , role : "ADMIN" } | null ;
     loading : boolean ;
+    initialized: boolean;
     error : string | null ;
     login  : (email : string , password : string) => Promise<void> ; 
     logout : () => void ;
@@ -15,12 +16,13 @@ export const useAdminStore = create<AdminState>((set) => ({
   admin: null,
   loading: false,
   error: null,
+  initialized: false,
   login: async (email, password) => {
     set({ loading: true, error: null });
     try {
       await AdminLogin(email, password);
       const response = await fetchCurrentAdmin();
-      set({ admin: response, loading: false });
+      set({ admin: response, loading: false , initialized: true });
     } catch (error: any) {
       set({ 
         error: error.response?.data?.message || "Login failed", 
@@ -33,7 +35,7 @@ export const useAdminStore = create<AdminState>((set) => ({
   logout: async () => {
     try {
       await logoutAdmin();
-      set({ admin: null });
+      set({ admin: null , initialized: true });
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -43,9 +45,9 @@ export const useAdminStore = create<AdminState>((set) => ({
     set({ loading: true });
     try {
       const admin = await fetchCurrentAdmin();
-      set({ admin, loading: false });
+      set({ admin, loading: false , initialized: true });
     } catch (error) {
-      set({ admin: null, loading: false });
+      set({ admin: null, loading: false , initialized: true });
     }
   },
 }));
