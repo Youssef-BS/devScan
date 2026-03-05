@@ -25,7 +25,6 @@ export default function Home() {
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Dashboard Cards */}
             <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
               <h3 className="text-lg font-semibold mb-2">Total Users</h3>
               <p className="text-3xl font-bold text-blue-400">1,234</p>
