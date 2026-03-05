@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
-import { logout } from "@/lib/api/auth"
+import { logout } from "../services/auth.service"
 import { useAuthContext } from "@/auth-context"
 import { useEffect } from "react"
 import { Bell , Settings  } from "lucide-react"

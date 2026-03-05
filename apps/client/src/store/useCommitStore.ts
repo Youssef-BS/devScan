@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { fetchCommitsFromGitHub, getAllCommits, getCommitDetails } from "@/lib/api/commit";
+import { fetchCommitsFromGitHub, getAllCommits, getCommitDetails } from "../services/commit.service";
 import type { CommitDetails } from "@/types/Commit";
 import type { Commit } from "@/types/Commit";
 
