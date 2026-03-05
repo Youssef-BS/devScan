@@ -1,5 +1,5 @@
 import {create} from "zustand" ;
-import { AdminLogin , fetchCurrentAdmin , logoutAdmin } from "../api/Auth";
+import { AdminLogin , fetchCurrentAdmin , logoutAdmin } from "../services/auth.service";
 
 export interface AdminState {
     admin : {email : string , role : "ADMIN" } | null ;

@@ -16,8 +16,10 @@ export default function ProtectedLayout({
     useEffect(()=> {
         if(!user && !loading)
             router.push("/") ;
+
     }, [loading , user , router])
 
     if(loading) return <SpinnerLoad />
+    
     return children;
 }
