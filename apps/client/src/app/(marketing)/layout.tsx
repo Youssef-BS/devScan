@@ -1,6 +1,6 @@
 "use client"
 
-import { Navbar } from "@/components/DashboardNavbar"
+import  NavbarHomePage  from "@/components/HomeNavbar"
 
 export default function HomeLayout({
   children,
@@ -9,7 +9,7 @@ export default function HomeLayout({
 }) {
   return (
     <>
-      <Navbar />
+      <NavbarHomePage />
       {children}
     </>
   )
