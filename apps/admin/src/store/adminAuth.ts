@@ -1,15 +1,6 @@
 import {create} from "zustand" ;
 import { AdminLogin , fetchCurrentAdmin , logoutAdmin } from "../services/auth.service";
-
-export interface AdminState {
-    admin : {email : string , role : "ADMIN" } | null ;
-    loading : boolean ;
-    initialized: boolean;
-    error : string | null ;
-    login  : (email : string , password : string) => Promise<void> ; 
-    logout : () => void ;
-    fetchCurrentAdmin : () => Promise<void> ;
-}
+import type { AdminState } from "@/types/Admin";
 
 
 export const useAdminStore = create<AdminState>((set) => ({
