@@ -576,10 +576,6 @@ export type StringFieldUpdateOperationsInput = {
   set?: string
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type RepoCreateNestedOneWithoutCommitsInput = {
   create?: Prisma.XOR<Prisma.RepoCreateWithoutCommitsInput, Prisma.RepoUncheckedCreateWithoutCommitsInput>
   connectOrCreate?: Prisma.RepoCreateOrConnectWithoutCommitsInput
