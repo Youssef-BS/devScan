@@ -1,8 +1,6 @@
 import { api } from "@/lib/axios";
 import type { AdminLoginResponse } from "@/types/Admin";
 
-
-
 export const AdminLogin = async (
   email: string,
   password: string
