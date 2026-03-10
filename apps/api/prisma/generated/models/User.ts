@@ -42,6 +42,7 @@ export type UserMinAggregateOutputType = {
   password: string | null
   avatarUrl: string | null
   accessToken: string | null
+  isBanned: boolean | null
   createdAt: Date | null
   role: $Enums.Role | null
 }
@@ -54,6 +55,7 @@ export type UserMaxAggregateOutputType = {
   password: string | null
   avatarUrl: string | null
   accessToken: string | null
+  isBanned: boolean | null
   createdAt: Date | null
   role: $Enums.Role | null
 }
@@ -66,6 +68,7 @@ export type UserCountAggregateOutputType = {
   password: number
   avatarUrl: number
   accessToken: number
+  isBanned: number
   createdAt: number
   role: number
   _all: number
@@ -88,6 +91,7 @@ export type UserMinAggregateInputType = {
   password?: true
   avatarUrl?: true
   accessToken?: true
+  isBanned?: true
   createdAt?: true
   role?: true
 }
@@ -100,6 +104,7 @@ export type UserMaxAggregateInputType = {
   password?: true
   avatarUrl?: true
   accessToken?: true
+  isBanned?: true
   createdAt?: true
   role?: true
 }
@@ -112,6 +117,7 @@ export type UserCountAggregateInputType = {
   password?: true
   avatarUrl?: true
   accessToken?: true
+  isBanned?: true
   createdAt?: true
   role?: true
   _all?: true
@@ -211,6 +217,7 @@ export type UserGroupByOutputType = {
   password: string | null
   avatarUrl: string | null
   accessToken: string | null
+  isBanned: boolean
   createdAt: Date
   role: $Enums.Role
   _count: UserCountAggregateOutputType | null
@@ -246,6 +253,7 @@ export type UserWhereInput = {
   password?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   accessToken?: Prisma.StringNullableFilter<"User"> | string | null
+  isBanned?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   repos?: Prisma.RepoListRelationFilter
@@ -259,6 +267,7 @@ export type UserOrderByWithRelationInput = {
   password?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   accessToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  isBanned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
   repos?: Prisma.RepoOrderByRelationAggregateInput
@@ -275,6 +284,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   password?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   accessToken?: Prisma.StringNullableFilter<"User"> | string | null
+  isBanned?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   repos?: Prisma.RepoListRelationFilter
@@ -288,6 +298,7 @@ export type UserOrderByWithAggregationInput = {
   password?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   accessToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  isBanned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -308,6 +319,7 @@ export type UserScalarWhereWithAggregatesInput = {
   password?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   accessToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  isBanned?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
 }
@@ -319,6 +331,7 @@ export type UserCreateInput = {
   password?: string | null
   avatarUrl?: string | null
   accessToken?: string | null
+  isBanned?: boolean
   createdAt?: Date | string
   role?: $Enums.Role
   repos?: Prisma.RepoCreateNestedManyWithoutUserInput
@@ -332,6 +345,7 @@ export type UserUncheckedCreateInput = {
   password?: string | null
   avatarUrl?: string | null
   accessToken?: string | null
+  isBanned?: boolean
   createdAt?: Date | string
   role?: $Enums.Role
   repos?: Prisma.RepoUncheckedCreateNestedManyWithoutUserInput
@@ -344,6 +358,7 @@ export type UserUpdateInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   repos?: Prisma.RepoUpdateManyWithoutUserNestedInput
@@ -357,6 +372,7 @@ export type UserUncheckedUpdateInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   repos?: Prisma.RepoUncheckedUpdateManyWithoutUserNestedInput
@@ -370,6 +386,7 @@ export type UserCreateManyInput = {
   password?: string | null
   avatarUrl?: string | null
   accessToken?: string | null
+  isBanned?: boolean
   createdAt?: Date | string
   role?: $Enums.Role
 }
@@ -381,6 +398,7 @@ export type UserUpdateManyMutationInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
 }
@@ -393,6 +411,7 @@ export type UserUncheckedUpdateManyInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
 }
@@ -405,6 +424,7 @@ export type UserCountOrderByAggregateInput = {
   password?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   accessToken?: Prisma.SortOrder
+  isBanned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
 }
@@ -421,6 +441,7 @@ export type UserMaxOrderByAggregateInput = {
   password?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   accessToken?: Prisma.SortOrder
+  isBanned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
 }
@@ -433,6 +454,7 @@ export type UserMinOrderByAggregateInput = {
   password?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   accessToken?: Prisma.SortOrder
+  isBanned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
 }
@@ -448,6 +470,10 @@ export type UserScalarRelationFilter = {
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -487,6 +513,7 @@ export type UserCreateWithoutReposInput = {
   password?: string | null
   avatarUrl?: string | null
   accessToken?: string | null
+  isBanned?: boolean
   createdAt?: Date | string
   role?: $Enums.Role
 }
@@ -499,6 +526,7 @@ export type UserUncheckedCreateWithoutReposInput = {
   password?: string | null
   avatarUrl?: string | null
   accessToken?: string | null
+  isBanned?: boolean
   createdAt?: Date | string
   role?: $Enums.Role
 }
@@ -526,6 +554,7 @@ export type UserUpdateWithoutReposInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
 }
@@ -538,6 +567,7 @@ export type UserUncheckedUpdateWithoutReposInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
 }
@@ -581,6 +611,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   password?: boolean
   avatarUrl?: boolean
   accessToken?: boolean
+  isBanned?: boolean
   createdAt?: boolean
   role?: boolean
   repos?: boolean | Prisma.User$reposArgs<ExtArgs>
@@ -595,6 +626,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   avatarUrl?: boolean
   accessToken?: boolean
+  isBanned?: boolean
   createdAt?: boolean
   role?: boolean
 }, ExtArgs["result"]["user"]>
@@ -607,6 +639,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   avatarUrl?: boolean
   accessToken?: boolean
+  isBanned?: boolean
   createdAt?: boolean
   role?: boolean
 }, ExtArgs["result"]["user"]>
@@ -619,11 +652,12 @@ export type UserSelectScalar = {
   password?: boolean
   avatarUrl?: boolean
   accessToken?: boolean
+  isBanned?: boolean
   createdAt?: boolean
   role?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "githubId" | "username" | "email" | "password" | "avatarUrl" | "accessToken" | "createdAt" | "role", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "githubId" | "username" | "email" | "password" | "avatarUrl" | "accessToken" | "isBanned" | "createdAt" | "role", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   repos?: boolean | Prisma.User$reposArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -644,6 +678,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     password: string | null
     avatarUrl: string | null
     accessToken: string | null
+    isBanned: boolean
     createdAt: Date
     role: $Enums.Role
   }, ExtArgs["result"]["user"]>
@@ -1077,6 +1112,7 @@ export interface UserFieldRefs {
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
   readonly accessToken: Prisma.FieldRef<"User", 'String'>
+  readonly isBanned: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly role: Prisma.FieldRef<"User", 'Role'>
 }

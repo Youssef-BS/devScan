@@ -15,6 +15,7 @@ model User {
   password   String?
   avatarUrl   String?
   accessToken String?
+  isBanned     Boolean   @default(false)
   createdAt   DateTime @default(now())
   role       Role     @default(USER)
   repos       Repo[]

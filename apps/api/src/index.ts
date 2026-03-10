@@ -5,11 +5,9 @@ import authRoutes from "./routes/auth.routes.js";
 import githubRoutes from "./routes/repo.routes.js";
 import commitRoutes from "./routes/commit.routes.js";
 import adminRoutes from "./routes/admin.route.js";
+import userRoutes from "./routes/user.route.js" ;
 import session from "express-session";
 import cookieParser from "cookie-parser";
-// import bcrypt from "bcrypt";
-// import { prisma } from "./db.js";
-
 
 dotenv.config();
 
@@ -61,22 +59,8 @@ app.use("/auth", authRoutes);
 app.use("/github/repos", githubRoutes);
 app.use("/github/commit" , commitRoutes); 
 app.use("/admin" , adminRoutes) ;
+app.use("/users" ,  userRoutes) ;
 
-// async function createAdmin() {
-//   const hashed = await bcrypt.hash("admin123", 10);
-
-//   await prisma.user.create({
-//     data: {
-//       email: "admin@yourapp.com",
-//       password: hashed,
-//       role: "ADMIN",
-//     },
-//   });
-
-//   console.log("Admin created");
-// }
-
-// createAdmin();
 
 app.listen(process.env.PORT, () => {
   console.log(`API running on http://localhost:${process.env.PORT}`);
