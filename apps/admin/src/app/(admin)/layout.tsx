@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/sidebar";
 
 import { Button } from "@/components/ui/button";
-import { useAdminStore } from "@/store/adminAuth";
+import { useAdminStore } from "@/store/adminAuthStore";
 import { useRouter } from "next/navigation";
 import {
   LayoutDashboard,
