@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAdminStore } from "@/store/adminAuth";
+import { useAdminStore } from "@/store/adminAuthStore";
 import SpinnerLoad from "@/components/Spinner";
 
 export default function LoginPage() {

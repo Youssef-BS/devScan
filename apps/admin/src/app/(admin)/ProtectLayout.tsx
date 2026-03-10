@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAdminStore } from "@/store/adminAuth";
+import { useAdminStore } from "@/store/adminAuthStore";
 import SpinnerLoad from "@/components/Spinner";
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
@@ -17,7 +17,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     if (initialized && !admin) {
-      router.push("/login");
+      router.push("/auth");
     }
   }, [initialized, admin, router]);
 
