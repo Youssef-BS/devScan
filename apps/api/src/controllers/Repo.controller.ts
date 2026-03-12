@@ -279,4 +279,84 @@ export const getRepoDetails = async (req : Request , res : Response) => {
 }catch(error) {
   return res.status(500).json({message : error})
 }
+
+}
+
+
+//admin
+
+
+
+
+export const getAllRepos = async (req : Request , res : Response) => {
+  try {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 9;
+    const offset = (page - 1) * limit;
+    const [repos, total] = await Promise.all([
+      prisma.repo.findMany({
+        skip: offset,
+        take: limit,
+      }),
+      prisma.repo.count(),
+    ]);
+    res.json({
+      data: repos,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
+
+  } catch(error) {
+    return res.status(500).json({message : error})
+  }
+}
+
+export const deleteRepoByAdmin = async (req: Request, res: Response) => {
+  try {
+    const { githubId } = req.params;
+    await prisma.repo.deleteMany({
+      where: {
+        githubId: String(githubId),
+      },
+    });
+    res.json({ message: 'Repository deleted successfully' });
+  } catch (error) {
+    console.error('deleteRepoByAdmin error:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
+
+export const addRepoByAdmin = async (req: Request, res: Response) => {
+  try {
+    const { githubId, name, fullName, htmlUrl, description, language, private: isPrivate, fork, ownerId } = req.body;
+    const existingRepo = await prisma.repo.findUnique({
+      where: { githubId: String(githubId) },
+    });
+    if (existingRepo) {
+      return res.status(400).json({ message: "Repository already exists" });
+    }
+    const newRepo = await prisma.repo.create({
+      data: {
+        githubId: String(githubId),
+        name,
+        fullName,
+        htmlUrl,
+        description,
+        language,
+        private: isPrivate,
+        fork,
+        ownerId,
+        autoAudit : true 
+      },
+    });
+    return res.status(201).json({ message: "Repository added successfully", repo: newRepo });
+  } catch (error) {
+    console.error('addRepoByAdmin error:', error);
+    const errorMessage = error instanceof Error ? error.message : "Internal Server Error";
+    return res.status(500).json({ message: errorMessage, details: String(error) });
+  }
 }

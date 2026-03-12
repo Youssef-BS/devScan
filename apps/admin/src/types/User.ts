@@ -1,26 +1,36 @@
 export interface UserState {
-    users : any[] | null ;
-    user : any | null ;
-    loading : boolean ;
-    initialized: boolean;
-    error : string | null ;
-    fetchCurrentUser : () => Promise<void> ;
+  users:  User[] | null;
+  user: User | null;
+  pagination: Pagination | null;
+  loading: boolean;
+  error: string | null;
+  initialized: boolean;
+
+  fetchListUsers: (page?: number) => Promise<void>;
+  fetchUserDetails: (id : number) => Promise<void>;
 }
+
+export interface Pagination {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface User {
+  id: number;
+  username?: string;
+  email?: string;
+  avatarUrl?: string;
+  role: "USER" | "ADMIN";
+  isBanned: boolean;
+  repos ?: Repo[];
+}
+
 
 export interface UserResponse {
   message: string;
-  user?: {
-    id: number;
-    githubId?:string;
-    username?: string;
-    email?: string;
-    avatarUrl?: string;
-    role: "USER" | "ADMIN";
-    isBanned: boolean;
-    createdAt: string;
-
-    repos?: Repo[];
-  };
+  user?: User;
 }
 
 export interface Repo {
@@ -56,4 +66,13 @@ export interface CommitFile {
   content: any;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface UsersListResponse {
+  data: User[];
+  pagination: Pagination;
+}
+
+export interface UserDetailsResponse {
+  user: User;
 }
