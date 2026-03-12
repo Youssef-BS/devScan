@@ -8,6 +8,8 @@ export interface UserState {
 
   fetchListUsers: (page?: number) => Promise<void>;
   fetchUserDetails: (id : number) => Promise<void>;
+  banUser: (id: number) => Promise<void>;
+  unbanUser: (id: number) => Promise<void>;
 }
 
 export interface Pagination {

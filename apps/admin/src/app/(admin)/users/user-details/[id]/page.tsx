@@ -7,7 +7,7 @@ import SpinnerLoad from "@/components/Spinner";
 
 
 export default function UserDetails() {
-  const { fetchUserDetails, user } = useUserStore();
+  const { fetchUserDetails, user , banUser , unbanUser } = useUserStore();
   const params = useParams();
   const id = params?.id as string;
 
@@ -104,6 +104,23 @@ export default function UserDetails() {
         </div>
 
       </div>
+      <div className="mt-4 flex gap-4">
+  {user.isBanned ? (
+    <button
+      onClick={() => unbanUser(user.id)}
+      className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
+    >
+      Unban User
+    </button>
+  ) : (
+    <button
+      onClick={() => banUser(user.id)}
+      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+    >
+      Ban User
+    </button>
+  )}
+</div>
     </div>
   );
 }
