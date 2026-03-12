@@ -26,3 +26,21 @@ export const fetchUserById = async (id : number) : Promise<UserDetailsResponse> 
     throw new Error(msg);
   }
 }
+
+export const banUserById = async (id: number) => {
+  try {
+    const response = await api.patch(`${API_BASE_URL}/users/${id}/ban`);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Failed to ban user");
+  }
+};
+
+export const unbanUserById = async (id: number) => {
+  try {
+    const response = await api.patch(`${API_BASE_URL}/users/${id}/unban`);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Failed to unban user");
+  }
+};

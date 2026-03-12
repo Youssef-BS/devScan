@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { fetchAllUsers, fetchUserById } from "@/services/user.service";
+import { fetchAllUsers, fetchUserById , banUserById , unbanUserById } from "@/services/user.service";
 import type { UserState } from "@/types/User";
 
-export const useUserStore = create<UserState>((set) => ({
+export const useUserStore = create<UserState>((set , get) => ({
   users: [],
   pagination: null,
   user: null,
@@ -44,5 +44,24 @@ fetchUserDetails: async (id: number) => {
     const msg = error.message || "Failed to fetch user details";
     set({ error: msg, loading: false });
   }
-}
+} ,
+  banUser: async (id: number) => {
+    try {
+      await banUserById(id);
+      const user = get().user;
+      if (user && user.id === id) set({ user: { ...user, isBanned: true } });
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  },
+
+  unbanUser: async (id: number) => {
+    try {
+      await unbanUserById(id);
+      const user = get().user;
+      if (user && user.id === id) set({ user: { ...user, isBanned: false } });
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  },
 }));
