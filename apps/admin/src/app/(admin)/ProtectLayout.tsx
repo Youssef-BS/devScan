@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAdminStore } from "@/store/adminAuthStore";
+import { useAdminStore } from "@/store/admin.auth.store";
 import SpinnerLoad from "@/components/Spinner";
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
