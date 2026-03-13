@@ -1,6 +1,18 @@
 import { Router, Request, Response } from "express";
-import { deleteAllGithubRepos, getGithubRepos, saveGithubRepos, getAllRepoFromDbByUser, saveGithubRepo, getRepoDetails } from "../controllers/Repo.controller.js";
+import { deleteAllGithubRepos,
+   getGithubRepos,
+   saveGithubRepos, 
+   getAllRepoFromDbByUser, 
+   saveGithubRepo, 
+   getRepoDetails, 
+   getAllRepos,
+   deleteRepoByAdmin ,
+   addRepoByAdmin
+  } 
+   from "../controllers/Repo.controller.js";
+
 import axios from "axios";
+
 import { prisma } from "../db.js";
 
 const router : Router = Router();
@@ -64,7 +76,15 @@ router.post("/sync", async (req: Request, res: Response) => {
 
 
 router.delete("/clear", deleteAllGithubRepos) ;
-router.post("/save" , saveGithubRepo)
+router.post("/save" , saveGithubRepo) ;
+
+
+// Admin routes
+
+router.get("/get-all-db", getAllRepos) ;
+router.delete("/delete/:githubId" , deleteRepoByAdmin) ;
+router.post("/save-single", addRepoByAdmin) ;
+//---
 router.get('/:githubId' , getRepoDetails) ;
 
 export default router ;

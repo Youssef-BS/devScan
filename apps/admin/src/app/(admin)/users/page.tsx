@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useUserStore } from "@/store/userStore";
+import { useUserStore } from "@/store/user.store";
 import UserCard from "./card/UserCard";
 
 import {
