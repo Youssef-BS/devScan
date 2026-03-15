@@ -19,6 +19,7 @@ export const auth = (req: AuthRequest, res: Response, next: NextFunction) => {
     }
 
     const decoded = jwt.verify(token, JWT_SECRET) as { userId: number; role: "USER" | "ADMIN" };
+     console.log("Decoded JWT:", decoded)
     req.user = decoded;
     next();
   } catch (err) {

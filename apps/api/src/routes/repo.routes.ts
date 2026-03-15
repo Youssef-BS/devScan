@@ -11,6 +11,7 @@ import { deleteAllGithubRepos,
   } 
    from "../controllers/Repo.controller.js";
    import { auth } from "../middleware/auth.js" ;
+   import { AuthRequest } from "../middleware/auth.js" ;
 
 import axios from "axios";
 
@@ -23,14 +24,14 @@ router.get("/",auth, getGithubRepos);
 
 router.get("/all-db",auth, getAllRepoFromDbByUser);
 
-router.post("/sync", auth, async (req: Request, res: Response) => {
+router.post("/sync", auth, async (req: AuthRequest, res: Response) => {
   try {
-    if (!req.session.user) {
+    if (!req.user) {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
     const dbUser = await prisma.user.findUnique({
-      where: { githubId: String(req.session.user.id) },
+      where: { id: req.user.userId }, 
       select: { id: true, accessToken: true },
     });
 
@@ -63,7 +64,7 @@ router.post("/sync", auth, async (req: Request, res: Response) => {
       }
     }
 
-    await saveGithubRepos(String(req.session.user.id), allRepos);
+    await saveGithubRepos(req.user.userId, allRepos);
 
     res.json({ 
       message: `Synced ${allRepos.length} repositories successfully`,
