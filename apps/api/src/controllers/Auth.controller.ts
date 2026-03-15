@@ -160,6 +160,93 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
   }
 };
 
+export const changePassword = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters" });
+    }
+
+    if (currentPassword === newPassword) {
+      return res.status(400).json({ message: "New password must be different" });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: Number(req.user.userId) },
+      select: { password: true },
+    });
+
+    if (!user || !user.password) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Current password is incorrect" });
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    await prisma.user.update({
+      where: { id: Number(req.user.userId) },
+      data: { password: hashedNewPassword },
+    });
+
+    res.json({ message: "Password changed successfully" });
+
+  } catch (err) {
+    console.error("changePassword error:", err);
+    res.status(500).json({ message: "Password change failed" });
+  }
+};
+
+export const updateName = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const { firstName, lastName } = req.body;
+
+    if (!firstName || !lastName) {
+      return res.status(400).json({ message: "First name and last name are required" });
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: Number(req.user.userId) },
+      data: {
+        firstName,
+        lastName,
+      },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        avatarUrl: true,
+        role: true,
+      },
+    });
+
+    return res.json(updatedUser);
+  } catch (error) {
+    console.error("updateName error:", error);
+    return res.status(500).json({ message: "Failed to update name" });
+  }
+};
+
+
 export const logout = (req: Request, res: Response) => {
   res.clearCookie("token");
 

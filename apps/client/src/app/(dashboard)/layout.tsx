@@ -1,17 +1,23 @@
+"use client";
+
 import ProtectedLayout from "@/protected-layout";
 import { ReactNode } from "react";
 import IntroDashboard from "@/components/intro-dashboard";
-import NavbarHomePage from "@/components/HomeNavbar";
 import { Navbar } from "@/components/DashboardNavbar";
+import { usePathname } from "next/navigation";
 
 export default function DashboardLayout({
-    children
-} : {
-    children : ReactNode
+  children,
+}: {
+  children: ReactNode;
 }) {
-    return <ProtectedLayout>
-        <Navbar />
-        <IntroDashboard />
-        {children}
-        </ProtectedLayout>
+  const pathname = usePathname();
+
+  return (
+    <ProtectedLayout>
+      <Navbar />
+      {pathname !== "/profile" && <IntroDashboard />}
+      {children}
+    </ProtectedLayout>
+  );
 }

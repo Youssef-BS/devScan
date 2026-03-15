@@ -1,5 +1,5 @@
 import {create} from "zustand" ;
-import { getCurrentUserApi , logout , CompleteProfileApi } from "@/services/auth.service";
+import { getCurrentUserApi , logout , CompleteProfileApi, ChangePasswordApi , UpdateNameApi } from "@/services/auth.service";
 
 interface AuthStore {
     user : any | null ;
@@ -8,6 +8,8 @@ interface AuthStore {
     getCurrentUser : () => Promise<void> ;
     logout : () => void ;
     completeProfile : (data: { firstName: string; lastName: string; password: string }) => Promise<void>;
+    changePassword : (data : {currentPassword : string , newPassword : string}) => Promise<void> ;
+    updateName : (data : {firstName : string , lastName : string}) => Promise<void> ;
 }
 
 export const useAuthStore = create<AuthStore>((set)=>({
@@ -52,5 +54,40 @@ export const useAuthStore = create<AuthStore>((set)=>({
         } finally {
             set({ loading: false });
         }
-    }
+    } ,
+
+    changePassword : async (data) => {
+        set({loading : true , error : null}) ;
+        try {
+            await ChangePasswordApi(data);
+            await getCurrentUserApi({
+                setUser : (user : any) => set({user}) ,
+                setLoading : (loading : boolean) => set({loading}),
+            });
+
+        }catch(error : any) {
+            console.error("Complete profile error:", error);
+            set({loading : false , error: error.message || "Profile update failed" });
+        }
+    } , 
+    updateName: async (data) => {
+  try {
+    set({ loading: true, error: null });
+
+    const updatedUser = await UpdateNameApi(data);
+
+    set({
+      user: updatedUser,
+      loading: false,
+    });
+
+  } catch (error: any) {
+    console.error("Update name error:", error);
+
+    set({
+      loading: false,
+      error: error.message || "Failed to update name",
+    });
+  }
+}
 }))
