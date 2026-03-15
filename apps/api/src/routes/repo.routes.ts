@@ -16,15 +16,17 @@ import { deleteAllGithubRepos,
 import axios from "axios";
 
 import { prisma } from "../db.js";
+import { isAdmin } from "src/middleware/isAdmin.js";
+import { isBanned } from "src/middleware/isBanned.js";
 
 const router : Router = Router();
 
-router.get("/",auth, getGithubRepos);
+router.get("/",auth, isBanned , getGithubRepos);
 
 
-router.get("/all-db",auth, getAllRepoFromDbByUser);
+router.get("/all-db",auth, isBanned , getAllRepoFromDbByUser);
 
-router.post("/sync", auth, async (req: AuthRequest, res: Response) => {
+router.post("/sync", auth, isBanned , async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "Not authenticated" });
@@ -77,16 +79,16 @@ router.post("/sync", auth, async (req: AuthRequest, res: Response) => {
 });
 
 
-router.delete("/clear", auth, deleteAllGithubRepos) ;
-router.post("/save" , auth, saveGithubRepo) ;
+router.delete("/clear", auth, isBanned , deleteAllGithubRepos) ;
+router.post("/save" , auth, isBanned , saveGithubRepo) ;
 
 
 // Admin routes
 
-router.get("/get-all-db", auth, getAllRepos) ;
-router.delete("/delete/:githubId" , auth, deleteRepoByAdmin) ;
-router.post("/save-single", auth, addRepoByAdmin) ;
+router.get("/get-all-db", auth, isAdmin , isBanned , getAllRepos) ;
+router.delete("/delete/:githubId" , auth, isAdmin, isBanned, deleteRepoByAdmin) ;
+router.post("/save-single", auth, isAdmin , isBanned , addRepoByAdmin) ;
 //---
-router.get('/:githubId' , auth, getRepoDetails) ;
+router.get('/:githubId' , auth, isBanned , getRepoDetails) ;
 
 export default router ;

@@ -6,7 +6,7 @@ import { isBanned } from "src/middleware/isBanned";
 
 const router : Router = Router();
 
-router.post("/login"   , adminLogin) ;
+router.post("/login"  , adminLogin) ;
 router.get("/current", auth , isAdmin , isBanned , getCurrentAdmin) ;
 router.post("/logout", auth , isAdmin , isBanned , Logout) ;
 
