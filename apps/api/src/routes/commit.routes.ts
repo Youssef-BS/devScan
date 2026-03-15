@@ -4,12 +4,13 @@ import {
   getAllCommits,
   getCommitDetails,
   analyzeCommitWithAI
-} from "../controllers/Commit.controller";
+} from "../controllers/Commit.controller" ;
+import { auth } from "../middleware/auth.js" ;
 
 const router: Router = Router();
-router.get("/fetch/:githubId", fetchAndSaveAllCommits);
-router.get("/repo/:githubId", getAllCommits);
-router.get("/details/:sha", getCommitDetails);
-router.post("/analyze", analyzeCommitWithAI);
+router.get("/fetch/:githubId", auth, fetchAndSaveAllCommits);
+router.get("/repo/:githubId", auth, getAllCommits);
+router.get("/details/:sha", auth, getCommitDetails);
+router.post("/analyze", auth, analyzeCommitWithAI);
 
 export default router;
