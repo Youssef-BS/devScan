@@ -95,6 +95,7 @@ export const githubCallback = async (req: Request, res: Response) => {
   const jwtToken = generateToken({
   userId: dbUser.id,
   role: "USER",
+  isBanned: dbUser.isBanned || false,
 });
 
     res.cookie("token", jwtToken, {

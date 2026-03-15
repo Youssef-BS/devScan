@@ -36,7 +36,8 @@ export const adminLogin = async (req: Request, res: Response) => {
 
         const token = generateToken({
             userId : user.id ,
-            role : user.role
+            role : user.role ,
+            isBanned : user.isBanned
         })
 
         res.cookie("token", token, {
