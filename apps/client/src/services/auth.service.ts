@@ -1,22 +1,43 @@
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
-export const getCurrentUserApi = async ({setUser, setLoading} : {setUser : (user:any) => void , setLoading : (loading:boolean) => void}) => {
+export const getCurrentUserApi = async ({ setUser, setLoading }: any) => {
   try {
-        const res = await fetch(`${apiUrl}/auth/current-user`, {
-          credentials: "include",
-        });
-        if (!res.ok) {
-          setUser(null)
-          return ;
-        }
-        const data = await res.json();
-        setUser(data.user);
+
+    const res = await fetch(`${apiUrl}/auth/current-user`, {
+      credentials: "include",
+    });
+
+    if (!res.ok) {
+      setUser(null);
+      return;
+    }
+
+    const data = await res.json();
+    setUser(data);
   } catch (error) {
-        setUser(null);
-   } finally {
-        setLoading(false);
-      }
-}
+    console.error(error);
+    setUser(null);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const CompleteProfileApi = async ({ firstName, lastName, password } : any) => {
+  const res = await fetch("http://localhost:4000/auth/update-profile", {
+    method: "POST",
+    credentials: "include", 
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ firstName, lastName, password }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    console.error("Backend error:", err);
+    throw new Error(err.message || "Failed to update profile");
+  }
+
+  return res.json();
+};
 
 export const logout = () => {
     

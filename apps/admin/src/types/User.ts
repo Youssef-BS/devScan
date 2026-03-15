@@ -27,6 +27,7 @@ export interface User {
   role: "USER" | "ADMIN";
   isBanned: boolean;
   repos ?: Repo[];
+  createdAt ?: any;
 }
 
 

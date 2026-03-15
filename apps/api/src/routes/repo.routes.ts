@@ -10,6 +10,7 @@ import { deleteAllGithubRepos,
    addRepoByAdmin
   } 
    from "../controllers/Repo.controller.js";
+   import { auth } from "../middleware/auth.js" ;
 
 import axios from "axios";
 
@@ -17,12 +18,12 @@ import { prisma } from "../db.js";
 
 const router : Router = Router();
 
-router.get("/", getGithubRepos);
+router.get("/",auth, getGithubRepos);
 
 
-router.get("/all-db", getAllRepoFromDbByUser);
+router.get("/all-db",auth, getAllRepoFromDbByUser);
 
-router.post("/sync", async (req: Request, res: Response) => {
+router.post("/sync", auth, async (req: Request, res: Response) => {
   try {
     if (!req.session.user) {
       return res.status(401).json({ message: "Not authenticated" });
@@ -75,16 +76,16 @@ router.post("/sync", async (req: Request, res: Response) => {
 });
 
 
-router.delete("/clear", deleteAllGithubRepos) ;
-router.post("/save" , saveGithubRepo) ;
+router.delete("/clear", auth, deleteAllGithubRepos) ;
+router.post("/save" , auth, saveGithubRepo) ;
 
 
 // Admin routes
 
-router.get("/get-all-db", getAllRepos) ;
-router.delete("/delete/:githubId" , deleteRepoByAdmin) ;
-router.post("/save-single", addRepoByAdmin) ;
+router.get("/get-all-db", auth, getAllRepos) ;
+router.delete("/delete/:githubId" , auth, deleteRepoByAdmin) ;
+router.post("/save-single", auth, addRepoByAdmin) ;
 //---
-router.get('/:githubId' , getRepoDetails) ;
+router.get('/:githubId' , auth, getRepoDetails) ;
 
 export default router ;
