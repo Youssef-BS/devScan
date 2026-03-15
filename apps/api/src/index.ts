@@ -6,27 +6,12 @@ import githubRoutes from "./routes/repo.routes.js";
 import commitRoutes from "./routes/commit.routes.js";
 import adminRoutes from "./routes/admin.route.js";
 import userRoutes from "./routes/user.route.js" ;
-import session from "express-session";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
 
 const app = express();
 app.use(cookieParser()) ;
-
-
-app.use(session({
-  name: 'sessionId',
-  secret: process.env.SESSION_SECRET || 'defaultsecret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    sameSite: 'lax',
-    maxAge: 24 * 60 * 60 * 1000 
-  }
-})) ;
 
 app.use(cors(
   {
