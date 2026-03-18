@@ -1,7 +1,7 @@
 "use client"
-import React, { useEffect, Suspense } from "react";
+import React, { useEffect , useState } from "react";
 import AnalyseCard from "@/components/cards/AnalyseCard";
-import { FingerprintPattern, Zap, Code, BrainCircuit, Check, Github, ArrowRight, Users, TrendingUp, Code2 } from "lucide-react";
+import { FingerprintPattern, Zap, Code, BrainCircuit, Check, Github, ArrowRight, Users, TrendingUp, Code2 , Lock , Mail , EyeOff , Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -9,6 +9,9 @@ import Footer from "@/components/Footer";
 import PlanCard from "@/components/cards/PlanCard";
 import { usePlanStore } from "@/store/usePlanStore";
 import { useServiceStore } from "@/store/useServiceStore";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+
 
 const logoMap: Record<string, React.ReactNode> = {
   fingerprint: <FingerprintPattern />,
@@ -45,6 +48,17 @@ const data = [
 ]
 
 function HomePage() {
+
+const [email, setEmail] = useState('');
+const [password, setPassword] = useState('');
+const [rememberMe, setRememberMe] = useState(false);
+const [isLoading, setIsLoading] = useState(false);
+const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+const [resetEmail, setResetEmail] = useState('');
+const [isResetLoading, setIsResetLoading] = useState(false);
+const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+const [showPassword, setShowPassword] = useState(false);
+  
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -74,7 +88,35 @@ function HomePage() {
   }, [setPlans, plans, setServices]);
 
   console.log("plans in page.tsx:", services);
+const handleEmailSignIn = async (e : any) => {
+  e.preventDefault();
+  setIsLoading(true);
+  try {
+    // Implement your email sign-in logic here
+    console.log('Signing in with:', { email, password, rememberMe });
+    // await signInWithEmail(email, password);
+  } catch (error) {
+    console.error('Sign in error:', error);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
+const handleForgotPassword = async (e :  any) => {
+  e.preventDefault();
+  setIsResetLoading(true);
+  try {
+    // Implement your forgot password logic here
+    console.log('Reset password for:', resetEmail);
+    // await sendPasswordResetEmail(resetEmail);
+    setIsForgotPasswordOpen(false);
+    // Show success toast/message
+  } catch (error) {
+    console.error('Reset error:', error);
+  } finally {
+    setIsResetLoading(false);
+  }
+};
   return (
     <React.Fragment>
       <section className="h-[90vh] w-full bg-gradient-to-br from-gray-50 to-purple-100 mb-20">
@@ -85,18 +127,24 @@ function HomePage() {
           <div className="flex">
             <Dialog open={isLoginOpen} onOpenChange={(open) => !open && closeModal()}>
               <DialogTrigger asChild>
-                <div className="mx-2 px-6 py-4 bg-gradient-to-br from-blue-600 to-purple-600 text-white rounded-lg transition cursor-pointer font-bold" onClick={openLoginModal}>Start free with github</div>
+                <div className="mx-2 px-6 py-4 bg-gray-900 text-white rounded-lg transition cursor-pointer font-bold hover:bg-gray-800 hover:shadow-lg hover:scale-105 transform duration-200" onClick={openLoginModal}>
+                  Start free with GitHub
+                </div>
               </DialogTrigger>
               <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                  <DialogTitle>Welcome to DevScan</DialogTitle>
-                  <DialogDescription>
-                    Sign in with your GitHub account to start auditing your code
+                  <DialogTitle className="text-2xl font-bold text-gray-900">
+                    Welcome to DevScan
+                  </DialogTitle>
+                  <DialogDescription className="text-gray-600">
+                    Sign in to start auditing your code
                   </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-4 py-4">
+                
+                <div className="space-y-6 py-4">
+                  {/* GitHub Button */}
                   <Button
-                    className="w-full bg-gray-900 hover:bg-gray-800"
+                    className="w-full bg-gray-900 hover:bg-gray-800 text-white hover:shadow-md transition-all duration-200 h-11"
                     onClick={() => {
                       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
                       window.location.href = `${apiUrl}/auth/github`
@@ -108,19 +156,281 @@ function HomePage() {
 
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t" />
+                      <span className="w-full border-t border-gray-200" />
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-white px-2 text-gray-500">Or</span>
+                      <span className="bg-white px-3 text-gray-500 font-medium">Or continue with email</span>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-500 text-center">
-                    By signing in, you agree to our Terms of Service and Privacy Policy
+                  <form className="space-y-4" onSubmit={handleEmailSignIn}>
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                        Email address
+                      </Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="you@example.com"
+                          className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                          Password
+                        </Label>
+                        <button
+                          type="button"
+                          onClick={() => setIsForgotPasswordOpen(true)}
+                          className="text-sm text-gray-600 hover:text-gray-900 hover:underline transition-colors duration-200 font-medium"
+                        >
+                          Forgot password?
+                        </button>
+                      </div>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <Input
+                          id="password"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                          ) : (
+                            <Eye className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <input
+                        id="remember-me"
+                        type="checkbox"
+                        className="h-4 w-4 text-gray-900 focus:ring-gray-500 border-gray-300 rounded"
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                      />
+                      <Label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                        Remember me
+                      </Label>
+                    </div>
+
+                    <Button
+                      type="submit"
+                      className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg h-11"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <div className="flex items-center justify-center">
+                          <div className="w-5 h-5 border-t-2 border-white rounded-full animate-spin mr-2" />
+                          Signing in...
+                        </div>
+                      ) : (
+                        'Sign in with Email'
+                      )}
+                    </Button>
+                  </form>
+                  <div className="text-center">
+                    <span className="text-sm text-gray-600">Don't have an account? </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        closeModal();
+                        setIsSignUpOpen(true);
+                      }}
+                      className="text-sm text-gray-900 hover:text-gray-700 hover:underline font-medium transition-colors duration-200"
+                    >
+                      Create an account
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-500 text-center leading-relaxed">
+                    By signing in, you agree to our{' '}
+                    <a href="/terms" className="text-gray-900 hover:text-gray-700 hover:underline font-medium">
+                      Terms of Service
+                    </a>{' '}
+                    and{' '}
+                    <a href="/privacy" className="text-gray-900 hover:text-gray-700 hover:underline font-medium">
+                      Privacy Policy
+                    </a>
                   </p>
                 </div>
               </DialogContent>
             </Dialog>
+            <Dialog open={isForgotPasswordOpen} onOpenChange={setIsForgotPasswordOpen}>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="text-xl font-bold text-gray-900">Reset your password</DialogTitle>
+                  <DialogDescription className="text-gray-600">
+                    Enter your email address and we'll send you a link to reset your password.
+                  </DialogDescription>
+                </DialogHeader>
+                
+                <form onSubmit={handleForgotPassword} className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="reset-email" className="text-sm font-medium text-gray-700">
+                      Email address
+                    </Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Input
+                        id="reset-email"
+                        type="email"
+                        placeholder="you@example.com"
+                        className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                        value={resetEmail}
+                        onChange={(e) => setResetEmail(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
 
+                  <div className="flex gap-3">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setIsForgotPasswordOpen(false)}
+                      className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="flex-1 bg-gray-900 hover:bg-gray-800 text-white"
+                      disabled={isResetLoading}
+                    >
+                      {isResetLoading ? (
+                        <div className="flex items-center justify-center">
+                          <div className="w-4 h-4 border-t-2 border-white rounded-full animate-spin mr-2" />
+                          Sending...
+                        </div>
+                      ) : (
+                        'Send reset link'
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </DialogContent>
+            </Dialog>
+
+            {/* Sign Up Dialog */}
+            <Dialog open={isSignUpOpen} onOpenChange={setIsSignUpOpen}>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold text-gray-900">
+                    Create an account
+                  </DialogTitle>
+                  <DialogDescription className="text-gray-600">
+                    Sign up to start auditing your code
+                  </DialogDescription>
+                </DialogHeader>
+                
+                <div className="space-y-6 py-4">
+                  <Button
+                    className="w-full bg-gray-900 hover:bg-gray-800 text-white h-11"
+                    onClick={() => {
+                      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+                      window.location.href = `${apiUrl}/auth/github`
+                    }}
+                  >
+                    <Github className="h-5 w-5 mr-2" />
+                    Sign up with GitHub
+                  </Button>
+
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t border-gray-200" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-white px-3 text-gray-500 font-medium">Or sign up with email</span>
+                    </div>
+                  </div>
+
+                  <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-name" className="text-sm font-medium text-gray-700">
+                        Full name
+                      </Label>
+                      <Input
+                        id="signup-name"
+                        type="text"
+                        placeholder="John Doe"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-email" className="text-sm font-medium text-gray-700">
+                        Email address
+                      </Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <Input
+                          id="signup-email"
+                          type="email"
+                          placeholder="you@example.com"
+                          className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-password" className="text-sm font-medium text-gray-700">
+                        Password
+                      </Label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <Input
+                          id="signup-password"
+                          type="password"
+                          placeholder="••••••••"
+                          className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                        />
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Must be at least 8 characters long
+                      </p>
+                    </div>
+
+                    <Button
+                      type="submit"
+                      className="w-full bg-gray-900 hover:bg-gray-800 text-white h-11"
+                    >
+                      Create account
+                    </Button>
+                  </form>
+
+                  <div className="text-center">
+                    <span className="text-sm text-gray-600">Already have an account? </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsSignUpOpen(false);
+                        openLoginModal();
+                      }}
+                      className="text-sm text-gray-900 hover:text-gray-700 hover:underline font-medium"
+                    >
+                      Sign in
+                    </button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
             <div className="mx-2 px-6 py-4 bg-white text-black border-2 border-gray-800 rounded-lg transition cursor-pointer font-bold" >watch demo</div>
           </div>
         </div>
