@@ -8,8 +8,9 @@ export const analyseCodeApi = async (
   analysisType: string = "audit"
 ): Promise<AnalysisResult> => {
   const response = await fetch(`${apiUrl}/github/commit/analyze`, {
-    method: "POST",
-    headers: {
+    method : "POST",
+    credentials : "include" ,
+        headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
