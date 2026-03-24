@@ -150,7 +150,7 @@ export const getCommitDetails = async (req: Request, res: Response) => {
     });
     const existingFilesMap = new Map(existingFiles.map(f => [f.path, f]));
     
-    const allFiles = [];
+    const allFiles = [] as any;
     const filesToSave = [];
 
     // Process all files from GitHub
@@ -241,7 +241,7 @@ export const getCommitDetails = async (req: Request, res: Response) => {
           });
           console.log(`Saved: ${fileToSave.path}`);
           
-          const fileIndex = allFiles.findIndex(f => f.path === fileToSave.path);
+          const fileIndex = allFiles.findIndex((f : any) => f.path === fileToSave.path);
           if (fileIndex >= 0) {
             allFiles[fileIndex].id = savedFile.id;
           }
@@ -266,7 +266,7 @@ export const getCommitDetails = async (req: Request, res: Response) => {
         message: commitRes.data.commit?.message || '',
         author: commitRes.data.commit?.author?.name || '',
         date: commitRes.data.commit?.author?.date || new Date(),
-        totalChanges: allFiles.reduce((sum, file) => sum + (file.changes || 0), 0)
+        totalChanges: allFiles.reduce((sum : any, file :any) => sum + (file.changes || 0), 0)
       }
     });
   } catch (error: any) {
