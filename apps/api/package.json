@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@repo/validation": "workspace:*",
     "@prisma/adapter-pg": "7.0.0",
     "@prisma/client": "7.3.0",
     "axios": "^1.13.2",

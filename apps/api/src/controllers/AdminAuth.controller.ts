@@ -3,58 +3,55 @@ import { prisma } from '../db';
 import bcrypt from 'bcrypt';
 import { generateToken } from '../utils/jwt';
 import { AuthRequest } from 'src/middleware/auth';
+import { adminLoginSchema } from '@repo/validation';
 
 
 export const adminLogin = async (req: Request, res: Response) => {
-    const {email , password} = req.body ; 
-   
     try {
-
-        if(!email || !password) {
-            return res.status(400).json({message : "Email and password are required"});
+        const result = adminLoginSchema.safeParse(req.body);
+        if (!result.success) {
+            return res.status(400).json({
+                message: "Validation error",
+                errors: result.error.flatten(),
+            });
         }
 
-        const user = await prisma.user.findUnique({
-            where : {
-                email
-            }
-        })
+        const { email, password } = result.data;
 
-        if(!user)
-            return res.status(401).json({message : "Invalid credentials"});
+        const user = await prisma.user.findUnique({ where: { email } });
 
-        if(user.role !== "ADMIN") 
-            return res.status(403).json({message : "Access denied"});
+        if (!user)
+            return res.status(401).json({ message: "Invalid credentials" });
 
-        if(!user.password) 
-            return res.status(401).json({message : "This user does not have a password."});
+        if (user.role !== "ADMIN")
+            return res.status(403).json({ message: "Access denied" });
 
-        const isValid = await bcrypt.compare(password , user.password) ;
+        if (!user.password)
+            return res.status(401).json({ message: "This user does not have a password." });
 
-        if(!isValid)
-            return res.status(401).json({message : "Invalid credentials"});
+        const isValid = await bcrypt.compare(password, user.password);
+
+        if (!isValid)
+            return res.status(401).json({ message: "Invalid credentials" });
 
         const token = generateToken({
-            userId : user.id ,
-            role : user.role ,
-            isBanned : user.isBanned
-        })
+            userId: user.id,
+            role: user.role,
+            isBanned: user.isBanned
+        });
 
         res.cookie("token", token, {
             httpOnly: true,
             secure: false,
             sameSite: 'lax',
-            maxAge: 24 * 60 * 60 * 1000 
+            maxAge: 24 * 60 * 60 * 1000
         });
 
-        return res.json({
-            message : "Admin Login successful",
-        })
+        return res.json({ message: "Admin Login successful" });
 
-
-   } catch (error) {
-     return res.status(500).json({ message: 'Internal Server Error' });
-   }
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
 }
 
 export const Logout = async (req: Request, res: Response) => {

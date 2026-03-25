@@ -5,6 +5,7 @@ import { prisma } from '../db';
 import { generateToken } from '../utils/jwt';
 import { AuthRequest } from 'src/middleware/auth';
 import bcrypt from 'bcrypt';
+import { updateProfileSchema, changePasswordSchema, updateNameSchema } from "@repo/validation";
 
 export const githubLogin = async (req: Request, res: Response) => {
   try {
@@ -136,27 +137,48 @@ export const getCurrentUser = async (req: any, res: Response) => {
   }
 };
 
+
 export const updateProfile = async (req: AuthRequest, res: Response) => {
   try {
     console.log("updateProfile called with body:", req.body);
-    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
 
-    const { firstName, lastName, password } = req.body;
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const result = updateProfileSchema.safeParse(req.body);
+
+    if (!result.success) {
+      return res.status(400).json({
+        message: "Validation error",
+        errors: result.error.flatten(),
+      });
+    }
+
+    const { firstName, lastName, password }  = result.data;
 
     const updateData: any = {};
+
     if (firstName) updateData.firstName = firstName;
     if (lastName) updateData.lastName = lastName;
-    if (password) updateData.password = await bcrypt.hash(password, 10); 
+
+    if (password) {
+      updateData.password = await bcrypt.hash(password, 10);
+    }
 
     const user = await prisma.user.update({
-      where: { id: Number(req.user.userId) }, 
+      where: { id: Number(req.user.userId) },
       data: updateData,
     });
 
-    res.json(user);
+    return res.json(user);
+
   } catch (err) {
     console.error("updateProfile error:", err);
-    res.status(500).json({ message: "Profile update failed" });
+
+    return res.status(500).json({
+      message: "Profile update failed",
+    });
   }
 };
 
@@ -166,19 +188,15 @@ export const changePassword = async (req: AuthRequest, res: Response) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const { currentPassword, newPassword } = req.body;
-
-    if (!currentPassword || !newPassword) {
-      return res.status(400).json({ message: "All fields are required" });
+    const result = changePasswordSchema.safeParse(req.body);
+    if (!result.success) {
+      return res.status(400).json({
+        message: "Validation error",
+        errors: result.error.flatten(),
+      });
     }
 
-    if (newPassword.length < 6) {
-      return res.status(400).json({ message: "Password must be at least 6 characters" });
-    }
-
-    if (currentPassword === newPassword) {
-      return res.status(400).json({ message: "New password must be different" });
-    }
+    const { currentPassword, newPassword } = result.data;
 
     const user = await prisma.user.findUnique({
       where: { id: Number(req.user.userId) },
@@ -190,20 +208,17 @@ export const changePassword = async (req: AuthRequest, res: Response) => {
     }
 
     const isMatch = await bcrypt.compare(currentPassword, user.password);
-
     if (!isMatch) {
       return res.status(400).json({ message: "Current password is incorrect" });
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-
     await prisma.user.update({
       where: { id: Number(req.user.userId) },
       data: { password: hashedNewPassword },
     });
 
     res.json({ message: "Password changed successfully" });
-
   } catch (err) {
     console.error("changePassword error:", err);
     res.status(500).json({ message: "Password change failed" });
@@ -216,18 +231,19 @@ export const updateName = async (req: AuthRequest, res: Response) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const { firstName, lastName } = req.body;
-
-    if (!firstName || !lastName) {
-      return res.status(400).json({ message: "First name and last name are required" });
+    const result = updateNameSchema.safeParse(req.body);
+    if (!result.success) {
+      return res.status(400).json({
+        message: "Validation error",
+        errors: result.error.flatten(),
+      });
     }
+
+    const { firstName, lastName } = result.data;
 
     const updatedUser = await prisma.user.update({
       where: { id: Number(req.user.userId) },
-      data: {
-        firstName,
-        lastName,
-      },
+      data: { firstName, lastName },
       select: {
         id: true,
         username: true,

@@ -1,5 +1,5 @@
 {
-    "extends":"../../packages/typescript-config/base.json",
+    "extends": "../../packages/typescript-config/base.json",
     "compilerOptions": {
         "target": "ES2020",
         "module": "ES2020",
@@ -13,7 +13,10 @@
         "forceConsistentCasingInFileNames": true,
         "declaration": true,
         "outDir": "./dist",
-        "baseUrl": "."
+        "baseUrl": ".",
+        "paths": {
+          "@repo/*": ["../../packages/*/dist"]
+        }
     },
     "include": ["src/**/*", "prisma/**/*"],
     "exclude": ["node_modules", "dist"]
