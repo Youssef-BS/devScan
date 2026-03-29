@@ -93,6 +93,10 @@ export const githubCallback = async (req: Request, res: Response) => {
       },
     });
 
+    if (dbUser.isBanned) {
+      return res.redirect(`${process.env.CLIENT_URL}/banned`);
+    }
+
   const jwtToken = generateToken({
   userId: dbUser.id,
   role: "USER",

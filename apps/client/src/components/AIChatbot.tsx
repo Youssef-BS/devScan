@@ -58,7 +58,6 @@ const AIChatbot: React.FC<AIChatbotProps> = ({
     setIsLoading(true);
 
     try {
-      // Prepare the context for the AI
       const fullPrompt = codeContext
         ? `Code context:\n${codeContext}\n\nUser question: ${inputValue}`
         : inputValue;
@@ -69,6 +68,7 @@ const AIChatbot: React.FC<AIChatbotProps> = ({
         headers: {
           "Content-Type": "application/json",
         },
+        credentials : "include" ,
         body: JSON.stringify({
           code: fullPrompt,
           analysisType: "chatbot",
