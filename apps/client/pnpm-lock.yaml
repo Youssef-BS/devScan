@@ -77,6 +77,9 @@ importers:
       tailwind-merge:
         specifier: ^3.4.0
         version: 3.4.0
+      textarea:
+        specifier: ^0.3.0
+        version: 0.3.0
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
@@ -2782,6 +2785,9 @@ packages:
   tapable@2.3.0:
     resolution: {integrity: sha512-g9ljZiwki/LfxmQADO3dEY1CbpmXT5Hm2fJ+QaGKwSXUylMybePR7/67YW7jOrrvjEgL1Fmz5kzyAjWVWLlucg==}
     engines: {node: '>=6'}
+
+  textarea@0.3.0:
+    resolution: {integrity: sha512-mLIr1WYhuoPNuq7Tz8kf0g/VFr0q1BnwScX820WITbyq7MTPbmxK1oVyeoYCzCFjBAcE2MNIBpIBDV1Ctyqxrg==}
 
   tinyglobby@0.2.15:
     resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
@@ -5864,6 +5870,8 @@ snapshots:
   tailwindcss@4.1.18: {}
 
   tapable@2.3.0: {}
+
+  textarea@0.3.0: {}
 
   tinyglobby@0.2.15:
     dependencies:
