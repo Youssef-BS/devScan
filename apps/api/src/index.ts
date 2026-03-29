@@ -6,6 +6,7 @@ import githubRoutes from "./routes/repo.routes.js";
 import commitRoutes from "./routes/commit.routes.js";
 import adminRoutes from "./routes/admin.route.js";
 import userRoutes from "./routes/user.route.js" ;
+import subscriptionRoutes from "./routes/subscription.routes.js";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -31,8 +32,11 @@ app.use(cors(
   }
 ));
 
-app.use(express.json());
+// Register subscription routes BEFORE express.json()
+// Webhook route has raw() middleware, other routes have json() middleware
+app.use("/subscription", subscriptionRoutes);
 
+app.use(express.json());
 
 //test route
 app.get("/health", (req, res) => {

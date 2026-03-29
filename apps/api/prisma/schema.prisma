@@ -8,24 +8,44 @@ datasource db {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  githubId    String?   @unique
-  username    String?
-  email       String?  @unique
-  password   String?
-  avatarUrl   String?
-  accessToken String?
-  firstName String? 
-  lastName  String?
-  isBanned     Boolean   @default(false)
-  createdAt   DateTime @default(now())
-  role       Role     @default(USER)
+  id                    Int      @id @default(autoincrement())
+  githubId              String?   @unique
+  username              String?
+  email                 String?  @unique
+  password              String?
+  avatarUrl             String?
+  accessToken           String?
+  firstName             String? 
+  lastName              String?
+  isBanned              Boolean   @default(false)
+  createdAt             DateTime @default(now())
+  role                  Role     @default(USER)
+  stripeCustomerId      String?   @unique
+  subscriptionStatus    SubscriptionStatus @default(INACTIVE)
+  subscriptionPlan      SubscriptionPlan?
+  subscriptionStartDate DateTime?
+  subscriptionEndDate   DateTime?
+  stripeSubscriptionId  String?   @unique
+  
   repos       Repo[]
 }
 
 enum Role {
   USER
   ADMIN
+}
+
+enum SubscriptionStatus {
+  INACTIVE
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+enum SubscriptionPlan {
+  MONTHLY
+  QUARTERLY
+  YEARLY
 }
 
 model Repo {
