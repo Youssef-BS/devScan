@@ -20,9 +20,14 @@ import {
   RefreshCw,
   ChevronRight,
   Code2,
+  CreditCard,
+  CheckCircle,
+  AlertCircle,
+  DollarSign,
 } from "lucide-react";
 import { useUserStore } from "@/store/user.store";
 import { useRepoStore } from "@/store/repo.store";
+import { useSubscriptionStore } from "@/store/subscription.store";
 import Link from "next/link";
 
 export default function Dashboard() {
@@ -32,15 +37,17 @@ export default function Dashboard() {
   
   const { users, pagination: userPagination, fetchListUsers, loading: usersLoading } = useUserStore();
   const { repos, fetchRepos, loading: reposLoading } = useRepoStore();
+  const { stats: subscriptionStats, chartData: subscriptionChart, recentSubscriptions, fetchAllSubscriptionData, loading: subscriptionLoading } = useSubscriptionStore();
 
   useEffect(() => {
     fetchListUsers(1);
     fetchRepos(1);
-  }, [fetchListUsers, fetchRepos]);
+    fetchAllSubscriptionData();
+  }, [fetchListUsers, fetchRepos, fetchAllSubscriptionData]);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
-    await Promise.all([fetchListUsers(1), fetchRepos(1)]);
+    await Promise.all([fetchListUsers(1), fetchRepos(1), fetchAllSubscriptionData()]);
     setIsRefreshing(false);
   };
 
@@ -50,11 +57,19 @@ export default function Dashboard() {
   const bannedUsers = users?.filter(u => u.isBanned).length || 0;
   const activeUsers = totalUsers - bannedUsers;
   
+  // Subscription stats
+  const activeSubscriptions = subscriptionStats?.activeSubscriptions || 0;
+  const inactiveSubscriptions = subscriptionStats?.inactiveSubscriptions || 0;
+  const activationRate = subscriptionStats?.activationRate || '0';
+  const monthlyRevenue = subscriptionStats?.estimatedMonthlyRevenue || '0';
+  
   // Calculate trends (mock data for now - you'd compare with previous period)
   const userTrend = "+12%";
   const repoTrend = "+8%";
   const bannedTrend = "-5%";
   const activeTrend = "+15%";
+  const subscriptionTrend = "+23%";
+  const revenueTrend = "+18%";
 
   const stats = [
     {
@@ -74,6 +89,24 @@ export default function Dashboard() {
       trend: activeTrend.startsWith('+') ? 'up' : 'down',
       color: "white",
       link: "/admin/users?filter=active",
+    },
+    {
+      title: "Active Subscriptions",
+      value: activeSubscriptions.toLocaleString(),
+      change: subscriptionTrend,
+      icon: CheckCircle,
+      trend: subscriptionTrend.startsWith('+') ? 'up' : 'down',
+      color: "white",
+      link: "/admin/subscriptions",
+    },
+    {
+      title: "Est. Monthly Revenue",
+      value: `$${parseFloat(monthlyRevenue).toFixed(2)}`,
+      change: revenueTrend,
+      icon: DollarSign,
+      trend: revenueTrend.startsWith('+') ? 'up' : 'down',
+      color: "white",
+      link: "/admin/subscriptions",
     },
     {
       title: "Banned Users",
@@ -284,6 +317,155 @@ export default function Dashboard() {
               ))}
             </div>
           </div>
+
+          {/* Subscription Trend Chart */}
+          <div className="bg-white p-6 rounded-2xl border border-gray-200">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">Subscription Trend</h2>
+                <p className="text-sm text-gray-500 mt-1">Active subscriptions per day</p>
+              </div>
+              <CreditCard size={20} className="text-gray-400" />
+            </div>
+            
+            <div className="h-64 flex items-end justify-between gap-2">
+              {subscriptionChart?.weeklyData && subscriptionChart.weeklyData.length > 0 ? (
+                subscriptionChart.weeklyData.map((data, i) => {
+                  const maxValue = Math.max(...subscriptionChart.weeklyData.map(d => d.activeSubscriptions), 1);
+                  const height = (data.activeSubscriptions / maxValue) * 100;
+                  return (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-2">
+                      <div 
+                        className="w-full bg-green-600 rounded-t-lg transition-all hover:bg-green-500 cursor-pointer"
+                        style={{ height: `${height || 5}%` }}
+                        title={`${data.activeSubscriptions} subscriptions`}
+                      />
+                      <span className="text-xs text-gray-500 truncate">
+                        {data.date}
+                      </span>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="w-full flex items-center justify-center text-gray-400">
+                  No subscription data
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Subscription Breakdown & Revenue */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {/* Plan Distribution */}
+          <div className="bg-white p-6 rounded-2xl border border-gray-200">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">Subscription Plans</h2>
+                <p className="text-sm text-gray-500 mt-1">Active subscribers by plan</p>
+              </div>
+              <CreditCard size={20} className="text-gray-400" />
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-gray-700">Monthly ($9.99)</span>
+                  <span className="text-sm font-semibold text-gray-900">{subscriptionStats?.monthlySubscribers || 0}</span>
+                </div>
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-blue-600 rounded-full"
+                    style={{ 
+                      width: `${subscriptionStats && (subscriptionStats.monthlySubscribers / (subscriptionStats.activeSubscriptions || 1)) * 100}%` 
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-gray-700">Quarterly ($24.99)</span>
+                  <span className="text-sm font-semibold text-gray-900">{subscriptionStats?.quarterlySubscribers || 0}</span>
+                </div>
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-purple-600 rounded-full"
+                    style={{ 
+                      width: `${subscriptionStats && (subscriptionStats.quarterlySubscribers / (subscriptionStats.activeSubscriptions || 1)) * 100}%` 
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-gray-700">Yearly ($79.99)</span>
+                  <span className="text-sm font-semibold text-gray-900">{subscriptionStats?.yearlySubscribers || 0}</span>
+                </div>
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-amber-600 rounded-full"
+                    style={{ 
+                      width: `${subscriptionStats && (subscriptionStats.yearlySubscribers / (subscriptionStats.activeSubscriptions || 1)) * 100}%` 
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Subscription Status Overview */}
+          <div className="bg-white p-6 rounded-2xl border border-gray-200">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">Subscription Status</h2>
+                <p className="text-sm text-gray-500 mt-1">Distribution by status</p>
+              </div>
+              <AlertCircle size={20} className="text-gray-400" />
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <CheckCircle size={18} className="text-green-600" />
+                  <span className="text-sm font-medium text-gray-700">Active</span>
+                </div>
+                <span className="text-sm font-semibold text-gray-900">{subscriptionStats?.activeSubscriptions || 0}</span>
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-yellow-50 border border-yellow-200 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <AlertCircle size={18} className="text-yellow-600" />
+                  <span className="text-sm font-medium text-gray-700">Expired</span>
+                </div>
+                <span className="text-sm font-semibold text-gray-900">{subscriptionStats?.expiredSubscriptions || 0}</span>
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <UserX size={18} className="text-red-600" />
+                  <span className="text-sm font-medium text-gray-700">Cancelled</span>
+                </div>
+                <span className="text-sm font-semibold text-gray-900">{subscriptionStats?.cancelledSubscriptions || 0}</span>
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <Clock size={18} className="text-gray-600" />
+                  <span className="text-sm font-medium text-gray-700">Inactive</span>
+                </div>
+                <span className="text-sm font-semibold text-gray-900">{subscriptionStats?.inactiveSubscriptions || 0}</span>
+              </div>
+
+              <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-xl">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700">Activation Rate</span>
+                  <span className="text-sm font-semibold text-blue-600">{subscriptionStats?.activationRate}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Bottom Grid */}
@@ -394,6 +576,81 @@ export default function Dashboard() {
                 </div>
               </Link>
             </div>
+          </div>
+        </div>
+
+        {/* Recent Subscriptions Table */}
+        <div className="mt-8 bg-white rounded-2xl border border-gray-200">
+          <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <CreditCard size={20} className="text-gray-600" />
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">Recent Subscriptions</h2>
+                <p className="text-sm text-gray-500 mt-1">Latest active subscriptions</p>
+              </div>
+            </div>
+            <Link 
+              href="/admin/subscriptions"
+              className="text-sm text-gray-500 hover:text-gray-900 flex items-center gap-1"
+            >
+              View all
+              <ChevronRight size={16} />
+            </Link>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Email</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Plan</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Start Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">End Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentSubscriptions && recentSubscriptions.length > 0 ? (
+                  recentSubscriptions.map((sub) => (
+                    <tr key={sub.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 text-sm">
+                        <div>
+                          <p className="font-medium text-gray-900">{sub.email}</p>
+                          <p className="text-xs text-gray-500">{sub.username}</p>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-sm">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          sub.subscriptionPlan === 'MONTHLY' ? 'bg-blue-100 text-blue-800' :
+                          sub.subscriptionPlan === 'QUARTERLY' ? 'bg-purple-100 text-purple-800' :
+                          'bg-amber-100 text-amber-800'
+                        }`}>
+                          {sub.subscriptionPlan}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {new Date(sub.subscriptionStartDate).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {new Date(sub.subscriptionEndDate).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 text-sm">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle size={16} className="text-green-600" />
+                          <span className="text-green-700 font-medium">Active</span>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                      No recent subscriptions
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
 

@@ -5,6 +5,7 @@ interface AuthStore {
     user : any | null ;
     loading : boolean ;
     error : string | null ;
+    isAuthenticated : boolean ;
     getCurrentUser : () => Promise<void> ;
     logout : () => void ;
     completeProfile : (data: { firstName: string; lastName: string; password: string }) => Promise<void>;
@@ -16,24 +17,25 @@ export const useAuthStore = create<AuthStore>((set)=>({
     user : null ,
     loading : false ,
     error : null ,
+    isAuthenticated : false ,
 
     getCurrentUser : async () => {
         set({ loading: true, error: null });
         try {
             await getCurrentUserApi({
-                setUser: (user: any) => set({ user }),
+                setUser: (user: any) => set({ user, isAuthenticated: !!user }),
                 setLoading: (loading: boolean) => set({ loading }),
             });
         } catch (error: any) {
             console.error("Error fetching current user:", error);
-            set({ user: null, error: error.message || "Failed to fetch user" });
+            set({ user: null, isAuthenticated: false, error: error.message || "Failed to fetch user" });
         }
     } ,
 
     logout : async () => {
         try {
             await logout();
-            set({ user: null });
+            set({ user: null, isAuthenticated: false });
         } catch (error: any) {
             console.error("Logout error:", error);
             set({ error: error.message || "Logout failed" });
@@ -45,7 +47,7 @@ export const useAuthStore = create<AuthStore>((set)=>({
         try {
             await CompleteProfileApi(data);
             await getCurrentUserApi({
-                setUser: (user: any) => set({ user }),
+                setUser: (user: any) => set({ user, isAuthenticated: !!user }),
                 setLoading: (loading: boolean) => set({ loading }),
             });
         } catch (error: any) {
@@ -61,7 +63,7 @@ export const useAuthStore = create<AuthStore>((set)=>({
         try {
             await ChangePasswordApi(data);
             await getCurrentUserApi({
-                setUser : (user : any) => set({user}) ,
+                setUser : (user : any) => set({user, isAuthenticated: !!user}) ,
                 setLoading : (loading : boolean) => set({loading}),
             });
 
@@ -78,6 +80,7 @@ export const useAuthStore = create<AuthStore>((set)=>({
 
     set({
       user: updatedUser,
+      isAuthenticated: !!updatedUser,
       loading: false,
     });
 

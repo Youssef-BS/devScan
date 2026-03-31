@@ -19,6 +19,7 @@ import {
   ChevronRight,
   Github,
   Clock,
+  CreditCard,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -31,6 +32,7 @@ import {
   type ChangePasswordInput,
   type CompleteProfileInput,
 } from '@repo/validation';
+import SubscriptionCard from '@/components/SubscriptionCard';
 
 const Profile = () => {
   const router = useRouter();
@@ -277,6 +279,12 @@ const Profile = () => {
                 <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full border border-gray-200">
                   {user.role || 'User'}
                 </span>
+                {user.subscriptionStatus === 'ACTIVE' && (
+                  <span className="px-3 py-1 bg-green-50 text-green-700 text-sm rounded-full border border-green-200 flex items-center gap-1">
+                    <CheckCircle size={14} />
+                    Premium
+                  </span>
+                )}
               </div>
               <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                 <div className="flex items-center gap-1">
@@ -287,6 +295,12 @@ const Profile = () => {
                   <Calendar size={16} className="text-gray-400" />
                   <span>Joined {new Date(user.createdAt).toLocaleDateString()}</span>
                 </div>
+                {user.subscriptionStatus === 'ACTIVE' && user.subscriptionEndDate && (
+                  <div className="flex items-center gap-1">
+                    <Clock size={16} className="text-gray-400" />
+                    <span>Until {new Date(user.subscriptionEndDate).toLocaleDateString()}</span>
+                  </div>
+                )}
                 {user.isBanned && (
                   <div className="flex items-center gap-1 text-red-600">
                     <Shield size={16} />
@@ -302,6 +316,7 @@ const Profile = () => {
         <div className="flex gap-2 mb-6 border-b border-gray-200">
           {[
             { id: 'profile', label: 'Profile Information', icon: User },
+            { id: 'subscription', label: 'Subscription', icon: CreditCard },
             { id: 'security', label: 'Security', icon: Lock },
             { id: 'activity', label: 'Recent Activity', icon: Clock },
           ].map((tab) => {
@@ -415,6 +430,19 @@ const Profile = () => {
                   </div>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Subscription Tab */}
+          {activeTab === 'subscription' && (
+            <div>
+              <SubscriptionCard
+                subscriptionStatus={user.subscriptionStatus}
+                subscriptionPlan={user.subscriptionPlan}
+                subscriptionStartDate={user.subscriptionStartDate}
+                subscriptionEndDate={user.subscriptionEndDate}
+                onSubscriptionChange={() => getCurrentUser()}
+              />
             </div>
           )}
 

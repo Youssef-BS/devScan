@@ -12,5 +12,4 @@ export type Plans = Plan[];
 
 export interface PlanCardProps {
   plan: Plan;
-  openLoginModal: () => void;
 }

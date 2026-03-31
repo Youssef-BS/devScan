@@ -18,7 +18,7 @@ export const plans : Plans = [
     },
     {
       name: "Pro",
-      price: "29",
+      price: "9.99",
       period: "per month",
       description: "For professional developers and growing teams",
       features: [
@@ -32,22 +32,22 @@ export const plans : Plans = [
         "API access"
       ],
       popular: true,
-      cta: "Start Free Trial"
+      cta: "Subscribe Now"
     },
     {
       name: "Enterprise",
-      price: "Custom",
-      period: "contact us",
+      price: "24.99",
+      period: "per 3 months",
       description: "For large teams and organizations",
       features: [
         "Everything in Pro",
-        "Self-hosted option",
-        "Custom AI models",
-        "SLA guarantee",
-        "Dedicated support",
         "Advanced analytics",
-        "SSO integration",
-        "Compliance reports"
+        "Dedicated support",
+        "SLA guarantee",
+        "Custom integrations",
+        "Beta feature access",
+        "Performance monitoring",
+        "Team collaboration tools"
       ],
       popular: false,
       cta: "Contact Sales"

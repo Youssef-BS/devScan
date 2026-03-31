@@ -30,25 +30,25 @@ export default function BannedPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-red-900 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-white p-4">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="w-full max-w-2xl"
       >
-        <Card className="rounded-2xl shadow-2xl border border-red-500/20 bg-black/60 backdrop-blur-xl">
+        <Card className="rounded-2xl shadow-xl border border-black/10 bg-white">
           <CardContent className="p-8">
             <div className="flex flex-col items-center text-center gap-4">
-              <div className="p-4 rounded-full bg-red-500/10">
-                <AlertTriangle className="text-red-500 w-10 h-10" />
+              <div className="p-4 rounded-full bg-black/5">
+                <AlertTriangle className="text-black w-10 h-10" />
               </div>
 
-              <h1 className="text-3xl font-bold text-white">
+              <h1 className="text-3xl font-bold text-black">
                 Your Account Has Been Banned
               </h1>
 
-              <p className="text-gray-400 max-w-md">
+              <p className="text-black/60 max-w-md">
                 If you believe this was a mistake, you can submit a reclamation
                 request below. Our team will review your case.
               </p>
@@ -63,7 +63,7 @@ export default function BannedPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-black/50 border-gray-700 text-white"
+                className="bg-white border-black/20 text-black placeholder:text-black/40 focus:border-black focus:ring-black/20"
               />
 
               <Textarea
@@ -72,13 +72,13 @@ export default function BannedPage() {
                 onChange={(e) => setMessage(e.target.value)}
                 required
                 rows={5}
-                className="bg-black/50 border-gray-700 text-white"
+                className="bg-white border-black/20 text-black placeholder:text-black/40 focus:border-black focus:ring-black/20"
               />
 
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-red-600 hover:bg-red-700 text-white rounded-xl"
+                className="w-full bg-black hover:bg-black/80 text-white rounded-xl transition-all duration-200"
               >
                 {loading ? (
                   "Sending..."
@@ -90,7 +90,7 @@ export default function BannedPage() {
               </Button>
 
               {success && (
-                <p className="text-green-400 text-sm text-center">
+                <p className="text-black/60 text-sm text-center">
                   Your request has been sent successfully.
                 </p>
               )}
