@@ -498,7 +498,6 @@ export const verifyPayment = async (
     console.log('User ID:', req.user.userId);
     console.log('Session ID:', sessionId);
 
-    // Retrieve the checkout session from Stripe
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     
     console.log('Session status:', session.payment_status);
@@ -521,7 +520,6 @@ export const verifyPayment = async (
       });
     }
 
-    // Get subscription details
     const subscription = await stripe.subscriptions.retrieve(subscriptionId as string);
     const plan = session.metadata?.plan || 'MONTHLY';
 
@@ -531,18 +529,15 @@ export const verifyPayment = async (
     console.log('current_period_start:', (subscription as any).current_period_start);
     console.log('current_period_end:', (subscription as any).current_period_end);
 
-    // Safely get timestamps - handle different subscription states
     let startTimestamp = (subscription as any).current_period_start;
     let endTimestamp = (subscription as any).current_period_end;
 
-    // If subscription is pending/incomplete, use created date and estimated end
     if (!startTimestamp && (subscription as any).created) {
       startTimestamp = (subscription as any).created;
       console.log('✅ Using created timestamp instead:', startTimestamp);
     }
 
     if (!endTimestamp) {
-      // Calculate approximate end date based on interval if possible
       if (startTimestamp && (subscription as any).items?.data?.[0]?.plan?.interval) {
         const interval = (subscription as any).items.data[0].plan.interval;
         const intervalCount = (subscription as any).items.data[0].plan.interval_count || 1;
@@ -574,7 +569,6 @@ export const verifyPayment = async (
       });
     }
 
-    // Stripe timestamps are in seconds, convert to milliseconds
     const startDate = new Date(startTimestamp * 1000);
     const endDate = new Date(endTimestamp * 1000);
 
@@ -597,7 +591,6 @@ export const verifyPayment = async (
       });
     }
 
-    // Update user with subscription info
     const updatedUser = await prisma.user.update({
       where: { id: req.user.userId },
       data: {

@@ -97,6 +97,25 @@ export const githubCallback = async (req: Request, res: Response) => {
       return res.redirect(`${process.env.CLIENT_URL}/banned`);
     }
 
+    // Check if user has active subscription
+    if (dbUser.subscriptionStatus !== "ACTIVE") {
+      // Redirect to pricing/payment page
+      const jwtToken = generateToken({
+        userId: dbUser.id,
+        role: "USER",
+        isBanned: dbUser.isBanned || false,
+      });
+
+      res.cookie("token", jwtToken, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      return res.redirect(`${process.env.CLIENT_URL}/pricing`);
+    }
+
   const jwtToken = generateToken({
   userId: dbUser.id,
   role: "USER",
