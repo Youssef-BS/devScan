@@ -288,7 +288,7 @@ export default function SettingsPage() {
       <div className="space-y-6">
         {/* General Settings */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 border-b border-gray-200">
+          <div className="bg-linear-to-r from-gray-50 to-gray-100 p-6 border-b border-gray-200">
             <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
               <Settings className="w-5 h-5" />
               General Settings
@@ -374,7 +374,7 @@ export default function SettingsPage() {
 
         {/* Security Settings */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 border-b border-gray-200">
+          <div className="bg-linear-to-r from-gray-50 to-gray-100 p-6 border-b border-gray-200">
             <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
               <Shield className="w-5 h-5" />
               Security Settings
@@ -462,7 +462,7 @@ export default function SettingsPage() {
 
         {/* Notification Settings */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 border-b border-gray-200">
+          <div className="bg-linear-to-r from-gray-50 to-gray-100 p-6 border-b border-gray-200">
             <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
               <Mail className="w-5 h-5" />
               Notification Settings

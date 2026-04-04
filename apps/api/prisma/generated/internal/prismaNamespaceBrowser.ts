@@ -54,7 +54,9 @@ export const ModelName = {
   User: 'User',
   Repo: 'Repo',
   Commit: 'Commit',
-  CommitFile: 'CommitFile'
+  CommitFile: 'CommitFile',
+  Scan: 'Scan',
+  Issue: 'Issue'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -84,14 +86,14 @@ export const UserScalarFieldEnum = {
   firstName: 'firstName',
   lastName: 'lastName',
   isBanned: 'isBanned',
-  createdAt: 'createdAt',
   role: 'role',
   stripeCustomerId: 'stripeCustomerId',
+  stripeSubscriptionId: 'stripeSubscriptionId',
   subscriptionStatus: 'subscriptionStatus',
   subscriptionPlan: 'subscriptionPlan',
   subscriptionStartDate: 'subscriptionStartDate',
   subscriptionEndDate: 'subscriptionEndDate',
-  stripeSubscriptionId: 'stripeSubscriptionId'
+  createdAt: 'createdAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -140,6 +142,46 @@ export const CommitFileScalarFieldEnum = {
 export type CommitFileScalarFieldEnum = (typeof CommitFileScalarFieldEnum)[keyof typeof CommitFileScalarFieldEnum]
 
 
+export const ScanScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  score: 'score',
+  grade: 'grade',
+  repoId: 'repoId',
+  commitId: 'commitId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ScanScalarFieldEnum = (typeof ScanScalarFieldEnum)[keyof typeof ScanScalarFieldEnum]
+
+
+export const IssueScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  message: 'message',
+  type: 'type',
+  severity: 'severity',
+  status: 'status',
+  filePath: 'filePath',
+  lineStart: 'lineStart',
+  lineEnd: 'lineEnd',
+  effort: 'effort',
+  tags: 'tags',
+  agent: 'agent',
+  confidence: 'confidence',
+  fixedCode: 'fixedCode',
+  rawAI: 'rawAI',
+  isFalsePositive: 'isFalsePositive',
+  scanId: 'scanId',
+  commitId: 'commitId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type IssueScalarFieldEnum = (typeof IssueScalarFieldEnum)[keyof typeof IssueScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -153,6 +195,14 @@ export const JsonNullValueInput = {
 } as const
 
 export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {

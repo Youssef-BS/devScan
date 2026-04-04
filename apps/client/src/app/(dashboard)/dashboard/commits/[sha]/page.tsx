@@ -6,6 +6,8 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import AIChatbot from "@/components/AIChatbot";
 import AIAnalysisPanel from "@/components/AIAnalysisPanel";
+import AIAnalysisResults from "@/components/AIAnalysisResults";
+import AIAnalysisProgress from "@/components/AIAnalysisProgress";
 import { useAIAnalysis } from "@/hooks/useAIAnalysis";
 import { Zap  , Kanban , File , User , Clock, Files, RefreshCcwDot} from "lucide-react";
 import SpinnerLoad from "@/components/Spinner";
@@ -16,7 +18,7 @@ const CommitDetailsPage = () => {
   const { sha } = useParams<{ sha: string }>();
   const router = useRouter();
   const { commitDetails, loadCommitDetails, loading, error, clearError } = useCommitStore();
-  const { analyzeCode, loading: analysisLoading, error: analysisError, result: analysisResult } = useAIAnalysis();
+  const { analyzeCode, cancelAnalysis, loading: analysisLoading, error: analysisError, result: analysisResult, progress, currentStep, status } = useAIAnalysis();
   const [activeTab, setActiveTab] = useState<'files' | 'overview' | 'ai'>('files');
   const [isChatbotOpen, setIsChatbotOpen] = useState(true);
   const [codeContent, setCodeContent] = useState("");
@@ -24,6 +26,7 @@ const CommitDetailsPage = () => {
   const [fileAnalyses, setFileAnalyses] = useState<{ [key: number]: any }>({});
   const [fullCommitAnalysis, setFullCommitAnalysis] = useState<any>(null);
   const [fullCommitAnalysisLoading, setFullCommitAnalysisLoading] = useState(false);
+  const [showResultsModal, setShowResultsModal] = useState(false);
 
   useEffect(() => {
     if (sha) {
@@ -407,13 +410,24 @@ ${allFilesContext}`;
           <Overview addedFiles={addedFiles} modifiedFiles={modifiedFiles} removedFiles={removedFiles} totalAdditions={totalAdditions} totalDeletions={totalDeletions} commitDetails={commitDetails} />
         ) : (
           <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-md">
-            <AIAnalysisPanel
-              analysis={analysisResult?.analysis || ""}
-              correctedExamples={analysisResult?.correctedExamples || []}
-              loading={analysisLoading}
-              error={analysisError}
-              onAnalyzeClick={handleAnalyzeWithAI}
-            />
+            {!analysisResult || status === 'idle' ? (
+              <AIAnalysisPanel
+                analysis={analysisResult?.analysis || ""}
+                correctedExamples={analysisResult?.correctedExamples || []}
+                loading={analysisLoading}
+                error={analysisError}
+                onAnalyzeClick={handleAnalyzeWithAI}
+              />
+            ) : (
+              <AIAnalysisResults
+                analysis={analysisResult?.analysis || ""}
+                correctedExamples={analysisResult?.correctedExamples || []}
+                onClose={() => {
+                  setShowResultsModal(false);
+                }}
+              />
+            )}
+            
             <AIChatbot
               codeContext={codeContent}
               isOpen={isChatbotOpen}
@@ -421,7 +435,13 @@ ${allFilesContext}`;
             />
           </div>
         )}
-        </div>
+        {/* AI Analysis Progress Indicator */}
+        <AIAnalysisProgress
+          progress={progress}
+          currentStep={currentStep}
+          onCancel={cancelAnalysis}
+          isVisible={status === 'analyzing' || status === 'processing'}
+        />        </div>
       </div>
     </div>
   );

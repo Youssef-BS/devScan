@@ -45,14 +45,14 @@ export type UserMinAggregateOutputType = {
   firstName: string | null
   lastName: string | null
   isBanned: boolean | null
-  createdAt: Date | null
   role: $Enums.Role | null
   stripeCustomerId: string | null
+  stripeSubscriptionId: string | null
   subscriptionStatus: $Enums.SubscriptionStatus | null
   subscriptionPlan: $Enums.SubscriptionPlan | null
   subscriptionStartDate: Date | null
   subscriptionEndDate: Date | null
-  stripeSubscriptionId: string | null
+  createdAt: Date | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -66,14 +66,14 @@ export type UserMaxAggregateOutputType = {
   firstName: string | null
   lastName: string | null
   isBanned: boolean | null
-  createdAt: Date | null
   role: $Enums.Role | null
   stripeCustomerId: string | null
+  stripeSubscriptionId: string | null
   subscriptionStatus: $Enums.SubscriptionStatus | null
   subscriptionPlan: $Enums.SubscriptionPlan | null
   subscriptionStartDate: Date | null
   subscriptionEndDate: Date | null
-  stripeSubscriptionId: string | null
+  createdAt: Date | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -87,14 +87,14 @@ export type UserCountAggregateOutputType = {
   firstName: number
   lastName: number
   isBanned: number
-  createdAt: number
   role: number
   stripeCustomerId: number
+  stripeSubscriptionId: number
   subscriptionStatus: number
   subscriptionPlan: number
   subscriptionStartDate: number
   subscriptionEndDate: number
-  stripeSubscriptionId: number
+  createdAt: number
   _all: number
 }
 
@@ -118,14 +118,14 @@ export type UserMinAggregateInputType = {
   firstName?: true
   lastName?: true
   isBanned?: true
-  createdAt?: true
   role?: true
   stripeCustomerId?: true
+  stripeSubscriptionId?: true
   subscriptionStatus?: true
   subscriptionPlan?: true
   subscriptionStartDate?: true
   subscriptionEndDate?: true
-  stripeSubscriptionId?: true
+  createdAt?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -139,14 +139,14 @@ export type UserMaxAggregateInputType = {
   firstName?: true
   lastName?: true
   isBanned?: true
-  createdAt?: true
   role?: true
   stripeCustomerId?: true
+  stripeSubscriptionId?: true
   subscriptionStatus?: true
   subscriptionPlan?: true
   subscriptionStartDate?: true
   subscriptionEndDate?: true
-  stripeSubscriptionId?: true
+  createdAt?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -160,14 +160,14 @@ export type UserCountAggregateInputType = {
   firstName?: true
   lastName?: true
   isBanned?: true
-  createdAt?: true
   role?: true
   stripeCustomerId?: true
+  stripeSubscriptionId?: true
   subscriptionStatus?: true
   subscriptionPlan?: true
   subscriptionStartDate?: true
   subscriptionEndDate?: true
-  stripeSubscriptionId?: true
+  createdAt?: true
   _all?: true
 }
 
@@ -268,14 +268,14 @@ export type UserGroupByOutputType = {
   firstName: string | null
   lastName: string | null
   isBanned: boolean
-  createdAt: Date
   role: $Enums.Role
   stripeCustomerId: string | null
+  stripeSubscriptionId: string | null
   subscriptionStatus: $Enums.SubscriptionStatus
   subscriptionPlan: $Enums.SubscriptionPlan | null
   subscriptionStartDate: Date | null
   subscriptionEndDate: Date | null
-  stripeSubscriptionId: string | null
+  createdAt: Date
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -312,14 +312,14 @@ export type UserWhereInput = {
   firstName?: Prisma.StringNullableFilter<"User"> | string | null
   lastName?: Prisma.StringNullableFilter<"User"> | string | null
   isBanned?: Prisma.BoolFilter<"User"> | boolean
-  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   stripeCustomerId?: Prisma.StringNullableFilter<"User"> | string | null
+  stripeSubscriptionId?: Prisma.StringNullableFilter<"User"> | string | null
   subscriptionStatus?: Prisma.EnumSubscriptionStatusFilter<"User"> | $Enums.SubscriptionStatus
   subscriptionPlan?: Prisma.EnumSubscriptionPlanNullableFilter<"User"> | $Enums.SubscriptionPlan | null
   subscriptionStartDate?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   subscriptionEndDate?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  stripeSubscriptionId?: Prisma.StringNullableFilter<"User"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   repos?: Prisma.RepoListRelationFilter
 }
 
@@ -334,14 +334,14 @@ export type UserOrderByWithRelationInput = {
   firstName?: Prisma.SortOrderInput | Prisma.SortOrder
   lastName?: Prisma.SortOrderInput | Prisma.SortOrder
   isBanned?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
   subscriptionStatus?: Prisma.SortOrder
   subscriptionPlan?: Prisma.SortOrderInput | Prisma.SortOrder
   subscriptionStartDate?: Prisma.SortOrderInput | Prisma.SortOrder
   subscriptionEndDate?: Prisma.SortOrderInput | Prisma.SortOrder
-  stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   repos?: Prisma.RepoOrderByRelationAggregateInput
 }
 
@@ -361,12 +361,12 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   firstName?: Prisma.StringNullableFilter<"User"> | string | null
   lastName?: Prisma.StringNullableFilter<"User"> | string | null
   isBanned?: Prisma.BoolFilter<"User"> | boolean
-  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   subscriptionStatus?: Prisma.EnumSubscriptionStatusFilter<"User"> | $Enums.SubscriptionStatus
   subscriptionPlan?: Prisma.EnumSubscriptionPlanNullableFilter<"User"> | $Enums.SubscriptionPlan | null
   subscriptionStartDate?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   subscriptionEndDate?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   repos?: Prisma.RepoListRelationFilter
 }, "id" | "githubId" | "email" | "stripeCustomerId" | "stripeSubscriptionId">
 
@@ -381,14 +381,14 @@ export type UserOrderByWithAggregationInput = {
   firstName?: Prisma.SortOrderInput | Prisma.SortOrder
   lastName?: Prisma.SortOrderInput | Prisma.SortOrder
   isBanned?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
   subscriptionStatus?: Prisma.SortOrder
   subscriptionPlan?: Prisma.SortOrderInput | Prisma.SortOrder
   subscriptionStartDate?: Prisma.SortOrderInput | Prisma.SortOrder
   subscriptionEndDate?: Prisma.SortOrderInput | Prisma.SortOrder
-  stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -410,14 +410,14 @@ export type UserScalarWhereWithAggregatesInput = {
   firstName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   lastName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   isBanned?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
-  createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
   stripeCustomerId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  stripeSubscriptionId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   subscriptionStatus?: Prisma.EnumSubscriptionStatusWithAggregatesFilter<"User"> | $Enums.SubscriptionStatus
   subscriptionPlan?: Prisma.EnumSubscriptionPlanNullableWithAggregatesFilter<"User"> | $Enums.SubscriptionPlan | null
   subscriptionStartDate?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   subscriptionEndDate?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
-  stripeSubscriptionId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
 
 export type UserCreateInput = {
@@ -430,14 +430,14 @@ export type UserCreateInput = {
   firstName?: string | null
   lastName?: string | null
   isBanned?: boolean
-  createdAt?: Date | string
   role?: $Enums.Role
   stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
   subscriptionStatus?: $Enums.SubscriptionStatus
   subscriptionPlan?: $Enums.SubscriptionPlan | null
   subscriptionStartDate?: Date | string | null
   subscriptionEndDate?: Date | string | null
-  stripeSubscriptionId?: string | null
+  createdAt?: Date | string
   repos?: Prisma.RepoCreateNestedManyWithoutUserInput
 }
 
@@ -452,14 +452,14 @@ export type UserUncheckedCreateInput = {
   firstName?: string | null
   lastName?: string | null
   isBanned?: boolean
-  createdAt?: Date | string
   role?: $Enums.Role
   stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
   subscriptionStatus?: $Enums.SubscriptionStatus
   subscriptionPlan?: $Enums.SubscriptionPlan | null
   subscriptionStartDate?: Date | string | null
   subscriptionEndDate?: Date | string | null
-  stripeSubscriptionId?: string | null
+  createdAt?: Date | string
   repos?: Prisma.RepoUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -473,14 +473,14 @@ export type UserUpdateInput = {
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
   subscriptionPlan?: Prisma.NullableEnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan | null
   subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repos?: Prisma.RepoUpdateManyWithoutUserNestedInput
 }
 
@@ -495,14 +495,14 @@ export type UserUncheckedUpdateInput = {
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
   subscriptionPlan?: Prisma.NullableEnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan | null
   subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repos?: Prisma.RepoUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -517,14 +517,14 @@ export type UserCreateManyInput = {
   firstName?: string | null
   lastName?: string | null
   isBanned?: boolean
-  createdAt?: Date | string
   role?: $Enums.Role
   stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
   subscriptionStatus?: $Enums.SubscriptionStatus
   subscriptionPlan?: $Enums.SubscriptionPlan | null
   subscriptionStartDate?: Date | string | null
   subscriptionEndDate?: Date | string | null
-  stripeSubscriptionId?: string | null
+  createdAt?: Date | string
 }
 
 export type UserUpdateManyMutationInput = {
@@ -537,14 +537,14 @@ export type UserUpdateManyMutationInput = {
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
   subscriptionPlan?: Prisma.NullableEnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan | null
   subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -558,14 +558,14 @@ export type UserUncheckedUpdateManyInput = {
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
   subscriptionPlan?: Prisma.NullableEnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan | null
   subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -579,14 +579,14 @@ export type UserCountOrderByAggregateInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   isBanned?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrder
   subscriptionStatus?: Prisma.SortOrder
   subscriptionPlan?: Prisma.SortOrder
   subscriptionStartDate?: Prisma.SortOrder
   subscriptionEndDate?: Prisma.SortOrder
-  stripeSubscriptionId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
@@ -604,14 +604,14 @@ export type UserMaxOrderByAggregateInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   isBanned?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrder
   subscriptionStatus?: Prisma.SortOrder
   subscriptionPlan?: Prisma.SortOrder
   subscriptionStartDate?: Prisma.SortOrder
   subscriptionEndDate?: Prisma.SortOrder
-  stripeSubscriptionId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -625,14 +625,14 @@ export type UserMinOrderByAggregateInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   isBanned?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrder
   subscriptionStatus?: Prisma.SortOrder
   subscriptionPlan?: Prisma.SortOrder
   subscriptionStartDate?: Prisma.SortOrder
   subscriptionEndDate?: Prisma.SortOrder
-  stripeSubscriptionId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
@@ -652,10 +652,6 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
-}
-
 export type EnumRoleFieldUpdateOperationsInput = {
   set?: $Enums.Role
 }
@@ -670,6 +666,10 @@ export type NullableEnumSubscriptionPlanFieldUpdateOperationsInput = {
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
+}
+
+export type DateTimeFieldUpdateOperationsInput = {
+  set?: Date | string
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -704,14 +704,14 @@ export type UserCreateWithoutReposInput = {
   firstName?: string | null
   lastName?: string | null
   isBanned?: boolean
-  createdAt?: Date | string
   role?: $Enums.Role
   stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
   subscriptionStatus?: $Enums.SubscriptionStatus
   subscriptionPlan?: $Enums.SubscriptionPlan | null
   subscriptionStartDate?: Date | string | null
   subscriptionEndDate?: Date | string | null
-  stripeSubscriptionId?: string | null
+  createdAt?: Date | string
 }
 
 export type UserUncheckedCreateWithoutReposInput = {
@@ -725,14 +725,14 @@ export type UserUncheckedCreateWithoutReposInput = {
   firstName?: string | null
   lastName?: string | null
   isBanned?: boolean
-  createdAt?: Date | string
   role?: $Enums.Role
   stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
   subscriptionStatus?: $Enums.SubscriptionStatus
   subscriptionPlan?: $Enums.SubscriptionPlan | null
   subscriptionStartDate?: Date | string | null
   subscriptionEndDate?: Date | string | null
-  stripeSubscriptionId?: string | null
+  createdAt?: Date | string
 }
 
 export type UserCreateOrConnectWithoutReposInput = {
@@ -761,14 +761,14 @@ export type UserUpdateWithoutReposInput = {
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
   subscriptionPlan?: Prisma.NullableEnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan | null
   subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserUncheckedUpdateWithoutReposInput = {
@@ -782,14 +782,14 @@ export type UserUncheckedUpdateWithoutReposInput = {
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
   subscriptionPlan?: Prisma.NullableEnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan | null
   subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -834,14 +834,14 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   firstName?: boolean
   lastName?: boolean
   isBanned?: boolean
-  createdAt?: boolean
   role?: boolean
   stripeCustomerId?: boolean
+  stripeSubscriptionId?: boolean
   subscriptionStatus?: boolean
   subscriptionPlan?: boolean
   subscriptionStartDate?: boolean
   subscriptionEndDate?: boolean
-  stripeSubscriptionId?: boolean
+  createdAt?: boolean
   repos?: boolean | Prisma.User$reposArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -857,14 +857,14 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   firstName?: boolean
   lastName?: boolean
   isBanned?: boolean
-  createdAt?: boolean
   role?: boolean
   stripeCustomerId?: boolean
+  stripeSubscriptionId?: boolean
   subscriptionStatus?: boolean
   subscriptionPlan?: boolean
   subscriptionStartDate?: boolean
   subscriptionEndDate?: boolean
-  stripeSubscriptionId?: boolean
+  createdAt?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -878,14 +878,14 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   firstName?: boolean
   lastName?: boolean
   isBanned?: boolean
-  createdAt?: boolean
   role?: boolean
   stripeCustomerId?: boolean
+  stripeSubscriptionId?: boolean
   subscriptionStatus?: boolean
   subscriptionPlan?: boolean
   subscriptionStartDate?: boolean
   subscriptionEndDate?: boolean
-  stripeSubscriptionId?: boolean
+  createdAt?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -899,17 +899,17 @@ export type UserSelectScalar = {
   firstName?: boolean
   lastName?: boolean
   isBanned?: boolean
-  createdAt?: boolean
   role?: boolean
   stripeCustomerId?: boolean
+  stripeSubscriptionId?: boolean
   subscriptionStatus?: boolean
   subscriptionPlan?: boolean
   subscriptionStartDate?: boolean
   subscriptionEndDate?: boolean
-  stripeSubscriptionId?: boolean
+  createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "githubId" | "username" | "email" | "password" | "avatarUrl" | "accessToken" | "firstName" | "lastName" | "isBanned" | "createdAt" | "role" | "stripeCustomerId" | "subscriptionStatus" | "subscriptionPlan" | "subscriptionStartDate" | "subscriptionEndDate" | "stripeSubscriptionId", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "githubId" | "username" | "email" | "password" | "avatarUrl" | "accessToken" | "firstName" | "lastName" | "isBanned" | "role" | "stripeCustomerId" | "stripeSubscriptionId" | "subscriptionStatus" | "subscriptionPlan" | "subscriptionStartDate" | "subscriptionEndDate" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   repos?: boolean | Prisma.User$reposArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -933,14 +933,14 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     firstName: string | null
     lastName: string | null
     isBanned: boolean
-    createdAt: Date
     role: $Enums.Role
     stripeCustomerId: string | null
+    stripeSubscriptionId: string | null
     subscriptionStatus: $Enums.SubscriptionStatus
     subscriptionPlan: $Enums.SubscriptionPlan | null
     subscriptionStartDate: Date | null
     subscriptionEndDate: Date | null
-    stripeSubscriptionId: string | null
+    createdAt: Date
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1375,14 +1375,14 @@ export interface UserFieldRefs {
   readonly firstName: Prisma.FieldRef<"User", 'String'>
   readonly lastName: Prisma.FieldRef<"User", 'String'>
   readonly isBanned: Prisma.FieldRef<"User", 'Boolean'>
-  readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly role: Prisma.FieldRef<"User", 'Role'>
   readonly stripeCustomerId: Prisma.FieldRef<"User", 'String'>
+  readonly stripeSubscriptionId: Prisma.FieldRef<"User", 'String'>
   readonly subscriptionStatus: Prisma.FieldRef<"User", 'SubscriptionStatus'>
   readonly subscriptionPlan: Prisma.FieldRef<"User", 'SubscriptionPlan'>
   readonly subscriptionStartDate: Prisma.FieldRef<"User", 'DateTime'>
   readonly subscriptionEndDate: Prisma.FieldRef<"User", 'DateTime'>
-  readonly stripeSubscriptionId: Prisma.FieldRef<"User", 'String'>
+  readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     
 

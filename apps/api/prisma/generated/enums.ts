@@ -34,3 +34,52 @@ export const SubscriptionPlan = {
 } as const
 
 export type SubscriptionPlan = (typeof SubscriptionPlan)[keyof typeof SubscriptionPlan]
+
+
+export const ScanStatus = {
+  PENDING: 'PENDING',
+  RUNNING: 'RUNNING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+} as const
+
+export type ScanStatus = (typeof ScanStatus)[keyof typeof ScanStatus]
+
+
+export const IssueType = {
+  BUG: 'BUG',
+  VULNERABILITY: 'VULNERABILITY',
+  CODE_SMELL: 'CODE_SMELL'
+} as const
+
+export type IssueType = (typeof IssueType)[keyof typeof IssueType]
+
+
+export const Severity = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+  CRITICAL: 'CRITICAL'
+} as const
+
+export type Severity = (typeof Severity)[keyof typeof Severity]
+
+
+export const IssueStatus = {
+  OPEN: 'OPEN',
+  CONFIRMED: 'CONFIRMED',
+  FIXED: 'FIXED',
+  IGNORED: 'IGNORED'
+} as const
+
+export type IssueStatus = (typeof IssueStatus)[keyof typeof IssueStatus]
+
+
+export const AgentType = {
+  security: 'security',
+  performance: 'performance',
+  clean_code: 'clean_code',
+  bug: 'bug'
+} as const
+
+export type AgentType = (typeof AgentType)[keyof typeof AgentType]

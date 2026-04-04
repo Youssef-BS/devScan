@@ -2,6 +2,7 @@
 
 import React from "react";
 import CommitFileAnalysis from "@/components/CommitFileAnalysis";
+import AIAnalysisResults from "@/components/AIAnalysisResults";
 import { Bot } from "lucide-react";
 
 export interface FileItem {
@@ -120,20 +121,11 @@ const FileView = ({
       ))}
       {fullCommitAnalysis && (
         <div className="bg-white p-6 rounded-2xl border shadow-md">
-          <div className="flex justify-between mb-4">
-            <h3 className="font-bold text-lg">
-              Full Commit Analysis
-            </h3>
-            <button
-              onClick={() => setFullCommitAnalysis(null)}
-            >
-              Close
-            </button>
-          </div>
-
-          <div className="bg-gray-50 p-4 rounded font-mono text-sm whitespace-pre-wrap">
-            {fullCommitAnalysis.analysis || "Analyzing..."}
-          </div>
+          <AIAnalysisResults
+            analysis={fullCommitAnalysis?.analysis || fullCommitAnalysis || ""}
+            correctedExamples={fullCommitAnalysis?.correctedExamples || []}
+            onClose={() => setFullCommitAnalysis(null)}
+          />
         </div>
       )}
     </div>

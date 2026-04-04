@@ -9,25 +9,148 @@ datasource db {
 
 model User {
   id                    Int      @id @default(autoincrement())
-  githubId              String?   @unique
+  githubId              String?  @unique
   username              String?
   email                 String?  @unique
   password              String?
   avatarUrl             String?
   accessToken           String?
-  firstName             String? 
+  firstName             String?
   lastName              String?
-  isBanned              Boolean   @default(false)
-  createdAt             DateTime @default(now())
+  isBanned              Boolean  @default(false)
   role                  Role     @default(USER)
-  stripeCustomerId      String?   @unique
+
+  // Stripe
+  stripeCustomerId      String?  @unique
+  stripeSubscriptionId  String?  @unique
   subscriptionStatus    SubscriptionStatus @default(INACTIVE)
   subscriptionPlan      SubscriptionPlan?
   subscriptionStartDate DateTime?
   subscriptionEndDate   DateTime?
-  stripeSubscriptionId  String?   @unique
-  
-  repos       Repo[]
+
+  createdAt             DateTime @default(now())
+
+  repos                 Repo[]
+}
+
+model Repo {
+  id          Int      @id @default(autoincrement())
+  githubId    String   @unique
+  name        String
+  fullName    String
+  htmlUrl     String
+  description String?
+  language    String?
+  private     Boolean
+  fork        Boolean
+  autoAudit   Boolean  @default(false)
+
+  ownerId     Int
+  User        User     @relation(fields: [ownerId], references: [id])
+
+  commits     Commit[]
+  scans       Scan[]
+
+  createdAt   DateTime @default(now())
+
+  @@index([ownerId])
+}
+
+model Commit {
+  id        Int      @id @default(autoincrement())
+  sha       String   @unique
+  message   String
+  author    String
+  date      DateTime
+
+  repoId    Int
+  Repo      Repo     @relation(fields: [repoId], references: [id], onDelete: Cascade)
+
+  files     CommitFile[]
+  scans     Scan[]
+  issues    Issue[]
+
+  @@index([repoId, date])
+}
+
+model CommitFile {
+  id        Int      @id @default(autoincrement())
+  sha       String
+  path      String
+  content   Json
+
+  commitId  Int
+  Commit    Commit   @relation(fields: [commitId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([sha, path])
+  @@index([commitId])
+}
+
+model Scan {
+  id        Int      @id @default(autoincrement())
+
+  status    ScanStatus @default(PENDING)
+  score     Int?       
+  grade     String?    
+
+  repoId    Int
+  Repo      Repo     @relation(fields: [repoId], references: [id], onDelete: Cascade)
+
+  commitId  Int
+  Commit    Commit   @relation(fields: [commitId], references: [id], onDelete: Cascade)
+
+  issues    Issue[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([repoId, commitId], name: "repoId_commitId")
+  @@index([repoId])
+  @@index([status])
+}
+
+model Issue {
+  id          Int      @id @default(autoincrement())
+
+  title       String
+  message     String?
+
+  type        IssueType
+  severity    Severity
+  status      IssueStatus @default(OPEN)
+
+  filePath    String
+  lineStart   Int?
+  lineEnd     Int?
+
+  effort      String?
+  tags        String[] @default([])
+
+  agent       AgentType
+  confidence  Float?
+
+  fixedCode   String?
+  rawAI       Json?
+
+  isFalsePositive Boolean @default(false)
+
+  scanId      Int
+  Scan        Scan     @relation(fields: [scanId], references: [id], onDelete: Cascade)
+
+  commitId    Int
+  Commit      Commit   @relation(fields: [commitId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([severity])
+  @@index([type])
+  @@index([status])
+  @@index([scanId])
+  @@index([commitId])
 }
 
 enum Role {
@@ -48,55 +171,36 @@ enum SubscriptionPlan {
   YEARLY
 }
 
-model Repo {
-  id          Int       @id @default(autoincrement())
-  githubId    String    @unique
-  name        String
-  fullName    String
-  htmlUrl     String
-  description String?
-  language    String?
-  private     Boolean
-  fork        Boolean
-  autoAudit   Boolean   @default(false)
-  ownerId     Int
-  createdAt   DateTime  @default(now())
-
-  User        User      @relation(fields: [ownerId], references: [id])
-  commits     Commit[]
+enum ScanStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
 }
 
-model Commit {
-  id        Int      @id @default(autoincrement())
-  sha       String   @unique
-  message   String
-  author    String
-  date      DateTime
-
-  repoId    Int
-  Repo      Repo     @relation(fields: [repoId], references: [id], onDelete: Cascade)
-
-  files     CommitFile[] 
-
-  @@index([repoId, date])
-
+enum IssueType {
+  BUG
+  VULNERABILITY
+  CODE_SMELL
 }
 
-model CommitFile {
-  id       Int      @id @default(autoincrement())
-  sha      String
-  path     String
-  content  Json    
-  commitId Int
-  Commit   Commit   @relation(fields: [commitId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([sha, path])
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
 }
 
+enum IssueStatus {
+  OPEN
+  CONFIRMED
+  FIXED
+  IGNORED
+}
 
-
-
-
-
+enum AgentType {
+  security
+  performance
+  clean_code
+  bug
+}

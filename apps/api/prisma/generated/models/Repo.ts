@@ -278,6 +278,7 @@ export type RepoWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Repo"> | Date | string
   User?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   commits?: Prisma.CommitListRelationFilter
+  scans?: Prisma.ScanListRelationFilter
 }
 
 export type RepoOrderByWithRelationInput = {
@@ -295,6 +296,7 @@ export type RepoOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   User?: Prisma.UserOrderByWithRelationInput
   commits?: Prisma.CommitOrderByRelationAggregateInput
+  scans?: Prisma.ScanOrderByRelationAggregateInput
 }
 
 export type RepoWhereUniqueInput = Prisma.AtLeast<{
@@ -315,6 +317,7 @@ export type RepoWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Repo"> | Date | string
   User?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   commits?: Prisma.CommitListRelationFilter
+  scans?: Prisma.ScanListRelationFilter
 }, "id" | "githubId">
 
 export type RepoOrderByWithAggregationInput = {
@@ -368,6 +371,7 @@ export type RepoCreateInput = {
   createdAt?: Date | string
   User: Prisma.UserCreateNestedOneWithoutReposInput
   commits?: Prisma.CommitCreateNestedManyWithoutRepoInput
+  scans?: Prisma.ScanCreateNestedManyWithoutRepoInput
 }
 
 export type RepoUncheckedCreateInput = {
@@ -384,6 +388,7 @@ export type RepoUncheckedCreateInput = {
   ownerId: number
   createdAt?: Date | string
   commits?: Prisma.CommitUncheckedCreateNestedManyWithoutRepoInput
+  scans?: Prisma.ScanUncheckedCreateNestedManyWithoutRepoInput
 }
 
 export type RepoUpdateInput = {
@@ -399,6 +404,7 @@ export type RepoUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   User?: Prisma.UserUpdateOneRequiredWithoutReposNestedInput
   commits?: Prisma.CommitUpdateManyWithoutRepoNestedInput
+  scans?: Prisma.ScanUpdateManyWithoutRepoNestedInput
 }
 
 export type RepoUncheckedUpdateInput = {
@@ -415,6 +421,7 @@ export type RepoUncheckedUpdateInput = {
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   commits?: Prisma.CommitUncheckedUpdateManyWithoutRepoNestedInput
+  scans?: Prisma.ScanUncheckedUpdateManyWithoutRepoNestedInput
 }
 
 export type RepoCreateManyInput = {
@@ -590,6 +597,20 @@ export type RepoUpdateOneRequiredWithoutCommitsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.RepoUpdateToOneWithWhereWithoutCommitsInput, Prisma.RepoUpdateWithoutCommitsInput>, Prisma.RepoUncheckedUpdateWithoutCommitsInput>
 }
 
+export type RepoCreateNestedOneWithoutScansInput = {
+  create?: Prisma.XOR<Prisma.RepoCreateWithoutScansInput, Prisma.RepoUncheckedCreateWithoutScansInput>
+  connectOrCreate?: Prisma.RepoCreateOrConnectWithoutScansInput
+  connect?: Prisma.RepoWhereUniqueInput
+}
+
+export type RepoUpdateOneRequiredWithoutScansNestedInput = {
+  create?: Prisma.XOR<Prisma.RepoCreateWithoutScansInput, Prisma.RepoUncheckedCreateWithoutScansInput>
+  connectOrCreate?: Prisma.RepoCreateOrConnectWithoutScansInput
+  upsert?: Prisma.RepoUpsertWithoutScansInput
+  connect?: Prisma.RepoWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RepoUpdateToOneWithWhereWithoutScansInput, Prisma.RepoUpdateWithoutScansInput>, Prisma.RepoUncheckedUpdateWithoutScansInput>
+}
+
 export type RepoCreateWithoutUserInput = {
   githubId: string
   name: string
@@ -602,6 +623,7 @@ export type RepoCreateWithoutUserInput = {
   autoAudit?: boolean
   createdAt?: Date | string
   commits?: Prisma.CommitCreateNestedManyWithoutRepoInput
+  scans?: Prisma.ScanCreateNestedManyWithoutRepoInput
 }
 
 export type RepoUncheckedCreateWithoutUserInput = {
@@ -617,6 +639,7 @@ export type RepoUncheckedCreateWithoutUserInput = {
   autoAudit?: boolean
   createdAt?: Date | string
   commits?: Prisma.CommitUncheckedCreateNestedManyWithoutRepoInput
+  scans?: Prisma.ScanUncheckedCreateNestedManyWithoutRepoInput
 }
 
 export type RepoCreateOrConnectWithoutUserInput = {
@@ -675,6 +698,7 @@ export type RepoCreateWithoutCommitsInput = {
   autoAudit?: boolean
   createdAt?: Date | string
   User: Prisma.UserCreateNestedOneWithoutReposInput
+  scans?: Prisma.ScanCreateNestedManyWithoutRepoInput
 }
 
 export type RepoUncheckedCreateWithoutCommitsInput = {
@@ -690,6 +714,7 @@ export type RepoUncheckedCreateWithoutCommitsInput = {
   autoAudit?: boolean
   ownerId: number
   createdAt?: Date | string
+  scans?: Prisma.ScanUncheckedCreateNestedManyWithoutRepoInput
 }
 
 export type RepoCreateOrConnectWithoutCommitsInput = {
@@ -720,6 +745,7 @@ export type RepoUpdateWithoutCommitsInput = {
   autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   User?: Prisma.UserUpdateOneRequiredWithoutReposNestedInput
+  scans?: Prisma.ScanUpdateManyWithoutRepoNestedInput
 }
 
 export type RepoUncheckedUpdateWithoutCommitsInput = {
@@ -735,6 +761,85 @@ export type RepoUncheckedUpdateWithoutCommitsInput = {
   autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  scans?: Prisma.ScanUncheckedUpdateManyWithoutRepoNestedInput
+}
+
+export type RepoCreateWithoutScansInput = {
+  githubId: string
+  name: string
+  fullName: string
+  htmlUrl: string
+  description?: string | null
+  language?: string | null
+  private: boolean
+  fork: boolean
+  autoAudit?: boolean
+  createdAt?: Date | string
+  User: Prisma.UserCreateNestedOneWithoutReposInput
+  commits?: Prisma.CommitCreateNestedManyWithoutRepoInput
+}
+
+export type RepoUncheckedCreateWithoutScansInput = {
+  id?: number
+  githubId: string
+  name: string
+  fullName: string
+  htmlUrl: string
+  description?: string | null
+  language?: string | null
+  private: boolean
+  fork: boolean
+  autoAudit?: boolean
+  ownerId: number
+  createdAt?: Date | string
+  commits?: Prisma.CommitUncheckedCreateNestedManyWithoutRepoInput
+}
+
+export type RepoCreateOrConnectWithoutScansInput = {
+  where: Prisma.RepoWhereUniqueInput
+  create: Prisma.XOR<Prisma.RepoCreateWithoutScansInput, Prisma.RepoUncheckedCreateWithoutScansInput>
+}
+
+export type RepoUpsertWithoutScansInput = {
+  update: Prisma.XOR<Prisma.RepoUpdateWithoutScansInput, Prisma.RepoUncheckedUpdateWithoutScansInput>
+  create: Prisma.XOR<Prisma.RepoCreateWithoutScansInput, Prisma.RepoUncheckedCreateWithoutScansInput>
+  where?: Prisma.RepoWhereInput
+}
+
+export type RepoUpdateToOneWithWhereWithoutScansInput = {
+  where?: Prisma.RepoWhereInput
+  data: Prisma.XOR<Prisma.RepoUpdateWithoutScansInput, Prisma.RepoUncheckedUpdateWithoutScansInput>
+}
+
+export type RepoUpdateWithoutScansInput = {
+  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  htmlUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  private?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  User?: Prisma.UserUpdateOneRequiredWithoutReposNestedInput
+  commits?: Prisma.CommitUpdateManyWithoutRepoNestedInput
+}
+
+export type RepoUncheckedUpdateWithoutScansInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  htmlUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  private?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  commits?: Prisma.CommitUncheckedUpdateManyWithoutRepoNestedInput
 }
 
 export type RepoCreateManyUserInput = {
@@ -763,6 +868,7 @@ export type RepoUpdateWithoutUserInput = {
   autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   commits?: Prisma.CommitUpdateManyWithoutRepoNestedInput
+  scans?: Prisma.ScanUpdateManyWithoutRepoNestedInput
 }
 
 export type RepoUncheckedUpdateWithoutUserInput = {
@@ -778,6 +884,7 @@ export type RepoUncheckedUpdateWithoutUserInput = {
   autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   commits?: Prisma.CommitUncheckedUpdateManyWithoutRepoNestedInput
+  scans?: Prisma.ScanUncheckedUpdateManyWithoutRepoNestedInput
 }
 
 export type RepoUncheckedUpdateManyWithoutUserInput = {
@@ -801,10 +908,12 @@ export type RepoUncheckedUpdateManyWithoutUserInput = {
 
 export type RepoCountOutputType = {
   commits: number
+  scans: number
 }
 
 export type RepoCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   commits?: boolean | RepoCountOutputTypeCountCommitsArgs
+  scans?: boolean | RepoCountOutputTypeCountScansArgs
 }
 
 /**
@@ -824,6 +933,13 @@ export type RepoCountOutputTypeCountCommitsArgs<ExtArgs extends runtime.Types.Ex
   where?: Prisma.CommitWhereInput
 }
 
+/**
+ * RepoCountOutputType without action
+ */
+export type RepoCountOutputTypeCountScansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ScanWhereInput
+}
+
 
 export type RepoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -840,6 +956,7 @@ export type RepoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   User?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   commits?: boolean | Prisma.Repo$commitsArgs<ExtArgs>
+  scans?: boolean | Prisma.Repo$scansArgs<ExtArgs>
   _count?: boolean | Prisma.RepoCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["repo"]>
 
@@ -894,6 +1011,7 @@ export type RepoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type RepoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   User?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   commits?: boolean | Prisma.Repo$commitsArgs<ExtArgs>
+  scans?: boolean | Prisma.Repo$scansArgs<ExtArgs>
   _count?: boolean | Prisma.RepoCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RepoIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -908,6 +1026,7 @@ export type $RepoPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     User: Prisma.$UserPayload<ExtArgs>
     commits: Prisma.$CommitPayload<ExtArgs>[]
+    scans: Prisma.$ScanPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1318,6 +1437,7 @@ export interface Prisma__RepoClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   User<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   commits<T extends Prisma.Repo$commitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Repo$commitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  scans<T extends Prisma.Repo$scansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Repo$scansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ScanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1776,6 +1896,30 @@ export type Repo$commitsArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.CommitScalarFieldEnum | Prisma.CommitScalarFieldEnum[]
+}
+
+/**
+ * Repo.scans
+ */
+export type Repo$scansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Scan
+   */
+  select?: Prisma.ScanSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Scan
+   */
+  omit?: Prisma.ScanOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ScanInclude<ExtArgs> | null
+  where?: Prisma.ScanWhereInput
+  orderBy?: Prisma.ScanOrderByWithRelationInput | Prisma.ScanOrderByWithRelationInput[]
+  cursor?: Prisma.ScanWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ScanScalarFieldEnum | Prisma.ScanScalarFieldEnum[]
 }
 
 /**

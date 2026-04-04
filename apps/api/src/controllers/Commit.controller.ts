@@ -286,7 +286,45 @@ export const analyzeCommitWithAI = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Code is required for analysis" });
   }
 
-  try { 
+  if (!sha) {
+    return res.status(400).json({ message: "Commit SHA is required for saving analysis" });
+  }
+
+  try {
+    // Step 1: Find commit in database
+    const commit = await prisma.commit.findUnique({
+      where: { sha },
+      include: { Repo: true }
+    });
+
+    if (!commit) {
+      return res.status(404).json({ message: "Commit not found in database. Please sync commits first." });
+    }
+
+    const repoId = commit.Repo.id;
+    const commitId = commit.id;
+
+    // Step 2: Create a scan record
+let scan = await prisma.scan.upsert({
+  where: {
+    repoId_commitId: {
+      repoId: repoId,
+      commitId: commitId
+    }
+  },
+  update: {
+    status: "RUNNING",
+    score: null,
+    grade: null
+  },
+  create: {
+    repoId: repoId,
+    commitId: commitId,
+    status: "RUNNING"
+  }
+});
+
+    // Step 3: Call AI service
     const codeLength = code.length;
     const calculatedTimeout = Math.max(60000, Math.min(120000, Math.ceil(codeLength / 50)));
     
@@ -299,14 +337,53 @@ export const analyzeCommitWithAI = async (req: Request, res: Response) => {
 
     const analysis = aiResponse.data.analysis;
     const correctedExamples = aiResponse.data.corrected_examples || [];
+
+    // Step 4: Parse analysis into issues
+    const issues = parseAnalysisToIssues(analysis);
+
+    // Step 5: Save issues to database
+    if (issues.length > 0) {
+      await prisma.issue.createMany({
+        data: issues.map(issue => ({
+          ...issue,
+          scanId: scan.id,
+          commitId: commitId
+        }))
+      });
+    }
+
+    // Step 6: Calculate score and grade
+    const score = calculateScore(issues);
+    const grade = calculateGrade(score);
+
+    // Step 7: Update scan with results
+    scan = await prisma.scan.update({
+      where: { id: scan.id },
+      data: {
+        status: "COMPLETED",
+        score,
+        grade
+      },
+      include: {
+        issues: true,
+        Repo: { select: { name: true } },
+        Commit: { select: { message: true, author: true } }
+      }
+    });
+
+    // Step 8: Return response
     res.status(200).json({
-      message: "Code analysis completed",
+      message: "Code analysis completed and saved",
+      scan: scan,
       analysis: analysis,
       correctedExamples: correctedExamples,
       analysisType: analysisType,
-      sha: sha || null,
+      issuesCount: issues.length,
+      score: score,
+      grade: grade,
       timestamp: new Date().toISOString()
     });
+
   } catch (error: any) {
     let errorMessage = error.message;
     let statusCode = 500;
@@ -326,3 +403,110 @@ export const analyzeCommitWithAI = async (req: Request, res: Response) => {
     });
   }
 };
+
+/**
+ * Parse AI analysis text into structured Issue objects
+ */
+function parseAnalysisToIssues(analysisText: string) {
+  const issues: any[] = [];
+
+  if (!analysisText || typeof analysisText !== 'string') {
+    return issues;
+  }
+
+  // Split by lines and parse issues
+  const lines = analysisText.split('\n').filter(line => line.trim());
+
+  for (const line of lines) {
+    const issue = parseSingleIssue(line);
+    if (issue) {
+      issues.push(issue);
+    }
+  }
+
+  return issues;
+}
+
+/**
+ * Parse a single issue line
+ */
+function parseSingleIssue(text: string) {
+  if (!text || text.trim().length < 10) {
+    return null;
+  }
+
+  // Extract severity from prefixes
+  let severity: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW" = "MEDIUM";
+  let message = text;
+
+  if (text.toUpperCase().includes("CRITICAL")) {
+    severity = "CRITICAL";
+    message = text.replace(/\*\*CRITICAL\*\*|CRITICAL/i, "").trim();
+  } else if (text.toUpperCase().includes("HIGH")) {
+    severity = "HIGH";
+    message = text.replace(/\*\*HIGH\*\*|HIGH/i, "").trim();
+  } else if (text.toUpperCase().includes("MEDIUM")) {
+    severity = "MEDIUM";
+    message = text.replace(/\*\*MEDIUM\*\*|MEDIUM/i, "").trim();
+  } else if (text.toUpperCase().includes("LOW")) {
+    severity = "LOW";
+    message = text.replace(/\*\*LOW\*\*|LOW/i, "").trim();
+  }
+
+  // Determine type based on keywords
+  let type: "BUG" | "VULNERABILITY" | "CODE_SMELL" = "CODE_SMELL";
+  if (message.toUpperCase().includes("SECURITY") || message.toUpperCase().includes("INJECTION")) {
+    type = "VULNERABILITY";
+  } else if (message.toUpperCase().includes("ERROR") || message.toUpperCase().includes("BUG")) {
+    type = "BUG";
+  }
+
+  return {
+    title: message.split('\n')[0]?.substring(0, 100) || "Issue detected",
+    message: message,
+    type,
+    severity,
+    filePath: "unknown",
+    agent: "clean_code",
+    confidence: 0.8,
+    tags: ["auto-detected"]
+  };
+}
+
+/**
+ * Calculate score based on issues
+ */
+function calculateScore(issues: any[]): number {
+  if (issues.length === 0) return 100;
+
+  let score = 100;
+  for (const issue of issues) {
+    switch (issue.severity) {
+      case "CRITICAL":
+        score -= 10;
+        break;
+      case "HIGH":
+        score -= 5;
+        break;
+      case "MEDIUM":
+        score -= 2;
+        break;
+      case "LOW":
+        score -= 1;
+        break;
+    }
+  }
+
+  return Math.max(0, score);
+}
+
+/**
+ * Calculate grade based on score
+ */
+function calculateGrade(score: number): string {
+  if (score >= 90) return "A";
+  if (score >= 80) return "B";
+  if (score >= 70) return "C";
+  if (score >= 60) return "D";
+  return "F";
+}

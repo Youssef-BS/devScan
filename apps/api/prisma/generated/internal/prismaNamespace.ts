@@ -387,7 +387,9 @@ export const ModelName = {
   User: 'User',
   Repo: 'Repo',
   Commit: 'Commit',
-  CommitFile: 'CommitFile'
+  CommitFile: 'CommitFile',
+  Scan: 'Scan',
+  Issue: 'Issue'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -403,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "repo" | "commit" | "commitFile"
+    modelProps: "user" | "repo" | "commit" | "commitFile" | "scan" | "issue"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -703,6 +705,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Scan: {
+      payload: Prisma.$ScanPayload<ExtArgs>
+      fields: Prisma.ScanFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ScanFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScanPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ScanFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScanPayload>
+        }
+        findFirst: {
+          args: Prisma.ScanFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScanPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ScanFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScanPayload>
+        }
+        findMany: {
+          args: Prisma.ScanFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScanPayload>[]
+        }
+        create: {
+          args: Prisma.ScanCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScanPayload>
+        }
+        createMany: {
+          args: Prisma.ScanCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ScanCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScanPayload>[]
+        }
+        delete: {
+          args: Prisma.ScanDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScanPayload>
+        }
+        update: {
+          args: Prisma.ScanUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScanPayload>
+        }
+        deleteMany: {
+          args: Prisma.ScanDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ScanUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ScanUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScanPayload>[]
+        }
+        upsert: {
+          args: Prisma.ScanUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScanPayload>
+        }
+        aggregate: {
+          args: Prisma.ScanAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateScan>
+        }
+        groupBy: {
+          args: Prisma.ScanGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ScanGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ScanCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ScanCountAggregateOutputType> | number
+        }
+      }
+    }
+    Issue: {
+      payload: Prisma.$IssuePayload<ExtArgs>
+      fields: Prisma.IssueFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.IssueFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IssuePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.IssueFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IssuePayload>
+        }
+        findFirst: {
+          args: Prisma.IssueFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IssuePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.IssueFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IssuePayload>
+        }
+        findMany: {
+          args: Prisma.IssueFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IssuePayload>[]
+        }
+        create: {
+          args: Prisma.IssueCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IssuePayload>
+        }
+        createMany: {
+          args: Prisma.IssueCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.IssueCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IssuePayload>[]
+        }
+        delete: {
+          args: Prisma.IssueDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IssuePayload>
+        }
+        update: {
+          args: Prisma.IssueUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IssuePayload>
+        }
+        deleteMany: {
+          args: Prisma.IssueDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.IssueUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.IssueUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IssuePayload>[]
+        }
+        upsert: {
+          args: Prisma.IssueUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IssuePayload>
+        }
+        aggregate: {
+          args: Prisma.IssueAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateIssue>
+        }
+        groupBy: {
+          args: Prisma.IssueGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.IssueGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.IssueCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.IssueCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -753,14 +903,14 @@ export const UserScalarFieldEnum = {
   firstName: 'firstName',
   lastName: 'lastName',
   isBanned: 'isBanned',
-  createdAt: 'createdAt',
   role: 'role',
   stripeCustomerId: 'stripeCustomerId',
+  stripeSubscriptionId: 'stripeSubscriptionId',
   subscriptionStatus: 'subscriptionStatus',
   subscriptionPlan: 'subscriptionPlan',
   subscriptionStartDate: 'subscriptionStartDate',
   subscriptionEndDate: 'subscriptionEndDate',
-  stripeSubscriptionId: 'stripeSubscriptionId'
+  createdAt: 'createdAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -809,6 +959,46 @@ export const CommitFileScalarFieldEnum = {
 export type CommitFileScalarFieldEnum = (typeof CommitFileScalarFieldEnum)[keyof typeof CommitFileScalarFieldEnum]
 
 
+export const ScanScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  score: 'score',
+  grade: 'grade',
+  repoId: 'repoId',
+  commitId: 'commitId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ScanScalarFieldEnum = (typeof ScanScalarFieldEnum)[keyof typeof ScanScalarFieldEnum]
+
+
+export const IssueScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  message: 'message',
+  type: 'type',
+  severity: 'severity',
+  status: 'status',
+  filePath: 'filePath',
+  lineStart: 'lineStart',
+  lineEnd: 'lineEnd',
+  effort: 'effort',
+  tags: 'tags',
+  agent: 'agent',
+  confidence: 'confidence',
+  fixedCode: 'fixedCode',
+  rawAI: 'rawAI',
+  isFalsePositive: 'isFalsePositive',
+  scanId: 'scanId',
+  commitId: 'commitId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type IssueScalarFieldEnum = (typeof IssueScalarFieldEnum)[keyof typeof IssueScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -822,6 +1012,14 @@ export const JsonNullValueInput = {
 } as const
 
 export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -891,20 +1089,6 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
- * Reference to a field of type 'DateTime'
- */
-export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
-
-
-/**
- * Reference to a field of type 'DateTime[]'
- */
-export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
-
-
-/**
  * Reference to a field of type 'Role'
  */
 export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
@@ -947,6 +1131,20 @@ export type ListEnumSubscriptionPlanFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'DateTime'
+ */
+export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+/**
+ * Reference to a field of type 'DateTime[]'
+ */
+export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
  * Reference to a field of type 'Json'
  */
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -957,6 +1155,76 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'ScanStatus'
+ */
+export type EnumScanStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScanStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ScanStatus[]'
+ */
+export type ListEnumScanStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScanStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'IssueType'
+ */
+export type EnumIssueTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IssueType'>
+    
+
+
+/**
+ * Reference to a field of type 'IssueType[]'
+ */
+export type ListEnumIssueTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IssueType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Severity'
+ */
+export type EnumSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Severity'>
+    
+
+
+/**
+ * Reference to a field of type 'Severity[]'
+ */
+export type ListEnumSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Severity[]'>
+    
+
+
+/**
+ * Reference to a field of type 'IssueStatus'
+ */
+export type EnumIssueStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IssueStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'IssueStatus[]'
+ */
+export type ListEnumIssueStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IssueStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AgentType'
+ */
+export type EnumAgentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AgentType'>
+    
+
+
+/**
+ * Reference to a field of type 'AgentType[]'
+ */
+export type ListEnumAgentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AgentType[]'>
     
 
 
@@ -1072,6 +1340,8 @@ export type GlobalOmitConfig = {
   repo?: Prisma.RepoOmit
   commit?: Prisma.CommitOmit
   commitFile?: Prisma.CommitFileOmit
+  scan?: Prisma.ScanOmit
+  issue?: Prisma.IssueOmit
 }
 
 /* Types for Logging */

@@ -59,3 +59,13 @@ export type Commit = Prisma.CommitModel
  * 
  */
 export type CommitFile = Prisma.CommitFileModel
+/**
+ * Model Scan
+ * 
+ */
+export type Scan = Prisma.ScanModel
+/**
+ * Model Issue
+ * 
+ */
+export type Issue = Prisma.IssueModel
