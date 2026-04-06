@@ -118,13 +118,41 @@ export const getAllRepoFromDbByUser = async (req: AuthRequest, res: Response) =>
     const limit = Number(req.query.limit) || 9;
     const offset = (page - 1) * limit;
 
+    // Get repos where user is OWNER or is an ACTIVE COLLABORATOR
     const [repos, total] = await Promise.all([
       prisma.repo.findMany({
-        where: { ownerId: userId },
+        where: {
+          OR: [
+            { ownerId: userId },
+            {
+              collaborators: {
+                some: {
+                  userId: userId,
+                  isActive: true,
+                },
+              },
+            },
+          ],
+        },
         skip: offset,
         take: limit,
+        orderBy: { createdAt: "desc" },
       }),
-      prisma.repo.count({ where: { ownerId: userId } }),
+      prisma.repo.count({
+        where: {
+          OR: [
+            { ownerId: userId },
+            {
+              collaborators: {
+                some: {
+                  userId: userId,
+                  isActive: true,
+                },
+              },
+            },
+          ],
+        },
+      }),
     ]);
 
     res.json({

@@ -1,5 +1,5 @@
 import { Router, Response, Request, NextFunction } from "express";
-import { prisma } from "../db";
+import { prisma } from "../db.js";
 
 interface AdminSetting {
   key: string;

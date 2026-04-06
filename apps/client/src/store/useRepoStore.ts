@@ -55,8 +55,8 @@ export const useRepoStore = create<RepoStore>()(
       fetchRepos: async (page = 1) => {
         set({ loading: true });
         try {
-          const { search, language } = get();
-          const res = await getGithubReposApi(page, 9, search, language);
+          // Use database endpoint to get both owned and collaborated repos
+          const res = await getAllFromDb(page, 9);
 
           set({
             repos: res.data.map((repo: any) => ({
@@ -73,6 +73,7 @@ export const useRepoStore = create<RepoStore>()(
               state: repo.private ? 'private' : 'public',
               issues: 0,
               lastScan: 'Never',
+              ownerId: repo.ownerId,
             })),
             page: res.pagination.page,
             totalPages: res.pagination.totalPages,

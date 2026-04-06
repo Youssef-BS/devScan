@@ -1,6 +1,6 @@
 import { Response, NextFunction } from "express";
-import { AuthRequest } from "./auth";
-import { prisma } from "../db";
+import { AuthRequest } from "./auth.js";
+import { prisma } from "../db.js";
 
 export const requireActiveSubscription = async (
   req: AuthRequest,

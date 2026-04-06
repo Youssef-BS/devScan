@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Request, Response } from "express";
-import { prisma } from "../db";
+import { prisma } from "../db.js";
 
 const AI_SERVICE_URL = process.env.AI_SERVICE_URL || "http://localhost:8003";
 
@@ -404,6 +404,83 @@ let scan = await prisma.scan.upsert({
   }
 };
 
+export const chatWithAI = async (req: Request, res: Response) => {
+  const { code, repoId, analysisType = "chatbot" } = req.body;
+  const userId = (req as any).user?.userId;
+
+  if (!code) {
+    return res.status(400).json({ message: "Code/query is required" });
+  }
+
+  if (!repoId) {
+    return res.status(400).json({ message: "Repository ID is required" });
+  }
+
+  if (!userId) {
+    return res.status(401).json({ message: "User authentication required" });
+  }
+
+  try {
+    // Verify repo exists and user has access
+    const repo = await prisma.repo.findUnique({
+      where: { id: repoId }
+    });
+
+    if (!repo) {
+      return res.status(404).json({ message: "Repository not found" });
+    }
+
+    // Call AI service
+    const codeLength = code.length;
+    const calculatedTimeout = Math.max(60000, Math.min(120000, Math.ceil(codeLength / 50)));
+    
+    const aiResponse = await axios.post(`${AI_SERVICE_URL}/analyze`, {
+      code: code,
+      analysis_type: analysisType
+    }, {
+      timeout: calculatedTimeout
+    });
+
+    const analysis = aiResponse.data.analysis;
+
+    // Save chat discussion to database
+    const discussion = await prisma.chatDiscussion.create({
+      data: {
+        userQuery: code,
+        aiResponse: typeof analysis === 'string' ? analysis : JSON.stringify(analysis),
+        context: `Analysis type: ${analysisType}`,
+        repoId: repoId,
+        userId: userId
+      }
+    });
+
+    res.status(200).json({
+      message: "AI analysis completed",
+      analysis: analysis,
+      discussionId: discussion.id
+    });
+  } catch (error: any) {
+    let statusCode = 500;
+    let errorMessage = error.message || "Failed to get AI response";
+
+    console.error("Chat with AI error:", error);
+
+    if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+      errorMessage = `Analysis timeout: The AI service took too long to respond. Please try again.`;
+      statusCode = 408;
+    } else if (error.message?.includes('ECONNREFUSED')) {
+      errorMessage = `AI service is not available. Please try again later.`;
+      statusCode = 503;
+    }
+
+    res.status(statusCode).json({
+      message: "Failed to get AI response",
+      error: errorMessage,
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
 /**
  * Parse AI analysis text into structured Issue objects
  */
@@ -427,15 +504,11 @@ function parseAnalysisToIssues(analysisText: string) {
   return issues;
 }
 
-/**
- * Parse a single issue line
- */
 function parseSingleIssue(text: string) {
   if (!text || text.trim().length < 10) {
     return null;
   }
 
-  // Extract severity from prefixes
   let severity: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW" = "MEDIUM";
   let message = text;
 
@@ -453,7 +526,6 @@ function parseSingleIssue(text: string) {
     message = text.replace(/\*\*LOW\*\*|LOW/i, "").trim();
   }
 
-  // Determine type based on keywords
   let type: "BUG" | "VULNERABILITY" | "CODE_SMELL" = "CODE_SMELL";
   if (message.toUpperCase().includes("SECURITY") || message.toUpperCase().includes("INJECTION")) {
     type = "VULNERABILITY";
@@ -473,9 +545,7 @@ function parseSingleIssue(text: string) {
   };
 }
 
-/**
- * Calculate score based on issues
- */
+
 function calculateScore(issues: any[]): number {
   if (issues.length === 0) return 100;
 
@@ -500,9 +570,7 @@ function calculateScore(issues: any[]): number {
   return Math.max(0, score);
 }
 
-/**
- * Calculate grade based on score
- */
+
 function calculateGrade(score: number): string {
   if (score >= 90) return "A";
   if (score >= 80) return "B";

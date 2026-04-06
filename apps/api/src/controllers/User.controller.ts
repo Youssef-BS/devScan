@@ -1,4 +1,4 @@
-import {prisma} from "../db" ;
+import {prisma} from "../db.js" ;
 import { Request, Response } from "express";
 
 export const getListUsers = async (req: Request, res: Response) => {

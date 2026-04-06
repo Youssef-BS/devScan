@@ -12,11 +12,12 @@ export default function DashboardLayout({
   children: ReactNode;
 }) {
   const pathname = usePathname();
+  const hideIntro = pathname === "/profile" || pathname?.startsWith("/notifications");
 
   return (
     <ProtectedLayout>
       <Navbar />
-      {pathname !== "/profile" && <IntroDashboard />}
+      {!hideIntro && <IntroDashboard />}
       {children}
     </ProtectedLayout>
   );

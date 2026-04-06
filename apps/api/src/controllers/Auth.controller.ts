@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import axios from 'axios';
 import { randomBytes } from 'crypto';
-import { prisma } from '../db';
-import { generateToken } from '../utils/jwt';
-import { AuthRequest } from 'src/middleware/auth';
+import { prisma } from '../db.js';
+import { generateToken } from '../utils/jwt.js';
+import { AuthRequest } from 'src/middleware/auth.js';
 import bcrypt from 'bcrypt';
 import { updateProfileSchema, changePasswordSchema, updateNameSchema } from "@repo/validation";
 
@@ -113,6 +113,14 @@ export const githubCallback = async (req: Request, res: Response) => {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
+      // Also set a non-httpOnly token for Socket.IO access
+      res.cookie("socketToken", jwtToken, {
+        httpOnly: false,
+        sameSite: "lax",
+        secure: false,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
       return res.redirect(`${process.env.CLIENT_URL}/pricing`);
     }
 
@@ -124,6 +132,14 @@ export const githubCallback = async (req: Request, res: Response) => {
 
     res.cookie("token", jwtToken, {
       httpOnly: true,
+      sameSite: "lax",
+      secure: false,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    // Also set a non-httpOnly token for Socket.IO access
+    res.cookie("socketToken", jwtToken, {
+      httpOnly: false,
       sameSite: "lax",
       secure: false,
       maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -288,6 +304,7 @@ export const updateName = async (req: AuthRequest, res: Response) => {
 
 export const logout = (req: Request, res: Response) => {
   res.clearCookie("token");
+  res.clearCookie("socketToken");
 
   return res.json({
     message: "Logged out successfully",

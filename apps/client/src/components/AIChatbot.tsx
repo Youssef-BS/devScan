@@ -12,12 +12,14 @@ interface ChatMessage {
 
 interface AIChatbotProps {
   codeContext?: string;
+  repoId?: number;
   isOpen?: boolean;
   onClose?: () => void;
 }
 
 const AIChatbot: React.FC<AIChatbotProps> = ({
   codeContext = "",
+  repoId,
   isOpen: initialOpen = true,
   onClose = () => {},
 }) => {
@@ -62,28 +64,47 @@ const AIChatbot: React.FC<AIChatbotProps> = ({
         ? `Code context:\n${codeContext}\n\nUser question: ${inputValue}`
         : inputValue;
 
+      if (!repoId) {
+        throw new Error("Repository ID is required for AI chat");
+      }
+
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-      const response = await fetch(`${apiUrl}/github/commit/analyze`, {
+      const response = await fetch(`${apiUrl}/commit/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials : "include" ,
+        credentials: "include",
         body: JSON.stringify({
           code: fullPrompt,
+          repoId: repoId,
           analysisType: "chatbot",
         }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to get response from AI");
+        const errorData = await response.json().catch(() => ({}));
+        console.error("AI Chat error response:", errorData);
+        throw new Error(errorData.error || errorData.message || `AI service error: ${response.status}`);
       }
 
       const data = await response.json();
+      const analysisContent = data.analysis;
+      
+      // Ensure analysis is a string
+      let assistantMessageContent = '';
+      if (typeof analysisContent === 'string') {
+        assistantMessageContent = analysisContent;
+      } else if (analysisContent && typeof analysisContent === 'object') {
+        assistantMessageContent = JSON.stringify(analysisContent, null, 2);
+      } else {
+        assistantMessageContent = "I couldn't process that request. Please try again.";
+      }
+      
       const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: data.analysis || "I couldn't process that request. Please try again.",
+        content: assistantMessageContent,
         timestamp: new Date(),
       };
 
@@ -94,7 +115,7 @@ const AIChatbot: React.FC<AIChatbotProps> = ({
         id: (Date.now() + 1).toString(),
         role: "assistant",
         content:
-          "Sorry, I encountered an error. Please try again or check if the AI service is running.",
+          `Sorry, I encountered an error: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again.`,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -114,7 +135,7 @@ const AIChatbot: React.FC<AIChatbotProps> = ({
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-50 hover:scale-110"
+        className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-linear-to-r from-blue-500 to-indigo-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-50 hover:scale-110"
         title="Open AI Chatbot"
       >
         <MessageCircle className="w-6 h-6" />
@@ -125,7 +146,7 @@ const AIChatbot: React.FC<AIChatbotProps> = ({
   return (
     <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col border border-gray-200 z-50 overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-4 flex items-center justify-between">
+      <div className="bg-linear-to-r from-blue-500 to-indigo-600 text-white p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
             <MessageCircle className="w-4 h-4" />

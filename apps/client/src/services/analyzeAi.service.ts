@@ -43,5 +43,13 @@ export const analyseCodeApi = async (
     throw new Error(errorMsg);
   }
 
-  return response.json();
+  return response.json().then(data => {
+    // Ensure analysis is a string
+    if (data.analysis && typeof data.analysis !== 'string') {
+      data.analysis = typeof data.analysis === 'object' 
+        ? JSON.stringify(data.analysis, null, 2)
+        : String(data.analysis);
+    }
+    return data;
+  });
 };

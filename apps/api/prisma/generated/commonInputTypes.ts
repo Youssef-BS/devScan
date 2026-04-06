@@ -467,6 +467,40 @@ export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
   _max?: Prisma.NestedJsonNullableFilter<$PrismaModel>
 }
 
+export type EnumCollaborationRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.CollaborationRole | Prisma.EnumCollaborationRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.CollaborationRole[] | Prisma.ListEnumCollaborationRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CollaborationRole[] | Prisma.ListEnumCollaborationRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCollaborationRoleFilter<$PrismaModel> | $Enums.CollaborationRole
+}
+
+export type EnumCollaborationRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CollaborationRole | Prisma.EnumCollaborationRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.CollaborationRole[] | Prisma.ListEnumCollaborationRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CollaborationRole[] | Prisma.ListEnumCollaborationRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCollaborationRoleWithAggregatesFilter<$PrismaModel> | $Enums.CollaborationRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCollaborationRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCollaborationRoleFilter<$PrismaModel>
+}
+
+export type EnumInviteStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.InviteStatus | Prisma.EnumInviteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InviteStatus[] | Prisma.ListEnumInviteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InviteStatus[] | Prisma.ListEnumInviteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInviteStatusFilter<$PrismaModel> | $Enums.InviteStatus
+}
+
+export type EnumInviteStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InviteStatus | Prisma.EnumInviteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InviteStatus[] | Prisma.ListEnumInviteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InviteStatus[] | Prisma.ListEnumInviteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInviteStatusWithAggregatesFilter<$PrismaModel> | $Enums.InviteStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInviteStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInviteStatusFilter<$PrismaModel>
+}
+
 export type NestedIntFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
@@ -866,6 +900,40 @@ export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
   gt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   gte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+}
+
+export type NestedEnumCollaborationRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.CollaborationRole | Prisma.EnumCollaborationRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.CollaborationRole[] | Prisma.ListEnumCollaborationRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CollaborationRole[] | Prisma.ListEnumCollaborationRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCollaborationRoleFilter<$PrismaModel> | $Enums.CollaborationRole
+}
+
+export type NestedEnumCollaborationRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CollaborationRole | Prisma.EnumCollaborationRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.CollaborationRole[] | Prisma.ListEnumCollaborationRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CollaborationRole[] | Prisma.ListEnumCollaborationRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCollaborationRoleWithAggregatesFilter<$PrismaModel> | $Enums.CollaborationRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCollaborationRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCollaborationRoleFilter<$PrismaModel>
+}
+
+export type NestedEnumInviteStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.InviteStatus | Prisma.EnumInviteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InviteStatus[] | Prisma.ListEnumInviteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InviteStatus[] | Prisma.ListEnumInviteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInviteStatusFilter<$PrismaModel> | $Enums.InviteStatus
+}
+
+export type NestedEnumInviteStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InviteStatus | Prisma.EnumInviteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InviteStatus[] | Prisma.ListEnumInviteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InviteStatus[] | Prisma.ListEnumInviteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInviteStatusWithAggregatesFilter<$PrismaModel> | $Enums.InviteStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInviteStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInviteStatusFilter<$PrismaModel>
 }
 
 

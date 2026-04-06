@@ -15,6 +15,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { useAuthStore } from "@/store/useAuthStore"
 import { useAuthContext } from "@/auth-context"
+import { useNotifications } from "@/hooks/use-notifications"
 import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
@@ -38,8 +39,8 @@ export function Navbar() {
   const pathname = usePathname();
   const { user } = useAuthContext();
   const { logout } = useAuthStore();
+  const { unreadCount } = useNotifications();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [notifications, setNotifications] = useState(3);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -113,18 +114,17 @@ export function Navbar() {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="relative hover:bg-gray-100"
+              className="relative hover:bg-gray-100 transition-colors"
               onClick={() => router.push('/notifications')}
+              title="Notifications"
             >
               <Bell size={18} className="text-gray-600" />
-              {notifications > 0 && (
+              {unreadCount > 0 && (
                 <>
-                  <span className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-red-500 text-white text-xs font-medium rounded-full animate-pulse">
-                    {notifications}
+                  <span className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
+                    {unreadCount > 9 ? '9+' : unreadCount}
                   </span>
-                  <span className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-red-500 text-white text-xs font-medium rounded-full animate-ping opacity-75">
-                    {notifications}
-                  </span>
+                  <span className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-red-500 text-white text-xs font-bold rounded-full animate-ping opacity-75"></span>
                 </>
               )}
             </Button>
@@ -132,8 +132,9 @@ export function Navbar() {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="hover:bg-gray-100"
+              className="hover:bg-gray-100 transition-colors"
               onClick={() => router.push('/profile')}
+              title="Settings"
             >
               <Settings size={18} className="text-gray-600" />
             </Button>
@@ -143,16 +144,16 @@ export function Navbar() {
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="ghost" 
-                  className="relative h-10 pl-2 pr-3 gap-2 rounded-xl hover:bg-gray-100"
+                  className="relative h-10 pl-2 pr-3 gap-2 rounded-xl hover:bg-gray-100 transition-colors"
                 >
                   <Avatar className="h-8 w-8 border-2 border-gray-200">
                     <AvatarImage src={user?.avatarUrl} alt={user?.firstName} />
-                    <AvatarFallback className="bg-gray-900 text-white text-sm">
+                    <AvatarFallback className="bg-gradient-to-br from-gray-900 to-gray-700 text-white text-sm font-semibold">
                       {getInitials()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="hidden lg:block text-left">
-                    <p className="text-sm font-medium text-gray-700">
+                    <p className="text-sm font-medium text-gray-900">
                       {user?.firstName} {user?.lastName}
                     </p>
                     <p className="text-xs text-gray-500">{user?.email}</p>

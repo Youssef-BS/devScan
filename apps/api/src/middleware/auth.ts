@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-
-const JWT_SECRET = process.env.JWT_SECRET as string;
+import { verifyJWT } from "../utils/jwt-verify.js";
 
 export interface AuthRequest extends Request {
   user?: {
@@ -19,9 +17,9 @@ export const auth = (req: AuthRequest, res: Response, next: NextFunction) => {
       return res.status(401).json({ message: "Missing token" });
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: number; role: "USER" | "ADMIN" };
-     console.log("Decoded JWT:", decoded)
-    req.user = decoded;
+    const decoded = verifyJWT(token);
+    console.log("Decoded JWT:", decoded);
+    req.user = { userId: decoded.id || decoded.userId || 0, role: decoded.role || "USER" };
     next();
   } catch (err) {
     return res.status(401).json({ message: "Invalid or expired token" });

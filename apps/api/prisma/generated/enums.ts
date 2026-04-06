@@ -83,3 +83,22 @@ export const AgentType = {
 } as const
 
 export type AgentType = (typeof AgentType)[keyof typeof AgentType]
+
+
+export const CollaborationRole = {
+  VIEWER: 'VIEWER',
+  EDITOR: 'EDITOR',
+  ADMIN: 'ADMIN'
+} as const
+
+export type CollaborationRole = (typeof CollaborationRole)[keyof typeof CollaborationRole]
+
+
+export const InviteStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type InviteStatus = (typeof InviteStatus)[keyof typeof InviteStatus]

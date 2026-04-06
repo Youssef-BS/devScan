@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { getListUsers , getUserDetails, updateUser , banUser , unbanUser } from "../controllers/User.controller";
-import { isAdmin } from "src/middleware/isAdmin";
-import { auth } from "src/middleware/auth";
-import { isBanned } from "src/middleware/isBanned";
+import { getListUsers , getUserDetails, updateUser , banUser , unbanUser } from "../controllers/User.controller.js";
+import { isAdmin } from "src/middleware/isAdmin.js";
+import { auth } from "src/middleware/auth.js";
+import { isBanned } from "src/middleware/isBanned.js";
 
 const router : Router = Router() ;
 

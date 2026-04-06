@@ -12,12 +12,18 @@ interface AIAnalysisPanelProps {
 }
 
 const AIAnalysisPanel: React.FC<AIAnalysisPanelProps> = ({
-  analysis,
+  analysis = "",
   loading = false,
   error = null,
   correctedExamples = [],
   onAnalyzeClick,
 }) => {
+  // Ensure analysis is always a string
+  const analysisText = typeof analysis === 'string' 
+    ? analysis 
+    : analysis && typeof analysis === 'object'
+    ? JSON.stringify(analysis, null, 2)
+    : "";
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6 md:p-8">
       <div className="flex items-center justify-between mb-6">
@@ -75,7 +81,7 @@ const AIAnalysisPanel: React.FC<AIAnalysisPanelProps> = ({
         </div>
       )}
 
-      {analysis && !loading && (
+      {analysisText && !loading && (
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div className="p-4 bg-green-50 rounded-lg border border-green-200">
@@ -107,7 +113,7 @@ const AIAnalysisPanel: React.FC<AIAnalysisPanelProps> = ({
             <h3 className="font-semibold text-gray-900 mb-3">Analysis Results</h3>
             <div className="prose prose-sm max-w-none">
               <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
-                {analysis}
+                {analysisText}
               </p>
             </div>
           </div>
@@ -142,7 +148,7 @@ const AIAnalysisPanel: React.FC<AIAnalysisPanelProps> = ({
         </div>
       )}
 
-      {!analysis && !loading && !error && (
+      {!analysisText && !loading && !error && (
         <div className="text-center py-8">
           <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
             <Zap className="w-8 h-8 text-gray-400" />

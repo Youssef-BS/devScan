@@ -14,4 +14,5 @@ export interface Repo {
     issues : number ;
     lastScan : string ;
     auto_audit : boolean ;
+    ownerId? : number ;
 }

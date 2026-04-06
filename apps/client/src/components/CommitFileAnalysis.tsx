@@ -35,6 +35,11 @@ const CommitFileAnalysis: React.FC<CommitFileAnalysisProps> = ({
   const parseAnalysis = (text: string) => {
     // Split analysis into sections if it follows a pattern
     const sections: { title: string; content: string }[] = [];
+    
+    if (!text || typeof text !== 'string') {
+      return null;
+    }
+    
     const lines = text.split("\n");
     let currentSection = "";
     let currentContent = "";

@@ -1,17 +1,24 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import { createServer } from "http";
 import authRoutes from "./routes/auth.routes.js";
 import githubRoutes from "./routes/repo.routes.js";
 import commitRoutes from "./routes/commit.routes.js";
 import adminRoutes from "./routes/admin.route.js";
 import userRoutes from "./routes/user.route.js" ;
 import subscriptionRoutes from "./routes/subscription.routes.js";
+import collaborationRoutes from "./routes/collaboration.routes.js";
 import cookieParser from "cookie-parser";
+import { initializeSocket } from "./utils/socket.js";
 
 dotenv.config();
 
 const app = express();
+const httpServer = createServer(app);
+
+const io = initializeSocket(httpServer);
+
 app.use(cookieParser()) ;
 
 app.use(cors(
@@ -32,9 +39,7 @@ app.use(cors(
   }
 ));
 
-// Register subscription routes BEFORE express.json()
-// Webhook route has raw() middleware, other routes have json() middleware
-app.use("/subscription", subscriptionRoutes);
+
 
 app.use(express.json());
 
@@ -49,8 +54,11 @@ app.use("/github/repos", githubRoutes);
 app.use("/github/commit" , commitRoutes); 
 app.use("/admin" , adminRoutes) ;
 app.use("/users" ,  userRoutes) ;
+app.use("/collaboration", collaborationRoutes);
+app.use("/subscription", subscriptionRoutes);
 
+const PORT = parseInt(process.env.PORT || "4000", 10);
 
-app.listen(process.env.PORT, () => {
-  console.log(`API running on http://localhost:${process.env.PORT}`);
+httpServer.listen(PORT, () => {
+  console.log(`API running on http://localhost:${PORT}`);
 });

@@ -56,7 +56,12 @@ export const ModelName = {
   Commit: 'Commit',
   CommitFile: 'CommitFile',
   Scan: 'Scan',
-  Issue: 'Issue'
+  Issue: 'Issue',
+  Collaborator: 'Collaborator',
+  CollaborationInvite: 'CollaborationInvite',
+  Message: 'Message',
+  ActivityLog: 'ActivityLog',
+  ChatDiscussion: 'ChatDiscussion'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -180,6 +185,73 @@ export const IssueScalarFieldEnum = {
 } as const
 
 export type IssueScalarFieldEnum = (typeof IssueScalarFieldEnum)[keyof typeof IssueScalarFieldEnum]
+
+
+export const CollaboratorScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  repoId: 'repoId',
+  role: 'role',
+  isActive: 'isActive',
+  joinedAt: 'joinedAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CollaboratorScalarFieldEnum = (typeof CollaboratorScalarFieldEnum)[keyof typeof CollaboratorScalarFieldEnum]
+
+
+export const CollaborationInviteScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  token: 'token',
+  repoId: 'repoId',
+  invitedBy: 'invitedBy',
+  role: 'role',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type CollaborationInviteScalarFieldEnum = (typeof CollaborationInviteScalarFieldEnum)[keyof typeof CollaborationInviteScalarFieldEnum]
+
+
+export const MessageScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  repoId: 'repoId',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const ActivityLogScalarFieldEnum = {
+  id: 'id',
+  action: 'action',
+  details: 'details',
+  repoId: 'repoId',
+  performedById: 'performedById',
+  affectedUserId: 'affectedUserId',
+  createdAt: 'createdAt'
+} as const
+
+export type ActivityLogScalarFieldEnum = (typeof ActivityLogScalarFieldEnum)[keyof typeof ActivityLogScalarFieldEnum]
+
+
+export const ChatDiscussionScalarFieldEnum = {
+  id: 'id',
+  userQuery: 'userQuery',
+  aiResponse: 'aiResponse',
+  context: 'context',
+  repoId: 'repoId',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChatDiscussionScalarFieldEnum = (typeof ChatDiscussionScalarFieldEnum)[keyof typeof ChatDiscussionScalarFieldEnum]
 
 
 export const SortOrder = {

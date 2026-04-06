@@ -69,3 +69,28 @@ export type Scan = Prisma.ScanModel
  * 
  */
 export type Issue = Prisma.IssueModel
+/**
+ * Model Collaborator
+ * 
+ */
+export type Collaborator = Prisma.CollaboratorModel
+/**
+ * Model CollaborationInvite
+ * 
+ */
+export type CollaborationInvite = Prisma.CollaborationInviteModel
+/**
+ * Model Message
+ * 
+ */
+export type Message = Prisma.MessageModel
+/**
+ * Model ActivityLog
+ * 
+ */
+export type ActivityLog = Prisma.ActivityLogModel
+/**
+ * Model ChatDiscussion
+ * 
+ */
+export type ChatDiscussion = Prisma.ChatDiscussionModel

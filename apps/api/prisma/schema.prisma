@@ -31,6 +31,11 @@ model User {
   createdAt             DateTime @default(now())
 
   repos                 Repo[]
+  collaborations        Collaborator[]
+  invitesReceived       CollaborationInvite[]
+  messages              Message[]
+  activitiesPerformed   ActivityLog[] @relation("ActivityPerformedBy")
+  chatDiscussions       ChatDiscussion[]
 }
 
 model Repo {
@@ -50,6 +55,11 @@ model Repo {
 
   commits     Commit[]
   scans       Scan[]
+  collaborators Collaborator[]
+  invites     CollaborationInvite[]
+  messages    Message[]
+  activities  ActivityLog[]
+  chatDiscussions ChatDiscussion[]
 
   createdAt   DateTime @default(now())
 
@@ -153,6 +163,105 @@ model Issue {
   @@index([commitId])
 }
 
+model Collaborator {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  repoId    Int
+  Repo      Repo     @relation(fields: [repoId], references: [id], onDelete: Cascade)
+
+  role      CollaborationRole @default(VIEWER)
+  isActive  Boolean  @default(true)
+  joinedAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, repoId])
+  @@index([repoId])
+  @@index([userId])
+}
+
+model CollaborationInvite {
+  id        Int      @id @default(autoincrement())
+  email     String
+  token     String   @unique
+  
+  repoId    Int
+  Repo      Repo     @relation(fields: [repoId], references: [id], onDelete: Cascade)
+
+  invitedBy Int
+  InvitedByUser User @relation(fields: [invitedBy], references: [id], onDelete: Cascade)
+
+  role      CollaborationRole @default(VIEWER)
+  status    InviteStatus @default(PENDING)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@unique([email, repoId])
+  @@index([repoId])
+  @@index([token])
+  @@index([status])
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  content   String
+  
+  repoId    Int
+  Repo      Repo     @relation(fields: [repoId], references: [id], onDelete: Cascade)
+
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([repoId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  action    String
+  details   Json?
+  
+  repoId    Int
+  Repo      Repo     @relation(fields: [repoId], references: [id], onDelete: Cascade)
+
+  performedById Int?
+  PerformedBy   User?    @relation("ActivityPerformedBy", fields: [performedById], references: [id], onDelete: SetNull)
+
+  affectedUserId Int?
+  // The user affected by the activity (e.g., user added as collaborator)
+
+  createdAt DateTime @default(now())
+
+  @@index([repoId])
+  @@index([performedById])
+  @@index([createdAt])
+}
+
+model ChatDiscussion {
+  id        Int       @id @default(autoincrement())
+  userQuery String
+  aiResponse String
+  context   String?
+  
+  repoId    Int
+  Repo      Repo      @relation(fields: [repoId], references: [id], onDelete: Cascade)
+
+  userId    Int
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([repoId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
 enum Role {
   USER
   ADMIN
@@ -203,4 +312,17 @@ enum AgentType {
   performance
   clean_code
   bug
+}
+
+enum CollaborationRole {
+  VIEWER
+  EDITOR
+  ADMIN
+}
+
+enum InviteStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  EXPIRED
 }

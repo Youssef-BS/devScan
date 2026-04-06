@@ -279,6 +279,11 @@ export type RepoWhereInput = {
   User?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   commits?: Prisma.CommitListRelationFilter
   scans?: Prisma.ScanListRelationFilter
+  collaborators?: Prisma.CollaboratorListRelationFilter
+  invites?: Prisma.CollaborationInviteListRelationFilter
+  messages?: Prisma.MessageListRelationFilter
+  activities?: Prisma.ActivityLogListRelationFilter
+  chatDiscussions?: Prisma.ChatDiscussionListRelationFilter
 }
 
 export type RepoOrderByWithRelationInput = {
@@ -297,6 +302,11 @@ export type RepoOrderByWithRelationInput = {
   User?: Prisma.UserOrderByWithRelationInput
   commits?: Prisma.CommitOrderByRelationAggregateInput
   scans?: Prisma.ScanOrderByRelationAggregateInput
+  collaborators?: Prisma.CollaboratorOrderByRelationAggregateInput
+  invites?: Prisma.CollaborationInviteOrderByRelationAggregateInput
+  messages?: Prisma.MessageOrderByRelationAggregateInput
+  activities?: Prisma.ActivityLogOrderByRelationAggregateInput
+  chatDiscussions?: Prisma.ChatDiscussionOrderByRelationAggregateInput
 }
 
 export type RepoWhereUniqueInput = Prisma.AtLeast<{
@@ -318,6 +328,11 @@ export type RepoWhereUniqueInput = Prisma.AtLeast<{
   User?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   commits?: Prisma.CommitListRelationFilter
   scans?: Prisma.ScanListRelationFilter
+  collaborators?: Prisma.CollaboratorListRelationFilter
+  invites?: Prisma.CollaborationInviteListRelationFilter
+  messages?: Prisma.MessageListRelationFilter
+  activities?: Prisma.ActivityLogListRelationFilter
+  chatDiscussions?: Prisma.ChatDiscussionListRelationFilter
 }, "id" | "githubId">
 
 export type RepoOrderByWithAggregationInput = {
@@ -372,6 +387,11 @@ export type RepoCreateInput = {
   User: Prisma.UserCreateNestedOneWithoutReposInput
   commits?: Prisma.CommitCreateNestedManyWithoutRepoInput
   scans?: Prisma.ScanCreateNestedManyWithoutRepoInput
+  collaborators?: Prisma.CollaboratorCreateNestedManyWithoutRepoInput
+  invites?: Prisma.CollaborationInviteCreateNestedManyWithoutRepoInput
+  messages?: Prisma.MessageCreateNestedManyWithoutRepoInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutRepoInput
+  chatDiscussions?: Prisma.ChatDiscussionCreateNestedManyWithoutRepoInput
 }
 
 export type RepoUncheckedCreateInput = {
@@ -389,6 +409,11 @@ export type RepoUncheckedCreateInput = {
   createdAt?: Date | string
   commits?: Prisma.CommitUncheckedCreateNestedManyWithoutRepoInput
   scans?: Prisma.ScanUncheckedCreateNestedManyWithoutRepoInput
+  collaborators?: Prisma.CollaboratorUncheckedCreateNestedManyWithoutRepoInput
+  invites?: Prisma.CollaborationInviteUncheckedCreateNestedManyWithoutRepoInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutRepoInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutRepoInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedCreateNestedManyWithoutRepoInput
 }
 
 export type RepoUpdateInput = {
@@ -405,6 +430,11 @@ export type RepoUpdateInput = {
   User?: Prisma.UserUpdateOneRequiredWithoutReposNestedInput
   commits?: Prisma.CommitUpdateManyWithoutRepoNestedInput
   scans?: Prisma.ScanUpdateManyWithoutRepoNestedInput
+  collaborators?: Prisma.CollaboratorUpdateManyWithoutRepoNestedInput
+  invites?: Prisma.CollaborationInviteUpdateManyWithoutRepoNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutRepoNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutRepoNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUpdateManyWithoutRepoNestedInput
 }
 
 export type RepoUncheckedUpdateInput = {
@@ -422,6 +452,11 @@ export type RepoUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   commits?: Prisma.CommitUncheckedUpdateManyWithoutRepoNestedInput
   scans?: Prisma.ScanUncheckedUpdateManyWithoutRepoNestedInput
+  collaborators?: Prisma.CollaboratorUncheckedUpdateManyWithoutRepoNestedInput
+  invites?: Prisma.CollaborationInviteUncheckedUpdateManyWithoutRepoNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutRepoNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutRepoNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedUpdateManyWithoutRepoNestedInput
 }
 
 export type RepoCreateManyInput = {
@@ -611,6 +646,76 @@ export type RepoUpdateOneRequiredWithoutScansNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.RepoUpdateToOneWithWhereWithoutScansInput, Prisma.RepoUpdateWithoutScansInput>, Prisma.RepoUncheckedUpdateWithoutScansInput>
 }
 
+export type RepoCreateNestedOneWithoutCollaboratorsInput = {
+  create?: Prisma.XOR<Prisma.RepoCreateWithoutCollaboratorsInput, Prisma.RepoUncheckedCreateWithoutCollaboratorsInput>
+  connectOrCreate?: Prisma.RepoCreateOrConnectWithoutCollaboratorsInput
+  connect?: Prisma.RepoWhereUniqueInput
+}
+
+export type RepoUpdateOneRequiredWithoutCollaboratorsNestedInput = {
+  create?: Prisma.XOR<Prisma.RepoCreateWithoutCollaboratorsInput, Prisma.RepoUncheckedCreateWithoutCollaboratorsInput>
+  connectOrCreate?: Prisma.RepoCreateOrConnectWithoutCollaboratorsInput
+  upsert?: Prisma.RepoUpsertWithoutCollaboratorsInput
+  connect?: Prisma.RepoWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RepoUpdateToOneWithWhereWithoutCollaboratorsInput, Prisma.RepoUpdateWithoutCollaboratorsInput>, Prisma.RepoUncheckedUpdateWithoutCollaboratorsInput>
+}
+
+export type RepoCreateNestedOneWithoutInvitesInput = {
+  create?: Prisma.XOR<Prisma.RepoCreateWithoutInvitesInput, Prisma.RepoUncheckedCreateWithoutInvitesInput>
+  connectOrCreate?: Prisma.RepoCreateOrConnectWithoutInvitesInput
+  connect?: Prisma.RepoWhereUniqueInput
+}
+
+export type RepoUpdateOneRequiredWithoutInvitesNestedInput = {
+  create?: Prisma.XOR<Prisma.RepoCreateWithoutInvitesInput, Prisma.RepoUncheckedCreateWithoutInvitesInput>
+  connectOrCreate?: Prisma.RepoCreateOrConnectWithoutInvitesInput
+  upsert?: Prisma.RepoUpsertWithoutInvitesInput
+  connect?: Prisma.RepoWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RepoUpdateToOneWithWhereWithoutInvitesInput, Prisma.RepoUpdateWithoutInvitesInput>, Prisma.RepoUncheckedUpdateWithoutInvitesInput>
+}
+
+export type RepoCreateNestedOneWithoutMessagesInput = {
+  create?: Prisma.XOR<Prisma.RepoCreateWithoutMessagesInput, Prisma.RepoUncheckedCreateWithoutMessagesInput>
+  connectOrCreate?: Prisma.RepoCreateOrConnectWithoutMessagesInput
+  connect?: Prisma.RepoWhereUniqueInput
+}
+
+export type RepoUpdateOneRequiredWithoutMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.RepoCreateWithoutMessagesInput, Prisma.RepoUncheckedCreateWithoutMessagesInput>
+  connectOrCreate?: Prisma.RepoCreateOrConnectWithoutMessagesInput
+  upsert?: Prisma.RepoUpsertWithoutMessagesInput
+  connect?: Prisma.RepoWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RepoUpdateToOneWithWhereWithoutMessagesInput, Prisma.RepoUpdateWithoutMessagesInput>, Prisma.RepoUncheckedUpdateWithoutMessagesInput>
+}
+
+export type RepoCreateNestedOneWithoutActivitiesInput = {
+  create?: Prisma.XOR<Prisma.RepoCreateWithoutActivitiesInput, Prisma.RepoUncheckedCreateWithoutActivitiesInput>
+  connectOrCreate?: Prisma.RepoCreateOrConnectWithoutActivitiesInput
+  connect?: Prisma.RepoWhereUniqueInput
+}
+
+export type RepoUpdateOneRequiredWithoutActivitiesNestedInput = {
+  create?: Prisma.XOR<Prisma.RepoCreateWithoutActivitiesInput, Prisma.RepoUncheckedCreateWithoutActivitiesInput>
+  connectOrCreate?: Prisma.RepoCreateOrConnectWithoutActivitiesInput
+  upsert?: Prisma.RepoUpsertWithoutActivitiesInput
+  connect?: Prisma.RepoWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RepoUpdateToOneWithWhereWithoutActivitiesInput, Prisma.RepoUpdateWithoutActivitiesInput>, Prisma.RepoUncheckedUpdateWithoutActivitiesInput>
+}
+
+export type RepoCreateNestedOneWithoutChatDiscussionsInput = {
+  create?: Prisma.XOR<Prisma.RepoCreateWithoutChatDiscussionsInput, Prisma.RepoUncheckedCreateWithoutChatDiscussionsInput>
+  connectOrCreate?: Prisma.RepoCreateOrConnectWithoutChatDiscussionsInput
+  connect?: Prisma.RepoWhereUniqueInput
+}
+
+export type RepoUpdateOneRequiredWithoutChatDiscussionsNestedInput = {
+  create?: Prisma.XOR<Prisma.RepoCreateWithoutChatDiscussionsInput, Prisma.RepoUncheckedCreateWithoutChatDiscussionsInput>
+  connectOrCreate?: Prisma.RepoCreateOrConnectWithoutChatDiscussionsInput
+  upsert?: Prisma.RepoUpsertWithoutChatDiscussionsInput
+  connect?: Prisma.RepoWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RepoUpdateToOneWithWhereWithoutChatDiscussionsInput, Prisma.RepoUpdateWithoutChatDiscussionsInput>, Prisma.RepoUncheckedUpdateWithoutChatDiscussionsInput>
+}
+
 export type RepoCreateWithoutUserInput = {
   githubId: string
   name: string
@@ -624,6 +729,11 @@ export type RepoCreateWithoutUserInput = {
   createdAt?: Date | string
   commits?: Prisma.CommitCreateNestedManyWithoutRepoInput
   scans?: Prisma.ScanCreateNestedManyWithoutRepoInput
+  collaborators?: Prisma.CollaboratorCreateNestedManyWithoutRepoInput
+  invites?: Prisma.CollaborationInviteCreateNestedManyWithoutRepoInput
+  messages?: Prisma.MessageCreateNestedManyWithoutRepoInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutRepoInput
+  chatDiscussions?: Prisma.ChatDiscussionCreateNestedManyWithoutRepoInput
 }
 
 export type RepoUncheckedCreateWithoutUserInput = {
@@ -640,6 +750,11 @@ export type RepoUncheckedCreateWithoutUserInput = {
   createdAt?: Date | string
   commits?: Prisma.CommitUncheckedCreateNestedManyWithoutRepoInput
   scans?: Prisma.ScanUncheckedCreateNestedManyWithoutRepoInput
+  collaborators?: Prisma.CollaboratorUncheckedCreateNestedManyWithoutRepoInput
+  invites?: Prisma.CollaborationInviteUncheckedCreateNestedManyWithoutRepoInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutRepoInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutRepoInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedCreateNestedManyWithoutRepoInput
 }
 
 export type RepoCreateOrConnectWithoutUserInput = {
@@ -699,6 +814,11 @@ export type RepoCreateWithoutCommitsInput = {
   createdAt?: Date | string
   User: Prisma.UserCreateNestedOneWithoutReposInput
   scans?: Prisma.ScanCreateNestedManyWithoutRepoInput
+  collaborators?: Prisma.CollaboratorCreateNestedManyWithoutRepoInput
+  invites?: Prisma.CollaborationInviteCreateNestedManyWithoutRepoInput
+  messages?: Prisma.MessageCreateNestedManyWithoutRepoInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutRepoInput
+  chatDiscussions?: Prisma.ChatDiscussionCreateNestedManyWithoutRepoInput
 }
 
 export type RepoUncheckedCreateWithoutCommitsInput = {
@@ -715,6 +835,11 @@ export type RepoUncheckedCreateWithoutCommitsInput = {
   ownerId: number
   createdAt?: Date | string
   scans?: Prisma.ScanUncheckedCreateNestedManyWithoutRepoInput
+  collaborators?: Prisma.CollaboratorUncheckedCreateNestedManyWithoutRepoInput
+  invites?: Prisma.CollaborationInviteUncheckedCreateNestedManyWithoutRepoInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutRepoInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutRepoInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedCreateNestedManyWithoutRepoInput
 }
 
 export type RepoCreateOrConnectWithoutCommitsInput = {
@@ -746,6 +871,11 @@ export type RepoUpdateWithoutCommitsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   User?: Prisma.UserUpdateOneRequiredWithoutReposNestedInput
   scans?: Prisma.ScanUpdateManyWithoutRepoNestedInput
+  collaborators?: Prisma.CollaboratorUpdateManyWithoutRepoNestedInput
+  invites?: Prisma.CollaborationInviteUpdateManyWithoutRepoNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutRepoNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutRepoNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUpdateManyWithoutRepoNestedInput
 }
 
 export type RepoUncheckedUpdateWithoutCommitsInput = {
@@ -762,6 +892,11 @@ export type RepoUncheckedUpdateWithoutCommitsInput = {
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   scans?: Prisma.ScanUncheckedUpdateManyWithoutRepoNestedInput
+  collaborators?: Prisma.CollaboratorUncheckedUpdateManyWithoutRepoNestedInput
+  invites?: Prisma.CollaborationInviteUncheckedUpdateManyWithoutRepoNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutRepoNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutRepoNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedUpdateManyWithoutRepoNestedInput
 }
 
 export type RepoCreateWithoutScansInput = {
@@ -777,6 +912,11 @@ export type RepoCreateWithoutScansInput = {
   createdAt?: Date | string
   User: Prisma.UserCreateNestedOneWithoutReposInput
   commits?: Prisma.CommitCreateNestedManyWithoutRepoInput
+  collaborators?: Prisma.CollaboratorCreateNestedManyWithoutRepoInput
+  invites?: Prisma.CollaborationInviteCreateNestedManyWithoutRepoInput
+  messages?: Prisma.MessageCreateNestedManyWithoutRepoInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutRepoInput
+  chatDiscussions?: Prisma.ChatDiscussionCreateNestedManyWithoutRepoInput
 }
 
 export type RepoUncheckedCreateWithoutScansInput = {
@@ -793,6 +933,11 @@ export type RepoUncheckedCreateWithoutScansInput = {
   ownerId: number
   createdAt?: Date | string
   commits?: Prisma.CommitUncheckedCreateNestedManyWithoutRepoInput
+  collaborators?: Prisma.CollaboratorUncheckedCreateNestedManyWithoutRepoInput
+  invites?: Prisma.CollaborationInviteUncheckedCreateNestedManyWithoutRepoInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutRepoInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutRepoInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedCreateNestedManyWithoutRepoInput
 }
 
 export type RepoCreateOrConnectWithoutScansInput = {
@@ -824,6 +969,11 @@ export type RepoUpdateWithoutScansInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   User?: Prisma.UserUpdateOneRequiredWithoutReposNestedInput
   commits?: Prisma.CommitUpdateManyWithoutRepoNestedInput
+  collaborators?: Prisma.CollaboratorUpdateManyWithoutRepoNestedInput
+  invites?: Prisma.CollaborationInviteUpdateManyWithoutRepoNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutRepoNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutRepoNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUpdateManyWithoutRepoNestedInput
 }
 
 export type RepoUncheckedUpdateWithoutScansInput = {
@@ -840,6 +990,501 @@ export type RepoUncheckedUpdateWithoutScansInput = {
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   commits?: Prisma.CommitUncheckedUpdateManyWithoutRepoNestedInput
+  collaborators?: Prisma.CollaboratorUncheckedUpdateManyWithoutRepoNestedInput
+  invites?: Prisma.CollaborationInviteUncheckedUpdateManyWithoutRepoNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutRepoNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutRepoNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedUpdateManyWithoutRepoNestedInput
+}
+
+export type RepoCreateWithoutCollaboratorsInput = {
+  githubId: string
+  name: string
+  fullName: string
+  htmlUrl: string
+  description?: string | null
+  language?: string | null
+  private: boolean
+  fork: boolean
+  autoAudit?: boolean
+  createdAt?: Date | string
+  User: Prisma.UserCreateNestedOneWithoutReposInput
+  commits?: Prisma.CommitCreateNestedManyWithoutRepoInput
+  scans?: Prisma.ScanCreateNestedManyWithoutRepoInput
+  invites?: Prisma.CollaborationInviteCreateNestedManyWithoutRepoInput
+  messages?: Prisma.MessageCreateNestedManyWithoutRepoInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutRepoInput
+  chatDiscussions?: Prisma.ChatDiscussionCreateNestedManyWithoutRepoInput
+}
+
+export type RepoUncheckedCreateWithoutCollaboratorsInput = {
+  id?: number
+  githubId: string
+  name: string
+  fullName: string
+  htmlUrl: string
+  description?: string | null
+  language?: string | null
+  private: boolean
+  fork: boolean
+  autoAudit?: boolean
+  ownerId: number
+  createdAt?: Date | string
+  commits?: Prisma.CommitUncheckedCreateNestedManyWithoutRepoInput
+  scans?: Prisma.ScanUncheckedCreateNestedManyWithoutRepoInput
+  invites?: Prisma.CollaborationInviteUncheckedCreateNestedManyWithoutRepoInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutRepoInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutRepoInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedCreateNestedManyWithoutRepoInput
+}
+
+export type RepoCreateOrConnectWithoutCollaboratorsInput = {
+  where: Prisma.RepoWhereUniqueInput
+  create: Prisma.XOR<Prisma.RepoCreateWithoutCollaboratorsInput, Prisma.RepoUncheckedCreateWithoutCollaboratorsInput>
+}
+
+export type RepoUpsertWithoutCollaboratorsInput = {
+  update: Prisma.XOR<Prisma.RepoUpdateWithoutCollaboratorsInput, Prisma.RepoUncheckedUpdateWithoutCollaboratorsInput>
+  create: Prisma.XOR<Prisma.RepoCreateWithoutCollaboratorsInput, Prisma.RepoUncheckedCreateWithoutCollaboratorsInput>
+  where?: Prisma.RepoWhereInput
+}
+
+export type RepoUpdateToOneWithWhereWithoutCollaboratorsInput = {
+  where?: Prisma.RepoWhereInput
+  data: Prisma.XOR<Prisma.RepoUpdateWithoutCollaboratorsInput, Prisma.RepoUncheckedUpdateWithoutCollaboratorsInput>
+}
+
+export type RepoUpdateWithoutCollaboratorsInput = {
+  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  htmlUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  private?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  User?: Prisma.UserUpdateOneRequiredWithoutReposNestedInput
+  commits?: Prisma.CommitUpdateManyWithoutRepoNestedInput
+  scans?: Prisma.ScanUpdateManyWithoutRepoNestedInput
+  invites?: Prisma.CollaborationInviteUpdateManyWithoutRepoNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutRepoNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutRepoNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUpdateManyWithoutRepoNestedInput
+}
+
+export type RepoUncheckedUpdateWithoutCollaboratorsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  htmlUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  private?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  commits?: Prisma.CommitUncheckedUpdateManyWithoutRepoNestedInput
+  scans?: Prisma.ScanUncheckedUpdateManyWithoutRepoNestedInput
+  invites?: Prisma.CollaborationInviteUncheckedUpdateManyWithoutRepoNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutRepoNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutRepoNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedUpdateManyWithoutRepoNestedInput
+}
+
+export type RepoCreateWithoutInvitesInput = {
+  githubId: string
+  name: string
+  fullName: string
+  htmlUrl: string
+  description?: string | null
+  language?: string | null
+  private: boolean
+  fork: boolean
+  autoAudit?: boolean
+  createdAt?: Date | string
+  User: Prisma.UserCreateNestedOneWithoutReposInput
+  commits?: Prisma.CommitCreateNestedManyWithoutRepoInput
+  scans?: Prisma.ScanCreateNestedManyWithoutRepoInput
+  collaborators?: Prisma.CollaboratorCreateNestedManyWithoutRepoInput
+  messages?: Prisma.MessageCreateNestedManyWithoutRepoInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutRepoInput
+  chatDiscussions?: Prisma.ChatDiscussionCreateNestedManyWithoutRepoInput
+}
+
+export type RepoUncheckedCreateWithoutInvitesInput = {
+  id?: number
+  githubId: string
+  name: string
+  fullName: string
+  htmlUrl: string
+  description?: string | null
+  language?: string | null
+  private: boolean
+  fork: boolean
+  autoAudit?: boolean
+  ownerId: number
+  createdAt?: Date | string
+  commits?: Prisma.CommitUncheckedCreateNestedManyWithoutRepoInput
+  scans?: Prisma.ScanUncheckedCreateNestedManyWithoutRepoInput
+  collaborators?: Prisma.CollaboratorUncheckedCreateNestedManyWithoutRepoInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutRepoInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutRepoInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedCreateNestedManyWithoutRepoInput
+}
+
+export type RepoCreateOrConnectWithoutInvitesInput = {
+  where: Prisma.RepoWhereUniqueInput
+  create: Prisma.XOR<Prisma.RepoCreateWithoutInvitesInput, Prisma.RepoUncheckedCreateWithoutInvitesInput>
+}
+
+export type RepoUpsertWithoutInvitesInput = {
+  update: Prisma.XOR<Prisma.RepoUpdateWithoutInvitesInput, Prisma.RepoUncheckedUpdateWithoutInvitesInput>
+  create: Prisma.XOR<Prisma.RepoCreateWithoutInvitesInput, Prisma.RepoUncheckedCreateWithoutInvitesInput>
+  where?: Prisma.RepoWhereInput
+}
+
+export type RepoUpdateToOneWithWhereWithoutInvitesInput = {
+  where?: Prisma.RepoWhereInput
+  data: Prisma.XOR<Prisma.RepoUpdateWithoutInvitesInput, Prisma.RepoUncheckedUpdateWithoutInvitesInput>
+}
+
+export type RepoUpdateWithoutInvitesInput = {
+  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  htmlUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  private?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  User?: Prisma.UserUpdateOneRequiredWithoutReposNestedInput
+  commits?: Prisma.CommitUpdateManyWithoutRepoNestedInput
+  scans?: Prisma.ScanUpdateManyWithoutRepoNestedInput
+  collaborators?: Prisma.CollaboratorUpdateManyWithoutRepoNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutRepoNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutRepoNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUpdateManyWithoutRepoNestedInput
+}
+
+export type RepoUncheckedUpdateWithoutInvitesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  htmlUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  private?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  commits?: Prisma.CommitUncheckedUpdateManyWithoutRepoNestedInput
+  scans?: Prisma.ScanUncheckedUpdateManyWithoutRepoNestedInput
+  collaborators?: Prisma.CollaboratorUncheckedUpdateManyWithoutRepoNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutRepoNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutRepoNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedUpdateManyWithoutRepoNestedInput
+}
+
+export type RepoCreateWithoutMessagesInput = {
+  githubId: string
+  name: string
+  fullName: string
+  htmlUrl: string
+  description?: string | null
+  language?: string | null
+  private: boolean
+  fork: boolean
+  autoAudit?: boolean
+  createdAt?: Date | string
+  User: Prisma.UserCreateNestedOneWithoutReposInput
+  commits?: Prisma.CommitCreateNestedManyWithoutRepoInput
+  scans?: Prisma.ScanCreateNestedManyWithoutRepoInput
+  collaborators?: Prisma.CollaboratorCreateNestedManyWithoutRepoInput
+  invites?: Prisma.CollaborationInviteCreateNestedManyWithoutRepoInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutRepoInput
+  chatDiscussions?: Prisma.ChatDiscussionCreateNestedManyWithoutRepoInput
+}
+
+export type RepoUncheckedCreateWithoutMessagesInput = {
+  id?: number
+  githubId: string
+  name: string
+  fullName: string
+  htmlUrl: string
+  description?: string | null
+  language?: string | null
+  private: boolean
+  fork: boolean
+  autoAudit?: boolean
+  ownerId: number
+  createdAt?: Date | string
+  commits?: Prisma.CommitUncheckedCreateNestedManyWithoutRepoInput
+  scans?: Prisma.ScanUncheckedCreateNestedManyWithoutRepoInput
+  collaborators?: Prisma.CollaboratorUncheckedCreateNestedManyWithoutRepoInput
+  invites?: Prisma.CollaborationInviteUncheckedCreateNestedManyWithoutRepoInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutRepoInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedCreateNestedManyWithoutRepoInput
+}
+
+export type RepoCreateOrConnectWithoutMessagesInput = {
+  where: Prisma.RepoWhereUniqueInput
+  create: Prisma.XOR<Prisma.RepoCreateWithoutMessagesInput, Prisma.RepoUncheckedCreateWithoutMessagesInput>
+}
+
+export type RepoUpsertWithoutMessagesInput = {
+  update: Prisma.XOR<Prisma.RepoUpdateWithoutMessagesInput, Prisma.RepoUncheckedUpdateWithoutMessagesInput>
+  create: Prisma.XOR<Prisma.RepoCreateWithoutMessagesInput, Prisma.RepoUncheckedCreateWithoutMessagesInput>
+  where?: Prisma.RepoWhereInput
+}
+
+export type RepoUpdateToOneWithWhereWithoutMessagesInput = {
+  where?: Prisma.RepoWhereInput
+  data: Prisma.XOR<Prisma.RepoUpdateWithoutMessagesInput, Prisma.RepoUncheckedUpdateWithoutMessagesInput>
+}
+
+export type RepoUpdateWithoutMessagesInput = {
+  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  htmlUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  private?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  User?: Prisma.UserUpdateOneRequiredWithoutReposNestedInput
+  commits?: Prisma.CommitUpdateManyWithoutRepoNestedInput
+  scans?: Prisma.ScanUpdateManyWithoutRepoNestedInput
+  collaborators?: Prisma.CollaboratorUpdateManyWithoutRepoNestedInput
+  invites?: Prisma.CollaborationInviteUpdateManyWithoutRepoNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutRepoNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUpdateManyWithoutRepoNestedInput
+}
+
+export type RepoUncheckedUpdateWithoutMessagesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  htmlUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  private?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  commits?: Prisma.CommitUncheckedUpdateManyWithoutRepoNestedInput
+  scans?: Prisma.ScanUncheckedUpdateManyWithoutRepoNestedInput
+  collaborators?: Prisma.CollaboratorUncheckedUpdateManyWithoutRepoNestedInput
+  invites?: Prisma.CollaborationInviteUncheckedUpdateManyWithoutRepoNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutRepoNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedUpdateManyWithoutRepoNestedInput
+}
+
+export type RepoCreateWithoutActivitiesInput = {
+  githubId: string
+  name: string
+  fullName: string
+  htmlUrl: string
+  description?: string | null
+  language?: string | null
+  private: boolean
+  fork: boolean
+  autoAudit?: boolean
+  createdAt?: Date | string
+  User: Prisma.UserCreateNestedOneWithoutReposInput
+  commits?: Prisma.CommitCreateNestedManyWithoutRepoInput
+  scans?: Prisma.ScanCreateNestedManyWithoutRepoInput
+  collaborators?: Prisma.CollaboratorCreateNestedManyWithoutRepoInput
+  invites?: Prisma.CollaborationInviteCreateNestedManyWithoutRepoInput
+  messages?: Prisma.MessageCreateNestedManyWithoutRepoInput
+  chatDiscussions?: Prisma.ChatDiscussionCreateNestedManyWithoutRepoInput
+}
+
+export type RepoUncheckedCreateWithoutActivitiesInput = {
+  id?: number
+  githubId: string
+  name: string
+  fullName: string
+  htmlUrl: string
+  description?: string | null
+  language?: string | null
+  private: boolean
+  fork: boolean
+  autoAudit?: boolean
+  ownerId: number
+  createdAt?: Date | string
+  commits?: Prisma.CommitUncheckedCreateNestedManyWithoutRepoInput
+  scans?: Prisma.ScanUncheckedCreateNestedManyWithoutRepoInput
+  collaborators?: Prisma.CollaboratorUncheckedCreateNestedManyWithoutRepoInput
+  invites?: Prisma.CollaborationInviteUncheckedCreateNestedManyWithoutRepoInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutRepoInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedCreateNestedManyWithoutRepoInput
+}
+
+export type RepoCreateOrConnectWithoutActivitiesInput = {
+  where: Prisma.RepoWhereUniqueInput
+  create: Prisma.XOR<Prisma.RepoCreateWithoutActivitiesInput, Prisma.RepoUncheckedCreateWithoutActivitiesInput>
+}
+
+export type RepoUpsertWithoutActivitiesInput = {
+  update: Prisma.XOR<Prisma.RepoUpdateWithoutActivitiesInput, Prisma.RepoUncheckedUpdateWithoutActivitiesInput>
+  create: Prisma.XOR<Prisma.RepoCreateWithoutActivitiesInput, Prisma.RepoUncheckedCreateWithoutActivitiesInput>
+  where?: Prisma.RepoWhereInput
+}
+
+export type RepoUpdateToOneWithWhereWithoutActivitiesInput = {
+  where?: Prisma.RepoWhereInput
+  data: Prisma.XOR<Prisma.RepoUpdateWithoutActivitiesInput, Prisma.RepoUncheckedUpdateWithoutActivitiesInput>
+}
+
+export type RepoUpdateWithoutActivitiesInput = {
+  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  htmlUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  private?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  User?: Prisma.UserUpdateOneRequiredWithoutReposNestedInput
+  commits?: Prisma.CommitUpdateManyWithoutRepoNestedInput
+  scans?: Prisma.ScanUpdateManyWithoutRepoNestedInput
+  collaborators?: Prisma.CollaboratorUpdateManyWithoutRepoNestedInput
+  invites?: Prisma.CollaborationInviteUpdateManyWithoutRepoNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutRepoNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUpdateManyWithoutRepoNestedInput
+}
+
+export type RepoUncheckedUpdateWithoutActivitiesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  htmlUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  private?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  commits?: Prisma.CommitUncheckedUpdateManyWithoutRepoNestedInput
+  scans?: Prisma.ScanUncheckedUpdateManyWithoutRepoNestedInput
+  collaborators?: Prisma.CollaboratorUncheckedUpdateManyWithoutRepoNestedInput
+  invites?: Prisma.CollaborationInviteUncheckedUpdateManyWithoutRepoNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutRepoNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedUpdateManyWithoutRepoNestedInput
+}
+
+export type RepoCreateWithoutChatDiscussionsInput = {
+  githubId: string
+  name: string
+  fullName: string
+  htmlUrl: string
+  description?: string | null
+  language?: string | null
+  private: boolean
+  fork: boolean
+  autoAudit?: boolean
+  createdAt?: Date | string
+  User: Prisma.UserCreateNestedOneWithoutReposInput
+  commits?: Prisma.CommitCreateNestedManyWithoutRepoInput
+  scans?: Prisma.ScanCreateNestedManyWithoutRepoInput
+  collaborators?: Prisma.CollaboratorCreateNestedManyWithoutRepoInput
+  invites?: Prisma.CollaborationInviteCreateNestedManyWithoutRepoInput
+  messages?: Prisma.MessageCreateNestedManyWithoutRepoInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutRepoInput
+}
+
+export type RepoUncheckedCreateWithoutChatDiscussionsInput = {
+  id?: number
+  githubId: string
+  name: string
+  fullName: string
+  htmlUrl: string
+  description?: string | null
+  language?: string | null
+  private: boolean
+  fork: boolean
+  autoAudit?: boolean
+  ownerId: number
+  createdAt?: Date | string
+  commits?: Prisma.CommitUncheckedCreateNestedManyWithoutRepoInput
+  scans?: Prisma.ScanUncheckedCreateNestedManyWithoutRepoInput
+  collaborators?: Prisma.CollaboratorUncheckedCreateNestedManyWithoutRepoInput
+  invites?: Prisma.CollaborationInviteUncheckedCreateNestedManyWithoutRepoInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutRepoInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutRepoInput
+}
+
+export type RepoCreateOrConnectWithoutChatDiscussionsInput = {
+  where: Prisma.RepoWhereUniqueInput
+  create: Prisma.XOR<Prisma.RepoCreateWithoutChatDiscussionsInput, Prisma.RepoUncheckedCreateWithoutChatDiscussionsInput>
+}
+
+export type RepoUpsertWithoutChatDiscussionsInput = {
+  update: Prisma.XOR<Prisma.RepoUpdateWithoutChatDiscussionsInput, Prisma.RepoUncheckedUpdateWithoutChatDiscussionsInput>
+  create: Prisma.XOR<Prisma.RepoCreateWithoutChatDiscussionsInput, Prisma.RepoUncheckedCreateWithoutChatDiscussionsInput>
+  where?: Prisma.RepoWhereInput
+}
+
+export type RepoUpdateToOneWithWhereWithoutChatDiscussionsInput = {
+  where?: Prisma.RepoWhereInput
+  data: Prisma.XOR<Prisma.RepoUpdateWithoutChatDiscussionsInput, Prisma.RepoUncheckedUpdateWithoutChatDiscussionsInput>
+}
+
+export type RepoUpdateWithoutChatDiscussionsInput = {
+  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  htmlUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  private?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  User?: Prisma.UserUpdateOneRequiredWithoutReposNestedInput
+  commits?: Prisma.CommitUpdateManyWithoutRepoNestedInput
+  scans?: Prisma.ScanUpdateManyWithoutRepoNestedInput
+  collaborators?: Prisma.CollaboratorUpdateManyWithoutRepoNestedInput
+  invites?: Prisma.CollaborationInviteUpdateManyWithoutRepoNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutRepoNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutRepoNestedInput
+}
+
+export type RepoUncheckedUpdateWithoutChatDiscussionsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  githubId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  htmlUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  private?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fork?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoAudit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  commits?: Prisma.CommitUncheckedUpdateManyWithoutRepoNestedInput
+  scans?: Prisma.ScanUncheckedUpdateManyWithoutRepoNestedInput
+  collaborators?: Prisma.CollaboratorUncheckedUpdateManyWithoutRepoNestedInput
+  invites?: Prisma.CollaborationInviteUncheckedUpdateManyWithoutRepoNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutRepoNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutRepoNestedInput
 }
 
 export type RepoCreateManyUserInput = {
@@ -869,6 +1514,11 @@ export type RepoUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   commits?: Prisma.CommitUpdateManyWithoutRepoNestedInput
   scans?: Prisma.ScanUpdateManyWithoutRepoNestedInput
+  collaborators?: Prisma.CollaboratorUpdateManyWithoutRepoNestedInput
+  invites?: Prisma.CollaborationInviteUpdateManyWithoutRepoNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutRepoNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutRepoNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUpdateManyWithoutRepoNestedInput
 }
 
 export type RepoUncheckedUpdateWithoutUserInput = {
@@ -885,6 +1535,11 @@ export type RepoUncheckedUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   commits?: Prisma.CommitUncheckedUpdateManyWithoutRepoNestedInput
   scans?: Prisma.ScanUncheckedUpdateManyWithoutRepoNestedInput
+  collaborators?: Prisma.CollaboratorUncheckedUpdateManyWithoutRepoNestedInput
+  invites?: Prisma.CollaborationInviteUncheckedUpdateManyWithoutRepoNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutRepoNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutRepoNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedUpdateManyWithoutRepoNestedInput
 }
 
 export type RepoUncheckedUpdateManyWithoutUserInput = {
@@ -909,11 +1564,21 @@ export type RepoUncheckedUpdateManyWithoutUserInput = {
 export type RepoCountOutputType = {
   commits: number
   scans: number
+  collaborators: number
+  invites: number
+  messages: number
+  activities: number
+  chatDiscussions: number
 }
 
 export type RepoCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   commits?: boolean | RepoCountOutputTypeCountCommitsArgs
   scans?: boolean | RepoCountOutputTypeCountScansArgs
+  collaborators?: boolean | RepoCountOutputTypeCountCollaboratorsArgs
+  invites?: boolean | RepoCountOutputTypeCountInvitesArgs
+  messages?: boolean | RepoCountOutputTypeCountMessagesArgs
+  activities?: boolean | RepoCountOutputTypeCountActivitiesArgs
+  chatDiscussions?: boolean | RepoCountOutputTypeCountChatDiscussionsArgs
 }
 
 /**
@@ -940,6 +1605,41 @@ export type RepoCountOutputTypeCountScansArgs<ExtArgs extends runtime.Types.Exte
   where?: Prisma.ScanWhereInput
 }
 
+/**
+ * RepoCountOutputType without action
+ */
+export type RepoCountOutputTypeCountCollaboratorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CollaboratorWhereInput
+}
+
+/**
+ * RepoCountOutputType without action
+ */
+export type RepoCountOutputTypeCountInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CollaborationInviteWhereInput
+}
+
+/**
+ * RepoCountOutputType without action
+ */
+export type RepoCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MessageWhereInput
+}
+
+/**
+ * RepoCountOutputType without action
+ */
+export type RepoCountOutputTypeCountActivitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ActivityLogWhereInput
+}
+
+/**
+ * RepoCountOutputType without action
+ */
+export type RepoCountOutputTypeCountChatDiscussionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChatDiscussionWhereInput
+}
+
 
 export type RepoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -957,6 +1657,11 @@ export type RepoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   User?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   commits?: boolean | Prisma.Repo$commitsArgs<ExtArgs>
   scans?: boolean | Prisma.Repo$scansArgs<ExtArgs>
+  collaborators?: boolean | Prisma.Repo$collaboratorsArgs<ExtArgs>
+  invites?: boolean | Prisma.Repo$invitesArgs<ExtArgs>
+  messages?: boolean | Prisma.Repo$messagesArgs<ExtArgs>
+  activities?: boolean | Prisma.Repo$activitiesArgs<ExtArgs>
+  chatDiscussions?: boolean | Prisma.Repo$chatDiscussionsArgs<ExtArgs>
   _count?: boolean | Prisma.RepoCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["repo"]>
 
@@ -1012,6 +1717,11 @@ export type RepoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   User?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   commits?: boolean | Prisma.Repo$commitsArgs<ExtArgs>
   scans?: boolean | Prisma.Repo$scansArgs<ExtArgs>
+  collaborators?: boolean | Prisma.Repo$collaboratorsArgs<ExtArgs>
+  invites?: boolean | Prisma.Repo$invitesArgs<ExtArgs>
+  messages?: boolean | Prisma.Repo$messagesArgs<ExtArgs>
+  activities?: boolean | Prisma.Repo$activitiesArgs<ExtArgs>
+  chatDiscussions?: boolean | Prisma.Repo$chatDiscussionsArgs<ExtArgs>
   _count?: boolean | Prisma.RepoCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RepoIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1027,6 +1737,11 @@ export type $RepoPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     User: Prisma.$UserPayload<ExtArgs>
     commits: Prisma.$CommitPayload<ExtArgs>[]
     scans: Prisma.$ScanPayload<ExtArgs>[]
+    collaborators: Prisma.$CollaboratorPayload<ExtArgs>[]
+    invites: Prisma.$CollaborationInvitePayload<ExtArgs>[]
+    messages: Prisma.$MessagePayload<ExtArgs>[]
+    activities: Prisma.$ActivityLogPayload<ExtArgs>[]
+    chatDiscussions: Prisma.$ChatDiscussionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1438,6 +2153,11 @@ export interface Prisma__RepoClient<T, Null = never, ExtArgs extends runtime.Typ
   User<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   commits<T extends Prisma.Repo$commitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Repo$commitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   scans<T extends Prisma.Repo$scansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Repo$scansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ScanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  collaborators<T extends Prisma.Repo$collaboratorsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Repo$collaboratorsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CollaboratorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  invites<T extends Prisma.Repo$invitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Repo$invitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CollaborationInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  messages<T extends Prisma.Repo$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Repo$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  activities<T extends Prisma.Repo$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Repo$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  chatDiscussions<T extends Prisma.Repo$chatDiscussionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Repo$chatDiscussionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatDiscussionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1920,6 +2640,126 @@ export type Repo$scansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
   take?: number
   skip?: number
   distinct?: Prisma.ScanScalarFieldEnum | Prisma.ScanScalarFieldEnum[]
+}
+
+/**
+ * Repo.collaborators
+ */
+export type Repo$collaboratorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Collaborator
+   */
+  select?: Prisma.CollaboratorSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Collaborator
+   */
+  omit?: Prisma.CollaboratorOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CollaboratorInclude<ExtArgs> | null
+  where?: Prisma.CollaboratorWhereInput
+  orderBy?: Prisma.CollaboratorOrderByWithRelationInput | Prisma.CollaboratorOrderByWithRelationInput[]
+  cursor?: Prisma.CollaboratorWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CollaboratorScalarFieldEnum | Prisma.CollaboratorScalarFieldEnum[]
+}
+
+/**
+ * Repo.invites
+ */
+export type Repo$invitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CollaborationInvite
+   */
+  select?: Prisma.CollaborationInviteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CollaborationInvite
+   */
+  omit?: Prisma.CollaborationInviteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CollaborationInviteInclude<ExtArgs> | null
+  where?: Prisma.CollaborationInviteWhereInput
+  orderBy?: Prisma.CollaborationInviteOrderByWithRelationInput | Prisma.CollaborationInviteOrderByWithRelationInput[]
+  cursor?: Prisma.CollaborationInviteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CollaborationInviteScalarFieldEnum | Prisma.CollaborationInviteScalarFieldEnum[]
+}
+
+/**
+ * Repo.messages
+ */
+export type Repo$messagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Message
+   */
+  select?: Prisma.MessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Message
+   */
+  omit?: Prisma.MessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MessageInclude<ExtArgs> | null
+  where?: Prisma.MessageWhereInput
+  orderBy?: Prisma.MessageOrderByWithRelationInput | Prisma.MessageOrderByWithRelationInput[]
+  cursor?: Prisma.MessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
+}
+
+/**
+ * Repo.activities
+ */
+export type Repo$activitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ActivityLog
+   */
+  select?: Prisma.ActivityLogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ActivityLog
+   */
+  omit?: Prisma.ActivityLogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityLogInclude<ExtArgs> | null
+  where?: Prisma.ActivityLogWhereInput
+  orderBy?: Prisma.ActivityLogOrderByWithRelationInput | Prisma.ActivityLogOrderByWithRelationInput[]
+  cursor?: Prisma.ActivityLogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ActivityLogScalarFieldEnum | Prisma.ActivityLogScalarFieldEnum[]
+}
+
+/**
+ * Repo.chatDiscussions
+ */
+export type Repo$chatDiscussionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatDiscussion
+   */
+  select?: Prisma.ChatDiscussionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChatDiscussion
+   */
+  omit?: Prisma.ChatDiscussionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChatDiscussionInclude<ExtArgs> | null
+  where?: Prisma.ChatDiscussionWhereInput
+  orderBy?: Prisma.ChatDiscussionOrderByWithRelationInput | Prisma.ChatDiscussionOrderByWithRelationInput[]
+  cursor?: Prisma.ChatDiscussionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatDiscussionScalarFieldEnum | Prisma.ChatDiscussionScalarFieldEnum[]
 }
 
 /**

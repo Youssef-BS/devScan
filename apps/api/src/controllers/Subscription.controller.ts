@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
-import { prisma } from '../db';
-import { AuthRequest } from 'src/middleware/auth';
+import { prisma } from '../db.js';
+import { AuthRequest } from 'src/middleware/auth.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
 

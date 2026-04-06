@@ -1,5 +1,6 @@
 import { PrismaClient } from '../prisma/generated/client.js';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { CollaborationRole, InviteStatus } from '../prisma/generated/enums.js';
 import 'dotenv/config';
 
 const adapter = new PrismaPg({
@@ -9,4 +10,6 @@ const adapter = new PrismaPg({
 export const prisma = new PrismaClient({
   adapter,
 });
+
+export { CollaborationRole, InviteStatus };
 

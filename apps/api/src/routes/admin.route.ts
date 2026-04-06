@@ -1,21 +1,21 @@
 import { Router } from "express";
-import { adminLogin , getCurrentAdmin, Logout } from "../controllers/AdminAuth.controller";
-import { 
+import { adminLogin , getCurrentAdmin, Logout } from "../controllers/AdminAuth.controller.js";
+import {
   getSubscriptionStats, 
   getSubscriptionBreakdown, 
   getSubscriptionChartData,
   getRecentSubscriptions 
-} from "../controllers/AdminSubscription.controller";
+} from "../controllers/AdminSubscription.controller.js";
 import {
   getAllSettings,
   getSetting,
   updateSetting,
   getSystemHealth,
   getSystemStats,
-} from "../controllers/AdminSettings.controller";
-import { isAdmin } from "src/middleware/isAdmin";
-import { auth } from "src/middleware/auth";
-import { isBanned } from "src/middleware/isBanned";
+} from "../controllers/AdminSettings.controller.js";
+import { isAdmin } from "src/middleware/isAdmin.js";
+import { auth } from "src/middleware/auth.js";
+import { isBanned } from "src/middleware/isBanned.js";
 
 const router : Router = Router();
 

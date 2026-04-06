@@ -321,6 +321,11 @@ export type UserWhereInput = {
   subscriptionEndDate?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   repos?: Prisma.RepoListRelationFilter
+  collaborations?: Prisma.CollaboratorListRelationFilter
+  invitesReceived?: Prisma.CollaborationInviteListRelationFilter
+  messages?: Prisma.MessageListRelationFilter
+  activitiesPerformed?: Prisma.ActivityLogListRelationFilter
+  chatDiscussions?: Prisma.ChatDiscussionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -343,6 +348,11 @@ export type UserOrderByWithRelationInput = {
   subscriptionEndDate?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   repos?: Prisma.RepoOrderByRelationAggregateInput
+  collaborations?: Prisma.CollaboratorOrderByRelationAggregateInput
+  invitesReceived?: Prisma.CollaborationInviteOrderByRelationAggregateInput
+  messages?: Prisma.MessageOrderByRelationAggregateInput
+  activitiesPerformed?: Prisma.ActivityLogOrderByRelationAggregateInput
+  chatDiscussions?: Prisma.ChatDiscussionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -368,6 +378,11 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   subscriptionEndDate?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   repos?: Prisma.RepoListRelationFilter
+  collaborations?: Prisma.CollaboratorListRelationFilter
+  invitesReceived?: Prisma.CollaborationInviteListRelationFilter
+  messages?: Prisma.MessageListRelationFilter
+  activitiesPerformed?: Prisma.ActivityLogListRelationFilter
+  chatDiscussions?: Prisma.ChatDiscussionListRelationFilter
 }, "id" | "githubId" | "email" | "stripeCustomerId" | "stripeSubscriptionId">
 
 export type UserOrderByWithAggregationInput = {
@@ -439,6 +454,11 @@ export type UserCreateInput = {
   subscriptionEndDate?: Date | string | null
   createdAt?: Date | string
   repos?: Prisma.RepoCreateNestedManyWithoutUserInput
+  collaborations?: Prisma.CollaboratorCreateNestedManyWithoutUserInput
+  invitesReceived?: Prisma.CollaborationInviteCreateNestedManyWithoutInvitedByUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutUserInput
+  activitiesPerformed?: Prisma.ActivityLogCreateNestedManyWithoutPerformedByInput
+  chatDiscussions?: Prisma.ChatDiscussionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -461,6 +481,11 @@ export type UserUncheckedCreateInput = {
   subscriptionEndDate?: Date | string | null
   createdAt?: Date | string
   repos?: Prisma.RepoUncheckedCreateNestedManyWithoutUserInput
+  collaborations?: Prisma.CollaboratorUncheckedCreateNestedManyWithoutUserInput
+  invitesReceived?: Prisma.CollaborationInviteUncheckedCreateNestedManyWithoutInvitedByUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
+  activitiesPerformed?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutPerformedByInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -482,6 +507,11 @@ export type UserUpdateInput = {
   subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repos?: Prisma.RepoUpdateManyWithoutUserNestedInput
+  collaborations?: Prisma.CollaboratorUpdateManyWithoutUserNestedInput
+  invitesReceived?: Prisma.CollaborationInviteUpdateManyWithoutInvitedByUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
+  activitiesPerformed?: Prisma.ActivityLogUpdateManyWithoutPerformedByNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -504,6 +534,11 @@ export type UserUncheckedUpdateInput = {
   subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repos?: Prisma.RepoUncheckedUpdateManyWithoutUserNestedInput
+  collaborations?: Prisma.CollaboratorUncheckedUpdateManyWithoutUserNestedInput
+  invitesReceived?: Prisma.CollaborationInviteUncheckedUpdateManyWithoutInvitedByUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
+  activitiesPerformed?: Prisma.ActivityLogUncheckedUpdateManyWithoutPerformedByNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -644,6 +679,11 @@ export type UserScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput
 }
 
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
+}
+
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
 }
@@ -694,6 +734,78 @@ export type UserUpdateOneRequiredWithoutReposNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReposInput, Prisma.UserUpdateWithoutReposInput>, Prisma.UserUncheckedUpdateWithoutReposInput>
 }
 
+export type UserCreateNestedOneWithoutCollaborationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCollaborationsInput, Prisma.UserUncheckedCreateWithoutCollaborationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCollaborationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCollaborationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCollaborationsInput, Prisma.UserUncheckedCreateWithoutCollaborationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCollaborationsInput
+  upsert?: Prisma.UserUpsertWithoutCollaborationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCollaborationsInput, Prisma.UserUpdateWithoutCollaborationsInput>, Prisma.UserUncheckedUpdateWithoutCollaborationsInput>
+}
+
+export type UserCreateNestedOneWithoutInvitesReceivedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInvitesReceivedInput, Prisma.UserUncheckedCreateWithoutInvitesReceivedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInvitesReceivedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutInvitesReceivedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInvitesReceivedInput, Prisma.UserUncheckedCreateWithoutInvitesReceivedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInvitesReceivedInput
+  upsert?: Prisma.UserUpsertWithoutInvitesReceivedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInvitesReceivedInput, Prisma.UserUpdateWithoutInvitesReceivedInput>, Prisma.UserUncheckedUpdateWithoutInvitesReceivedInput>
+}
+
+export type UserCreateNestedOneWithoutMessagesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMessagesInput, Prisma.UserUncheckedCreateWithoutMessagesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMessagesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMessagesInput, Prisma.UserUncheckedCreateWithoutMessagesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMessagesInput
+  upsert?: Prisma.UserUpsertWithoutMessagesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMessagesInput, Prisma.UserUpdateWithoutMessagesInput>, Prisma.UserUncheckedUpdateWithoutMessagesInput>
+}
+
+export type UserCreateNestedOneWithoutActivitiesPerformedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutActivitiesPerformedInput, Prisma.UserUncheckedCreateWithoutActivitiesPerformedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutActivitiesPerformedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutActivitiesPerformedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutActivitiesPerformedInput, Prisma.UserUncheckedCreateWithoutActivitiesPerformedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutActivitiesPerformedInput
+  upsert?: Prisma.UserUpsertWithoutActivitiesPerformedInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutActivitiesPerformedInput, Prisma.UserUpdateWithoutActivitiesPerformedInput>, Prisma.UserUncheckedUpdateWithoutActivitiesPerformedInput>
+}
+
+export type UserCreateNestedOneWithoutChatDiscussionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChatDiscussionsInput, Prisma.UserUncheckedCreateWithoutChatDiscussionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChatDiscussionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutChatDiscussionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChatDiscussionsInput, Prisma.UserUncheckedCreateWithoutChatDiscussionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChatDiscussionsInput
+  upsert?: Prisma.UserUpsertWithoutChatDiscussionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutChatDiscussionsInput, Prisma.UserUpdateWithoutChatDiscussionsInput>, Prisma.UserUncheckedUpdateWithoutChatDiscussionsInput>
+}
+
 export type UserCreateWithoutReposInput = {
   githubId?: string | null
   username?: string | null
@@ -712,6 +824,11 @@ export type UserCreateWithoutReposInput = {
   subscriptionStartDate?: Date | string | null
   subscriptionEndDate?: Date | string | null
   createdAt?: Date | string
+  collaborations?: Prisma.CollaboratorCreateNestedManyWithoutUserInput
+  invitesReceived?: Prisma.CollaborationInviteCreateNestedManyWithoutInvitedByUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutUserInput
+  activitiesPerformed?: Prisma.ActivityLogCreateNestedManyWithoutPerformedByInput
+  chatDiscussions?: Prisma.ChatDiscussionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReposInput = {
@@ -733,6 +850,11 @@ export type UserUncheckedCreateWithoutReposInput = {
   subscriptionStartDate?: Date | string | null
   subscriptionEndDate?: Date | string | null
   createdAt?: Date | string
+  collaborations?: Prisma.CollaboratorUncheckedCreateNestedManyWithoutUserInput
+  invitesReceived?: Prisma.CollaborationInviteUncheckedCreateNestedManyWithoutInvitedByUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
+  activitiesPerformed?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutPerformedByInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReposInput = {
@@ -769,6 +891,11 @@ export type UserUpdateWithoutReposInput = {
   subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  collaborations?: Prisma.CollaboratorUpdateManyWithoutUserNestedInput
+  invitesReceived?: Prisma.CollaborationInviteUpdateManyWithoutInvitedByUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
+  activitiesPerformed?: Prisma.ActivityLogUpdateManyWithoutPerformedByNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReposInput = {
@@ -790,6 +917,601 @@ export type UserUncheckedUpdateWithoutReposInput = {
   subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  collaborations?: Prisma.CollaboratorUncheckedUpdateManyWithoutUserNestedInput
+  invitesReceived?: Prisma.CollaborationInviteUncheckedUpdateManyWithoutInvitedByUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
+  activitiesPerformed?: Prisma.ActivityLogUncheckedUpdateManyWithoutPerformedByNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCollaborationsInput = {
+  githubId?: string | null
+  username?: string | null
+  email?: string | null
+  password?: string | null
+  avatarUrl?: string | null
+  accessToken?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  isBanned?: boolean
+  role?: $Enums.Role
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionPlan?: $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Date | string | null
+  subscriptionEndDate?: Date | string | null
+  createdAt?: Date | string
+  repos?: Prisma.RepoCreateNestedManyWithoutUserInput
+  invitesReceived?: Prisma.CollaborationInviteCreateNestedManyWithoutInvitedByUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutUserInput
+  activitiesPerformed?: Prisma.ActivityLogCreateNestedManyWithoutPerformedByInput
+  chatDiscussions?: Prisma.ChatDiscussionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCollaborationsInput = {
+  id?: number
+  githubId?: string | null
+  username?: string | null
+  email?: string | null
+  password?: string | null
+  avatarUrl?: string | null
+  accessToken?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  isBanned?: boolean
+  role?: $Enums.Role
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionPlan?: $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Date | string | null
+  subscriptionEndDate?: Date | string | null
+  createdAt?: Date | string
+  repos?: Prisma.RepoUncheckedCreateNestedManyWithoutUserInput
+  invitesReceived?: Prisma.CollaborationInviteUncheckedCreateNestedManyWithoutInvitedByUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
+  activitiesPerformed?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutPerformedByInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCollaborationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCollaborationsInput, Prisma.UserUncheckedCreateWithoutCollaborationsInput>
+}
+
+export type UserUpsertWithoutCollaborationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCollaborationsInput, Prisma.UserUncheckedUpdateWithoutCollaborationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCollaborationsInput, Prisma.UserUncheckedCreateWithoutCollaborationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCollaborationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCollaborationsInput, Prisma.UserUncheckedUpdateWithoutCollaborationsInput>
+}
+
+export type UserUpdateWithoutCollaborationsInput = {
+  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionPlan?: Prisma.NullableEnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repos?: Prisma.RepoUpdateManyWithoutUserNestedInput
+  invitesReceived?: Prisma.CollaborationInviteUpdateManyWithoutInvitedByUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
+  activitiesPerformed?: Prisma.ActivityLogUpdateManyWithoutPerformedByNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCollaborationsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionPlan?: Prisma.NullableEnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repos?: Prisma.RepoUncheckedUpdateManyWithoutUserNestedInput
+  invitesReceived?: Prisma.CollaborationInviteUncheckedUpdateManyWithoutInvitedByUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
+  activitiesPerformed?: Prisma.ActivityLogUncheckedUpdateManyWithoutPerformedByNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutInvitesReceivedInput = {
+  githubId?: string | null
+  username?: string | null
+  email?: string | null
+  password?: string | null
+  avatarUrl?: string | null
+  accessToken?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  isBanned?: boolean
+  role?: $Enums.Role
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionPlan?: $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Date | string | null
+  subscriptionEndDate?: Date | string | null
+  createdAt?: Date | string
+  repos?: Prisma.RepoCreateNestedManyWithoutUserInput
+  collaborations?: Prisma.CollaboratorCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutUserInput
+  activitiesPerformed?: Prisma.ActivityLogCreateNestedManyWithoutPerformedByInput
+  chatDiscussions?: Prisma.ChatDiscussionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutInvitesReceivedInput = {
+  id?: number
+  githubId?: string | null
+  username?: string | null
+  email?: string | null
+  password?: string | null
+  avatarUrl?: string | null
+  accessToken?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  isBanned?: boolean
+  role?: $Enums.Role
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionPlan?: $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Date | string | null
+  subscriptionEndDate?: Date | string | null
+  createdAt?: Date | string
+  repos?: Prisma.RepoUncheckedCreateNestedManyWithoutUserInput
+  collaborations?: Prisma.CollaboratorUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
+  activitiesPerformed?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutPerformedByInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutInvitesReceivedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutInvitesReceivedInput, Prisma.UserUncheckedCreateWithoutInvitesReceivedInput>
+}
+
+export type UserUpsertWithoutInvitesReceivedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutInvitesReceivedInput, Prisma.UserUncheckedUpdateWithoutInvitesReceivedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutInvitesReceivedInput, Prisma.UserUncheckedCreateWithoutInvitesReceivedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutInvitesReceivedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutInvitesReceivedInput, Prisma.UserUncheckedUpdateWithoutInvitesReceivedInput>
+}
+
+export type UserUpdateWithoutInvitesReceivedInput = {
+  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionPlan?: Prisma.NullableEnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repos?: Prisma.RepoUpdateManyWithoutUserNestedInput
+  collaborations?: Prisma.CollaboratorUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
+  activitiesPerformed?: Prisma.ActivityLogUpdateManyWithoutPerformedByNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutInvitesReceivedInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionPlan?: Prisma.NullableEnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repos?: Prisma.RepoUncheckedUpdateManyWithoutUserNestedInput
+  collaborations?: Prisma.CollaboratorUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
+  activitiesPerformed?: Prisma.ActivityLogUncheckedUpdateManyWithoutPerformedByNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutMessagesInput = {
+  githubId?: string | null
+  username?: string | null
+  email?: string | null
+  password?: string | null
+  avatarUrl?: string | null
+  accessToken?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  isBanned?: boolean
+  role?: $Enums.Role
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionPlan?: $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Date | string | null
+  subscriptionEndDate?: Date | string | null
+  createdAt?: Date | string
+  repos?: Prisma.RepoCreateNestedManyWithoutUserInput
+  collaborations?: Prisma.CollaboratorCreateNestedManyWithoutUserInput
+  invitesReceived?: Prisma.CollaborationInviteCreateNestedManyWithoutInvitedByUserInput
+  activitiesPerformed?: Prisma.ActivityLogCreateNestedManyWithoutPerformedByInput
+  chatDiscussions?: Prisma.ChatDiscussionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutMessagesInput = {
+  id?: number
+  githubId?: string | null
+  username?: string | null
+  email?: string | null
+  password?: string | null
+  avatarUrl?: string | null
+  accessToken?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  isBanned?: boolean
+  role?: $Enums.Role
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionPlan?: $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Date | string | null
+  subscriptionEndDate?: Date | string | null
+  createdAt?: Date | string
+  repos?: Prisma.RepoUncheckedCreateNestedManyWithoutUserInput
+  collaborations?: Prisma.CollaboratorUncheckedCreateNestedManyWithoutUserInput
+  invitesReceived?: Prisma.CollaborationInviteUncheckedCreateNestedManyWithoutInvitedByUserInput
+  activitiesPerformed?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutPerformedByInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutMessagesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutMessagesInput, Prisma.UserUncheckedCreateWithoutMessagesInput>
+}
+
+export type UserUpsertWithoutMessagesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutMessagesInput, Prisma.UserUncheckedUpdateWithoutMessagesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutMessagesInput, Prisma.UserUncheckedCreateWithoutMessagesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutMessagesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutMessagesInput, Prisma.UserUncheckedUpdateWithoutMessagesInput>
+}
+
+export type UserUpdateWithoutMessagesInput = {
+  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionPlan?: Prisma.NullableEnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repos?: Prisma.RepoUpdateManyWithoutUserNestedInput
+  collaborations?: Prisma.CollaboratorUpdateManyWithoutUserNestedInput
+  invitesReceived?: Prisma.CollaborationInviteUpdateManyWithoutInvitedByUserNestedInput
+  activitiesPerformed?: Prisma.ActivityLogUpdateManyWithoutPerformedByNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutMessagesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionPlan?: Prisma.NullableEnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repos?: Prisma.RepoUncheckedUpdateManyWithoutUserNestedInput
+  collaborations?: Prisma.CollaboratorUncheckedUpdateManyWithoutUserNestedInput
+  invitesReceived?: Prisma.CollaborationInviteUncheckedUpdateManyWithoutInvitedByUserNestedInput
+  activitiesPerformed?: Prisma.ActivityLogUncheckedUpdateManyWithoutPerformedByNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutActivitiesPerformedInput = {
+  githubId?: string | null
+  username?: string | null
+  email?: string | null
+  password?: string | null
+  avatarUrl?: string | null
+  accessToken?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  isBanned?: boolean
+  role?: $Enums.Role
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionPlan?: $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Date | string | null
+  subscriptionEndDate?: Date | string | null
+  createdAt?: Date | string
+  repos?: Prisma.RepoCreateNestedManyWithoutUserInput
+  collaborations?: Prisma.CollaboratorCreateNestedManyWithoutUserInput
+  invitesReceived?: Prisma.CollaborationInviteCreateNestedManyWithoutInvitedByUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutUserInput
+  chatDiscussions?: Prisma.ChatDiscussionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutActivitiesPerformedInput = {
+  id?: number
+  githubId?: string | null
+  username?: string | null
+  email?: string | null
+  password?: string | null
+  avatarUrl?: string | null
+  accessToken?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  isBanned?: boolean
+  role?: $Enums.Role
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionPlan?: $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Date | string | null
+  subscriptionEndDate?: Date | string | null
+  createdAt?: Date | string
+  repos?: Prisma.RepoUncheckedCreateNestedManyWithoutUserInput
+  collaborations?: Prisma.CollaboratorUncheckedCreateNestedManyWithoutUserInput
+  invitesReceived?: Prisma.CollaborationInviteUncheckedCreateNestedManyWithoutInvitedByUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutActivitiesPerformedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutActivitiesPerformedInput, Prisma.UserUncheckedCreateWithoutActivitiesPerformedInput>
+}
+
+export type UserUpsertWithoutActivitiesPerformedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutActivitiesPerformedInput, Prisma.UserUncheckedUpdateWithoutActivitiesPerformedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutActivitiesPerformedInput, Prisma.UserUncheckedCreateWithoutActivitiesPerformedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutActivitiesPerformedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutActivitiesPerformedInput, Prisma.UserUncheckedUpdateWithoutActivitiesPerformedInput>
+}
+
+export type UserUpdateWithoutActivitiesPerformedInput = {
+  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionPlan?: Prisma.NullableEnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repos?: Prisma.RepoUpdateManyWithoutUserNestedInput
+  collaborations?: Prisma.CollaboratorUpdateManyWithoutUserNestedInput
+  invitesReceived?: Prisma.CollaborationInviteUpdateManyWithoutInvitedByUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutActivitiesPerformedInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionPlan?: Prisma.NullableEnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repos?: Prisma.RepoUncheckedUpdateManyWithoutUserNestedInput
+  collaborations?: Prisma.CollaboratorUncheckedUpdateManyWithoutUserNestedInput
+  invitesReceived?: Prisma.CollaborationInviteUncheckedUpdateManyWithoutInvitedByUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
+  chatDiscussions?: Prisma.ChatDiscussionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutChatDiscussionsInput = {
+  githubId?: string | null
+  username?: string | null
+  email?: string | null
+  password?: string | null
+  avatarUrl?: string | null
+  accessToken?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  isBanned?: boolean
+  role?: $Enums.Role
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionPlan?: $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Date | string | null
+  subscriptionEndDate?: Date | string | null
+  createdAt?: Date | string
+  repos?: Prisma.RepoCreateNestedManyWithoutUserInput
+  collaborations?: Prisma.CollaboratorCreateNestedManyWithoutUserInput
+  invitesReceived?: Prisma.CollaborationInviteCreateNestedManyWithoutInvitedByUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutUserInput
+  activitiesPerformed?: Prisma.ActivityLogCreateNestedManyWithoutPerformedByInput
+}
+
+export type UserUncheckedCreateWithoutChatDiscussionsInput = {
+  id?: number
+  githubId?: string | null
+  username?: string | null
+  email?: string | null
+  password?: string | null
+  avatarUrl?: string | null
+  accessToken?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  isBanned?: boolean
+  role?: $Enums.Role
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionPlan?: $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Date | string | null
+  subscriptionEndDate?: Date | string | null
+  createdAt?: Date | string
+  repos?: Prisma.RepoUncheckedCreateNestedManyWithoutUserInput
+  collaborations?: Prisma.CollaboratorUncheckedCreateNestedManyWithoutUserInput
+  invitesReceived?: Prisma.CollaborationInviteUncheckedCreateNestedManyWithoutInvitedByUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
+  activitiesPerformed?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutPerformedByInput
+}
+
+export type UserCreateOrConnectWithoutChatDiscussionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutChatDiscussionsInput, Prisma.UserUncheckedCreateWithoutChatDiscussionsInput>
+}
+
+export type UserUpsertWithoutChatDiscussionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutChatDiscussionsInput, Prisma.UserUncheckedUpdateWithoutChatDiscussionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutChatDiscussionsInput, Prisma.UserUncheckedCreateWithoutChatDiscussionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutChatDiscussionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutChatDiscussionsInput, Prisma.UserUncheckedUpdateWithoutChatDiscussionsInput>
+}
+
+export type UserUpdateWithoutChatDiscussionsInput = {
+  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionPlan?: Prisma.NullableEnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repos?: Prisma.RepoUpdateManyWithoutUserNestedInput
+  collaborations?: Prisma.CollaboratorUpdateManyWithoutUserNestedInput
+  invitesReceived?: Prisma.CollaborationInviteUpdateManyWithoutInvitedByUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
+  activitiesPerformed?: Prisma.ActivityLogUpdateManyWithoutPerformedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutChatDiscussionsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionPlan?: Prisma.NullableEnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan | null
+  subscriptionStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repos?: Prisma.RepoUncheckedUpdateManyWithoutUserNestedInput
+  collaborations?: Prisma.CollaboratorUncheckedUpdateManyWithoutUserNestedInput
+  invitesReceived?: Prisma.CollaborationInviteUncheckedUpdateManyWithoutInvitedByUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
+  activitiesPerformed?: Prisma.ActivityLogUncheckedUpdateManyWithoutPerformedByNestedInput
 }
 
 
@@ -799,10 +1521,20 @@ export type UserUncheckedUpdateWithoutReposInput = {
 
 export type UserCountOutputType = {
   repos: number
+  collaborations: number
+  invitesReceived: number
+  messages: number
+  activitiesPerformed: number
+  chatDiscussions: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   repos?: boolean | UserCountOutputTypeCountReposArgs
+  collaborations?: boolean | UserCountOutputTypeCountCollaborationsArgs
+  invitesReceived?: boolean | UserCountOutputTypeCountInvitesReceivedArgs
+  messages?: boolean | UserCountOutputTypeCountMessagesArgs
+  activitiesPerformed?: boolean | UserCountOutputTypeCountActivitiesPerformedArgs
+  chatDiscussions?: boolean | UserCountOutputTypeCountChatDiscussionsArgs
 }
 
 /**
@@ -820,6 +1552,41 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
  */
 export type UserCountOutputTypeCountReposArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.RepoWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCollaborationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CollaboratorWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountInvitesReceivedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CollaborationInviteWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MessageWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountActivitiesPerformedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ActivityLogWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountChatDiscussionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChatDiscussionWhereInput
 }
 
 
@@ -843,6 +1610,11 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   subscriptionEndDate?: boolean
   createdAt?: boolean
   repos?: boolean | Prisma.User$reposArgs<ExtArgs>
+  collaborations?: boolean | Prisma.User$collaborationsArgs<ExtArgs>
+  invitesReceived?: boolean | Prisma.User$invitesReceivedArgs<ExtArgs>
+  messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
+  activitiesPerformed?: boolean | Prisma.User$activitiesPerformedArgs<ExtArgs>
+  chatDiscussions?: boolean | Prisma.User$chatDiscussionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -912,6 +1684,11 @@ export type UserSelectScalar = {
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "githubId" | "username" | "email" | "password" | "avatarUrl" | "accessToken" | "firstName" | "lastName" | "isBanned" | "role" | "stripeCustomerId" | "stripeSubscriptionId" | "subscriptionStatus" | "subscriptionPlan" | "subscriptionStartDate" | "subscriptionEndDate" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   repos?: boolean | Prisma.User$reposArgs<ExtArgs>
+  collaborations?: boolean | Prisma.User$collaborationsArgs<ExtArgs>
+  invitesReceived?: boolean | Prisma.User$invitesReceivedArgs<ExtArgs>
+  messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
+  activitiesPerformed?: boolean | Prisma.User$activitiesPerformedArgs<ExtArgs>
+  chatDiscussions?: boolean | Prisma.User$chatDiscussionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -921,6 +1698,11 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "User"
   objects: {
     repos: Prisma.$RepoPayload<ExtArgs>[]
+    collaborations: Prisma.$CollaboratorPayload<ExtArgs>[]
+    invitesReceived: Prisma.$CollaborationInvitePayload<ExtArgs>[]
+    messages: Prisma.$MessagePayload<ExtArgs>[]
+    activitiesPerformed: Prisma.$ActivityLogPayload<ExtArgs>[]
+    chatDiscussions: Prisma.$ChatDiscussionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1336,6 +2118,11 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   repos<T extends Prisma.User$reposArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reposArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RepoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  collaborations<T extends Prisma.User$collaborationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$collaborationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CollaboratorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  invitesReceived<T extends Prisma.User$invitesReceivedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$invitesReceivedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CollaborationInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  messages<T extends Prisma.User$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  activitiesPerformed<T extends Prisma.User$activitiesPerformedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$activitiesPerformedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  chatDiscussions<T extends Prisma.User$chatDiscussionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$chatDiscussionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatDiscussionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1792,6 +2579,126 @@ export type User$reposArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
   take?: number
   skip?: number
   distinct?: Prisma.RepoScalarFieldEnum | Prisma.RepoScalarFieldEnum[]
+}
+
+/**
+ * User.collaborations
+ */
+export type User$collaborationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Collaborator
+   */
+  select?: Prisma.CollaboratorSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Collaborator
+   */
+  omit?: Prisma.CollaboratorOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CollaboratorInclude<ExtArgs> | null
+  where?: Prisma.CollaboratorWhereInput
+  orderBy?: Prisma.CollaboratorOrderByWithRelationInput | Prisma.CollaboratorOrderByWithRelationInput[]
+  cursor?: Prisma.CollaboratorWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CollaboratorScalarFieldEnum | Prisma.CollaboratorScalarFieldEnum[]
+}
+
+/**
+ * User.invitesReceived
+ */
+export type User$invitesReceivedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CollaborationInvite
+   */
+  select?: Prisma.CollaborationInviteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CollaborationInvite
+   */
+  omit?: Prisma.CollaborationInviteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CollaborationInviteInclude<ExtArgs> | null
+  where?: Prisma.CollaborationInviteWhereInput
+  orderBy?: Prisma.CollaborationInviteOrderByWithRelationInput | Prisma.CollaborationInviteOrderByWithRelationInput[]
+  cursor?: Prisma.CollaborationInviteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CollaborationInviteScalarFieldEnum | Prisma.CollaborationInviteScalarFieldEnum[]
+}
+
+/**
+ * User.messages
+ */
+export type User$messagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Message
+   */
+  select?: Prisma.MessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Message
+   */
+  omit?: Prisma.MessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MessageInclude<ExtArgs> | null
+  where?: Prisma.MessageWhereInput
+  orderBy?: Prisma.MessageOrderByWithRelationInput | Prisma.MessageOrderByWithRelationInput[]
+  cursor?: Prisma.MessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
+}
+
+/**
+ * User.activitiesPerformed
+ */
+export type User$activitiesPerformedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ActivityLog
+   */
+  select?: Prisma.ActivityLogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ActivityLog
+   */
+  omit?: Prisma.ActivityLogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityLogInclude<ExtArgs> | null
+  where?: Prisma.ActivityLogWhereInput
+  orderBy?: Prisma.ActivityLogOrderByWithRelationInput | Prisma.ActivityLogOrderByWithRelationInput[]
+  cursor?: Prisma.ActivityLogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ActivityLogScalarFieldEnum | Prisma.ActivityLogScalarFieldEnum[]
+}
+
+/**
+ * User.chatDiscussions
+ */
+export type User$chatDiscussionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatDiscussion
+   */
+  select?: Prisma.ChatDiscussionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChatDiscussion
+   */
+  omit?: Prisma.ChatDiscussionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChatDiscussionInclude<ExtArgs> | null
+  where?: Prisma.ChatDiscussionWhereInput
+  orderBy?: Prisma.ChatDiscussionOrderByWithRelationInput | Prisma.ChatDiscussionOrderByWithRelationInput[]
+  cursor?: Prisma.ChatDiscussionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatDiscussionScalarFieldEnum | Prisma.ChatDiscussionScalarFieldEnum[]
 }
 
 /**

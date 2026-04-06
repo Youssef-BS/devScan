@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { prisma } from '../db';
+import { prisma } from '../db.js';
 import bcrypt from 'bcrypt';
-import { generateToken } from '../utils/jwt';
-import { AuthRequest } from 'src/middleware/auth';
+import { generateToken } from '../utils/jwt.js';
+import { AuthRequest } from 'src/middleware/auth.js';
 import { adminLoginSchema } from '@repo/validation';
 
 

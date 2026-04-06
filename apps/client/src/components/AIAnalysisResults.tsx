@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 interface AIAnalysisResultsProps {
   analysis: string;
-  correctedExamples: string[];
+  correctedExamples?: Array<{ issue: number; code: string }>;
   onClose: () => void;
   score?: number;
   grade?: string;
@@ -28,11 +28,11 @@ export function AIAnalysisResults({
   };
 
   const downloadResults = () => {
-    const content = `Analysis Results\n${"=".repeat(50)}\n\n${analysis}\n\n${
-      correctedExamples.length > 0
-        ? `Suggested Fixes:\n${"-".repeat(50)}\n${correctedExamples.join("\n\n")}`
-        : ""
-    }`;
+    const examplesText = correctedExamples && correctedExamples.length > 0
+      ? `Suggested Fixes:\n${"-".repeat(50)}\n${correctedExamples.map(ex => ex.code).join("\n\n")}`
+      : "";
+    
+    const content = `Analysis Results\n${"=".repeat(50)}\n\n${analysis}\n\n${examplesText}`;
 
     const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
@@ -121,7 +121,7 @@ export function AIAnalysisResults({
       </motion.div>
 
       {/* Corrected Examples */}
-      {correctedExamples.length > 0 && (
+      {correctedExamples && correctedExamples.length > 0 && (
         <motion.div variants={itemVariants}>
           <Card>
             <CardHeader>
@@ -130,7 +130,7 @@ export function AIAnalysisResults({
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {correctedExamples.map((example, idx) => (
+              {correctedExamples?.map((example, idx) => (
                 <motion.div
                   key={idx}
                   variants={itemVariants}
@@ -138,17 +138,17 @@ export function AIAnalysisResults({
                 >
                   <div className="flex items-start justify-between mb-3">
                     <Badge variant="outline" className="bg-green-100">
-                      Fix {idx + 1}
+                      Issue #{example.issue} - Fix {idx + 1}
                     </Badge>
                     <button
-                      onClick={() => copyToClipboard(example)}
+                      onClick={() => copyToClipboard(example.code)}
                       className="text-gray-400 hover:text-gray-600"
                     >
                       <Copy className="w-4 h-4" />
                     </button>
                   </div>
                   <pre className="bg-white p-3 rounded border border-green-200 text-xs overflow-x-auto">
-                    {example}
+                    <code>{example.code}</code>
                   </pre>
                 </motion.div>
               ))}

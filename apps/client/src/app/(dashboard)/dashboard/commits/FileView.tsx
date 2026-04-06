@@ -11,7 +11,7 @@ export interface FileItem {
   status: string;
   additions: number;
   deletions: number;
-  changes: number;
+  changes?: number;
   patch?: string;
 }
 
