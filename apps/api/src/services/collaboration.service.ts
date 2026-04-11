@@ -381,7 +381,6 @@ export class CollaborationService {
     });
   }
 
-  // Check if user can perform action (is collaborator with right role)
   static async hasPermission(
     userId: number,
     repoId: number,

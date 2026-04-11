@@ -1,14 +1,14 @@
 import os
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from audit.analyzer import analyze_code, extract_corrected_code
+from pydantic import BaseModel, Field
+from audit.analyzer import analyze_code_async
 
 app = FastAPI(
     title="DevScan AI Service",
-    description="AI-powered code analysis service for DevScan",
-    version="1.0.0"
+    description="Multi-agent AI code analysis engine for DevScan",
+    version="2.0.0",
 )
 
 app.add_middleware(
@@ -19,48 +19,97 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# ─── Request / Response models ────────────────────────────────────────────
+
 class CodeRequest(BaseModel):
-    code: str
-    analysis_type: str = "audit"  
+    code: str = Field(..., min_length=1)
+    analysis_type: str = Field(
+        default="audit",
+        description="One of: audit, commit, file_fix, chatbot",
+    )
+
+
+class AnalysisResponse(BaseModel):
+    analysis: str
+    corrected_examples: list
+    issues: list
+    agent_breakdown: dict | None
+    analysis_type: str
+
+
+# ─── Routes ───────────────────────────────────────────────────────────────
 
 @app.get("/health")
 async def health():
-    """Health check endpoint"""
     return {
         "status": "ok",
-        "service": "DevScan AI Service",
-        "model": os.getenv("MODEL_NAME", "gemma3:4b")
+        "service": "DevScan AI Service v2 (multi-agent)",
+        "model": os.getenv("MODEL_NAME", "gemma3:4b"),
+        "agents": ["security", "performance", "clean_code"],
     }
 
-@app.post("/analyze")
+
+@app.post("/analyze", response_model=AnalysisResponse)
 async def analyze(request: CodeRequest):
     """
-    Analyze code using specified prompt template.
-    
-    - analysis_type: 'audit' (default), 'chatbot', 'commit', or 'file_fix'
-    
-    Returns:
-    - analysis: cleaned analysis text
-    - corrected_examples: list of corrected code snippets extracted from analysis
-    - analysis_type: the type of analysis performed
+    Run multi-agent analysis on the provided code.
+
+    analysis_type:
+      - audit     → full 3-agent scan (security + perf + clean code)
+      - commit    → same as audit, focused on diff context
+      - file_fix  → same as audit, focused on single-file fixes
+      - chatbot   → single conversational agent
     """
-    result = analyze_code(request.code, analysis_type=request.analysis_type)
-    parsed_result = extract_corrected_code(result)
-    
-    return {
-        "analysis": parsed_result['analysis'],
-        "corrected_examples": parsed_result['corrected_examples'],
-        "analysis_type": request.analysis_type
-    }
+    valid_types = {"audit", "chatbot", "commit", "file_fix"}
+    if request.analysis_type not in valid_types:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid analysis_type. Must be one of: {valid_types}",
+        )
+
+    try:
+        result = await analyze_code_async(request.code, analysis_type=request.analysis_type)
+        return result
+
+    except ConnectionError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                f"LLM backend unreachable: {exc}. "
+                "Make sure Ollama is running (`ollama serve`) and the model is pulled "
+                f"(`ollama pull {os.getenv('MODEL_NAME', 'gemma3:4b')}`)."
+            ),
+        ) from exc
+
+    except Exception as exc:
+        err = str(exc).lower()
+
+        # Catch httpx / requests connection failures by message content
+        if any(kw in err for kw in ("connection", "connect error", "refused", "unreachable", "timeout")):
+            raise HTTPException(
+                status_code=503,
+                detail=(
+                    f"LLM backend error: {exc}. "
+                    "Verify Ollama is running and the model is available."
+                ),
+            ) from exc
+
+        raise HTTPException(status_code=500, detail=f"Analysis failed: {exc}") from exc
+
+
+@app.get("/")
+async def root():
+    return {"message": "DevScan AI Service v2 — multi-agent edition", "docs": "/docs"}
+
 
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", "8003"))
+    port  = int(os.getenv("PORT", "8003"))
     debug = os.getenv("DEBUG", "False").lower() == "true"
-    
+
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
         port=port,
         reload=debug,
-        env_file=".env"
     )

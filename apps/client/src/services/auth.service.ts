@@ -1,4 +1,28 @@
+import { User , UserResponse } from "@/types/user";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+
+
+export const loginUserApi = async ({email, password}: User): Promise<UserResponse | null> => {
+  try {
+    const res = await fetch(`${apiUrl}/auth/login`, {
+      method: "POST",
+      credentials: "include",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({email, password})
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message || "Failed to login");
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error(error);
+    return null; 
+  }
+};
 
 export const getCurrentUserApi = async ({ setUser, setLoading }: any) => {
   try {

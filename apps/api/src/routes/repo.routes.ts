@@ -16,8 +16,8 @@ import { deleteAllGithubRepos,
 import axios from "axios";
 
 import { prisma } from "../db.js";
-import { isAdmin } from "src/middleware/isAdmin.js";
-import { isBanned } from "src/middleware/isBanned.js";
+import { isAdmin } from "../middleware/isAdmin.js";
+import { isBanned } from "../middleware/isBanned.js";
 
 const router : Router = Router();
 

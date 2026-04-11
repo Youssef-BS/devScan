@@ -55,9 +55,7 @@ export const useRepoStore = create<RepoStore>()(
       fetchRepos: async (page = 1) => {
         set({ loading: true });
         try {
-          // Use database endpoint to get both owned and collaborated repos
-          const res = await getAllFromDb(page, 9);
-
+          const res = await getGithubReposApi(page, 9 , get().search, get().language);
           set({
             repos: res.data.map((repo: any) => ({
               id: repo.id,

@@ -7,7 +7,7 @@ import {
   chatWithAI
 } from "../controllers/Commit.controller.js" ;
 import { auth } from "../middleware/auth.js" ;
-import { isBanned } from "src/middleware/isBanned.js";
+import { isBanned } from "../middleware/isBanned.js";
 
 const router: Router = Router();
 router.get("/fetch/:githubId", auth, isBanned , fetchAndSaveAllCommits);

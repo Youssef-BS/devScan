@@ -266,7 +266,9 @@ export const getCommitDetails = async (req: Request, res: Response) => {
         message: commitRes.data.commit?.message || '',
         author: commitRes.data.commit?.author?.name || '',
         date: commitRes.data.commit?.author?.date || new Date(),
-        totalChanges: allFiles.reduce((sum : any, file :any) => sum + (file.changes || 0), 0)
+        totalChanges: allFiles.reduce((sum : any, file :any) => sum + (file.changes || 0), 0),
+        repoGithubId: commit.Repo.githubId,
+        repoFullName: commit.Repo.fullName,
       }
     });
   } catch (error: any) {
@@ -280,7 +282,7 @@ export const getCommitDetails = async (req: Request, res: Response) => {
 };
 
 export const analyzeCommitWithAI = async (req: Request, res: Response) => {
-  const { code, sha, analysisType = "chatbot" } = req.body;
+  const { code, sha, analysisType = "audit" } = req.body;
 
   if (!code) {
     return res.status(400).json({ message: "Code is required for analysis" });
@@ -325,9 +327,10 @@ let scan = await prisma.scan.upsert({
 });
 
     // Step 3: Call AI service
+    // Llama 3 is slower than cloud models — allow 5 min base + extra for large code
     const codeLength = code.length;
-    const calculatedTimeout = Math.max(60000, Math.min(120000, Math.ceil(codeLength / 50)));
-    
+    const calculatedTimeout = Math.max(300_000, Math.min(600_000, 300_000 + codeLength * 10));
+
     const aiResponse = await axios.post(`${AI_SERVICE_URL}/analyze`, {
       code: code,
       analysis_type: analysisType
@@ -338,19 +341,29 @@ let scan = await prisma.scan.upsert({
     const analysis = aiResponse.data.analysis;
     const correctedExamples = aiResponse.data.corrected_examples || [];
 
-    // Step 4: Parse analysis into issues
-    const issues = parseAnalysisToIssues(analysis);
+    // Step 4: Use the structured issues returned by the AI service directly
+    const rawIssues: any[] = aiResponse.data.issues || [];
 
     // Step 5: Save issues to database
-    if (issues.length > 0) {
+    if (rawIssues.length > 0) {
       await prisma.issue.createMany({
-        data: issues.map(issue => ({
-          ...issue,
-          scanId: scan.id,
-          commitId: commitId
-        }))
+        data: rawIssues.map((issue: any) => ({
+          title:      (issue.title    || "Issue detected").substring(0, 100),
+          message:    issue.description || null,
+          type:       normalizeIssueType(issue.type),
+          severity:   normalizeSeverity(issue.severity),
+          filePath:   issue.file   || "unknown",
+          agent:      normalizeAgent(issue.agent),
+          confidence: 0.85,
+          fixedCode:  issue.fix    || null,
+          tags:       [],
+          scanId:     scan.id,
+          commitId:   commitId,
+        })),
       });
     }
+
+    const issues = rawIssues; // alias for score calculation below
 
     // Step 6: Calculate score and grade
     const score = calculateScore(issues);
@@ -387,19 +400,33 @@ let scan = await prisma.scan.upsert({
   } catch (error: any) {
     let errorMessage = error.message;
     let statusCode = 500;
-    
-    if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
-      errorMessage = `Analysis timeout: The AI service took too long to analyze this code. This usually happens with very large code samples. Try analyzing smaller chunks or individual files.`;
-      statusCode = 408; 
-    } else if (error.message?.includes('ECONNREFUSED')) {
-      errorMessage = `AI service is not available at ${AI_SERVICE_URL}. Please check if the AI service is running.`;
-      statusCode = 503; 
+
+    const axiosStatus: number | undefined = error.response?.status;
+    const axiosDetail: string | undefined =
+      error.response?.data?.detail || error.response?.data?.message;
+
+    if (error.code === "ECONNABORTED" || error.message?.includes("timeout")) {
+      errorMessage =
+        "Analysis timeout: the AI took too long. " +
+        "Try analyzing a single file instead of multiple files at once.";
+      statusCode = 408;
+    } else if (error.message?.includes("ECONNREFUSED")) {
+      errorMessage = `AI service is not running at ${AI_SERVICE_URL}. Start it with: cd apps/ai && python main.py`;
+      statusCode = 503;
+    } else if (axiosStatus === 503) {
+      errorMessage = axiosDetail || "LLM backend (Ollama) is not available. Run: ollama serve && ollama pull gemma3:4b";
+      statusCode = 503;
+    } else if (axiosStatus === 500) {
+      // Internal error inside the AI service — surface its detail message
+      errorMessage = axiosDetail || error.message;
+      statusCode = 500;
     }
-    res.status(statusCode).json({ 
+
+    res.status(statusCode).json({
       message: "Failed to analyze code with AI",
       error: errorMessage,
       serviceUrl: AI_SERVICE_URL,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 };
@@ -430,10 +457,9 @@ export const chatWithAI = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Repository not found" });
     }
 
-    // Call AI service
-    const codeLength = code.length;
-    const calculatedTimeout = Math.max(60000, Math.min(120000, Math.ceil(codeLength / 50)));
-    
+    // Call AI service (chatbot is fast — 2 min ceiling is enough)
+    const calculatedTimeout = Math.max(120_000, Math.min(300_000, 120_000 + code.length * 5));
+
     const aiResponse = await axios.post(`${AI_SERVICE_URL}/analyze`, {
       code: code,
       analysis_type: analysisType
@@ -481,68 +507,32 @@ export const chatWithAI = async (req: Request, res: Response) => {
   }
 };
 
-/**
- * Parse AI analysis text into structured Issue objects
- */
-function parseAnalysisToIssues(analysisText: string) {
-  const issues: any[] = [];
+// ─── Normalizers (map AI strings → Prisma enum values) ───────────────────
 
-  if (!analysisText || typeof analysisText !== 'string') {
-    return issues;
-  }
-
-  // Split by lines and parse issues
-  const lines = analysisText.split('\n').filter(line => line.trim());
-
-  for (const line of lines) {
-    const issue = parseSingleIssue(line);
-    if (issue) {
-      issues.push(issue);
-    }
-  }
-
-  return issues;
+function normalizeIssueType(t: string): "BUG" | "VULNERABILITY" | "CODE_SMELL" {
+  const map: Record<string, "BUG" | "VULNERABILITY" | "CODE_SMELL"> = {
+    VULNERABILITY: "VULNERABILITY",
+    BUG:           "BUG",
+    CODE_SMELL:    "CODE_SMELL",
+  };
+  return map[(t || "").toUpperCase()] ?? "CODE_SMELL";
 }
 
-function parseSingleIssue(text: string) {
-  if (!text || text.trim().length < 10) {
-    return null;
-  }
-
-  let severity: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW" = "MEDIUM";
-  let message = text;
-
-  if (text.toUpperCase().includes("CRITICAL")) {
-    severity = "CRITICAL";
-    message = text.replace(/\*\*CRITICAL\*\*|CRITICAL/i, "").trim();
-  } else if (text.toUpperCase().includes("HIGH")) {
-    severity = "HIGH";
-    message = text.replace(/\*\*HIGH\*\*|HIGH/i, "").trim();
-  } else if (text.toUpperCase().includes("MEDIUM")) {
-    severity = "MEDIUM";
-    message = text.replace(/\*\*MEDIUM\*\*|MEDIUM/i, "").trim();
-  } else if (text.toUpperCase().includes("LOW")) {
-    severity = "LOW";
-    message = text.replace(/\*\*LOW\*\*|LOW/i, "").trim();
-  }
-
-  let type: "BUG" | "VULNERABILITY" | "CODE_SMELL" = "CODE_SMELL";
-  if (message.toUpperCase().includes("SECURITY") || message.toUpperCase().includes("INJECTION")) {
-    type = "VULNERABILITY";
-  } else if (message.toUpperCase().includes("ERROR") || message.toUpperCase().includes("BUG")) {
-    type = "BUG";
-  }
-
-  return {
-    title: message.split('\n')[0]?.substring(0, 100) || "Issue detected",
-    message: message,
-    type,
-    severity,
-    filePath: "unknown",
-    agent: "clean_code",
-    confidence: 0.8,
-    tags: ["auto-detected"]
+function normalizeSeverity(s: string): "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" {
+  const map: Record<string, "LOW" | "MEDIUM" | "HIGH" | "CRITICAL"> = {
+    LOW: "LOW", MEDIUM: "MEDIUM", HIGH: "HIGH", CRITICAL: "CRITICAL",
   };
+  return map[(s || "").toUpperCase()] ?? "MEDIUM";
+}
+
+function normalizeAgent(a: string): "security" | "performance" | "clean_code" | "bug" {
+  const map: Record<string, "security" | "performance" | "clean_code" | "bug"> = {
+    security:    "security",
+    performance: "performance",
+    clean_code:  "clean_code",
+    bug:         "bug",
+  };
+  return map[(a || "").toLowerCase()] ?? "clean_code";
 }
 
 

@@ -16,6 +16,8 @@ export interface CommitDetails {
     author: string;
     date: string;
     totalChanges: number;
+    repoGithubId?: string;
+    repoFullName?: string;
   };
 }
 

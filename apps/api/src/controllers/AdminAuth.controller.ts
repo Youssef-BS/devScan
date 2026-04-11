@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { prisma } from '../db.js';
 import bcrypt from 'bcrypt';
 import { generateToken } from '../utils/jwt.js';
-import { AuthRequest } from 'src/middleware/auth.js';
+import { AuthRequest } from '../middleware/auth.js';
 import { adminLoginSchema } from '@repo/validation';
 
 

@@ -1,5 +1,12 @@
 import {create} from "zustand" ;
-import { getCurrentUserApi , logout , CompleteProfileApi, ChangePasswordApi , UpdateNameApi } from "@/services/auth.service";
+import { 
+    getCurrentUserApi ,
+    logout ,
+    CompleteProfileApi,
+    ChangePasswordApi ,
+    UpdateNameApi, 
+    loginUserApi} 
+from "@/services/auth.service";
 
 interface AuthStore {
     user : any | null ;
@@ -11,6 +18,7 @@ interface AuthStore {
     completeProfile : (data: { firstName: string; lastName: string; password: string }) => Promise<void>;
     changePassword : (data : {currentPassword : string , newPassword : string}) => Promise<void> ;
     updateName : (data : {firstName : string , lastName : string}) => Promise<void> ;
+    loginAuth: (data: { email: string; password: string }) => Promise<boolean>;
 }
 
 export const useAuthStore = create<AuthStore>((set)=>({
@@ -31,6 +39,25 @@ export const useAuthStore = create<AuthStore>((set)=>({
             set({ user: null, isAuthenticated: false, error: error.message || "Failed to fetch user" });
         }
     } ,
+
+    loginAuth : async (data : {email : string , password : string}) => {
+        set({ loading: true, error: null });
+
+        try {
+            await loginUserApi(data);
+            await getCurrentUserApi({
+                setUser: (user: any) => set({ user, isAuthenticated: !!user }),
+                setLoading: (loading: boolean) => set({ loading }),
+            });
+
+            return true ;
+        
+        }catch (error: any) {
+            console.error("Login error:", error);
+            set({ user: null, isAuthenticated: false, error: error.message || "Login failed" });
+            return false ;
+        }
+    },
 
     logout : async () => {
         try {

@@ -1,12 +1,13 @@
 import { Router } from "express";
-import {  githubLogin , githubCallback , logout , getCurrentUser, updateProfile, changePassword, updateName } from "../controllers/Auth.controller.js";
+import {  githubLogin , githubCallback , logout , getCurrentUser, updateProfile, changePassword, updateName , LoginUserWithEmail } from "../controllers/Auth.controller.js";
 import { auth } from "../middleware/auth.js"
-import { isBanned } from "src/middleware/isBanned.js";
+import { isBanned } from "../middleware/isBanned.js";
 
 const router:Router = Router();
 
 router.get("/github" , githubLogin);
 router.get("/github/callback"  , githubCallback);
+router.post("/login", LoginUserWithEmail);
 
 router.get("/current-user", auth, isBanned, getCurrentUser);
 router.post("/update-profile",auth , updateProfile);

@@ -13,9 +13,9 @@ import {
   getSystemHealth,
   getSystemStats,
 } from "../controllers/AdminSettings.controller.js";
-import { isAdmin } from "src/middleware/isAdmin.js";
-import { auth } from "src/middleware/auth.js";
-import { isBanned } from "src/middleware/isBanned.js";
+import { isAdmin } from "../middleware/isAdmin.js";
+import { auth } from "../middleware/auth.js";
+import { isBanned } from "../middleware/isBanned.js";
 
 const router : Router = Router();
 

@@ -13,6 +13,8 @@ import { useServiceStore } from "@/store/useServiceStore";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { motion } from "framer-motion";
+import { useAuthStore } from "@/store/useAuthStore";
+
 
 const logoMap: Record<string, React.ReactNode> = {
   fingerprint: <FingerprintPattern />,
@@ -61,6 +63,8 @@ function HomePage() {
   
   const searchParams = useSearchParams()
   const router = useRouter()
+  const { user , loginAuth} = useAuthStore() ;
+  const route = useRouter() ;
 
   const openLoginModal = () => {
     const params = new URLSearchParams(searchParams.toString())
@@ -87,17 +91,19 @@ function HomePage() {
     setServices(data);
   }, [setPlans, plans, setServices]);
 
-  const handleEmailSignIn = async (e : any) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      console.log('Signing in with:', { email, password, rememberMe });
-    } catch (error) {
-      console.error('Sign in error:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+const handleEmailSignIn = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+  try {
+    const success = await loginAuth({ email, password });
+    if (success)  route.push('/dashboard');
+
+  } catch (error) {
+    console.error('Sign in error:', error);;
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleForgotPassword = async (e :  any) => {
     e.preventDefault();
