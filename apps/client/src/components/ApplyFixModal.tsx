@@ -13,8 +13,10 @@ interface ApplyFixModalProps {
 }
 
 export default function ApplyFixModal({ repoGithubId, issue, onClose }: ApplyFixModalProps) {
-  const [originalContent, setOriginalContent] = useState<string>("");
+  const [, setOriginalContent] = useState<string>("");
   const [editedContent,   setEditedContent]   = useState<string>("");
+  const [fileSha,         setFileSha]         = useState<string | null>(null);
+  const [editedFilePath,  setEditedFilePath]  = useState<string>(issue.filePath ?? "");
   const [fetchLoading,    setFetchLoading]     = useState(true);
   const [fetchError,      setFetchError]       = useState<string | null>(null);
   const [commitMsg,       setCommitMsg]        = useState(`fix: AI suggestion for ${issue.filePath}`);
@@ -22,19 +24,22 @@ export default function ApplyFixModal({ repoGithubId, issue, onClose }: ApplyFix
   const [submitting,      setSubmitting]       = useState<"push" | "pr" | null>(null);
   const [done,            setDone]             = useState<{ type: "push" | "pr"; url?: string; prNumber?: number } | null>(null);
 
+  const pathUnknown = !editedFilePath.trim() || editedFilePath === "unknown";
+
   // Fetch the full file from GitHub when the modal opens
   useEffect(() => {
     if (!issue.filePath || issue.filePath === "unknown") {
       setFetchLoading(false);
-      setFetchError("File path is unknown — paste the full file content manually.");
+      setFetchError("File path is unknown — enter the correct path below and paste the fixed content.");
       return;
     }
 
     setFetchLoading(true);
     getFileContent(repoGithubId, issue.filePath)
-      .then(({ content }) => {
+      .then(({ content, sha }) => {
         setOriginalContent(content);
         setEditedContent(content);
+        setFileSha(sha);
         setFetchLoading(false);
       })
       .catch((err) => {
@@ -48,17 +53,23 @@ export default function ApplyFixModal({ repoGithubId, issue, onClose }: ApplyFix
       toast.error("File content cannot be empty");
       return;
     }
+    if (pathUnknown) {
+      toast.error("Enter the correct file path before pushing");
+      return;
+    }
 
     setSubmitting(createPR ? "pr" : "push");
     try {
       const result = await applyFix(repoGithubId, {
-        filePath:      issue.filePath,
+        filePath:      editedFilePath,
         newContent:    editedContent,
         commitMessage: commitMsg,
         createPR,
+        // Pass the cached SHA so the backend skips the redundant GET
+        fileSha:       fileSha ?? undefined,
         prTitle:       createPR ? prTitle : undefined,
         prBody:        createPR
-          ? `**DevScan AI Fix**\n\n**Issue:** ${issue.title}\n**Severity:** ${issue.severity}\n**File:** \`${issue.filePath}\`\n\n${issue.message || ""}`
+          ? `**DevScan AI Fix**\n\n**Issue:** ${issue.title}\n**Severity:** ${issue.severity}\n**File:** \`${editedFilePath}\`\n\n${issue.message || ""}`
           : undefined,
       });
 
@@ -71,7 +82,7 @@ export default function ApplyFixModal({ repoGithubId, issue, onClose }: ApplyFix
       toast.success(
         result.type === "pr"
           ? `Pull Request #${result.prNumber} created!`
-          : "Fix pushed to main branch!",
+          : "Fix pushed successfully!",
       );
     } catch (err: any) {
       toast.error(err.message || "Failed to apply fix");
@@ -180,8 +191,27 @@ export default function ApplyFixModal({ repoGithubId, issue, onClose }: ApplyFix
                 </p>
               </div>
 
-              {/* Commit message */}
+              {/* Commit message + path */}
               <div className="p-3 border-t border-gray-200 space-y-3">
+                {/* File path — editable so user can fix an unknown/wrong AI path */}
+                <div>
+                  <label className="text-xs font-medium text-gray-600 block mb-1">
+                    File path
+                    {pathUnknown && <span className="ml-1 text-red-500">(required)</span>}
+                  </label>
+                  <input
+                    type="text"
+                    value={editedFilePath}
+                    onChange={(e) => setEditedFilePath(e.target.value)}
+                    placeholder="e.g. src/utils/helper.ts"
+                    className={`w-full text-xs border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 font-mono ${
+                      pathUnknown
+                        ? "border-red-400 focus:ring-red-400"
+                        : "border-gray-300 focus:ring-blue-400"
+                    }`}
+                  />
+                </div>
+
                 <div>
                   <label className="text-xs font-medium text-gray-600 block mb-1">Commit message</label>
                   <input
@@ -204,17 +234,17 @@ export default function ApplyFixModal({ repoGithubId, issue, onClose }: ApplyFix
                 {/* Action buttons */}
                 <button
                   onClick={() => handleSubmit(false)}
-                  disabled={!!submitting || fetchLoading}
+                  disabled={!!submitting || fetchLoading || pathUnknown}
                   className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-700 text-white text-sm font-medium transition-colors disabled:opacity-50"
                 >
                   {submitting === "push"
                     ? <><Loader className="w-4 h-4 animate-spin" />Pushing…</>
-                    : <><GitCommit className="w-4 h-4" />Push to main</>}
+                    : <><GitCommit className="w-4 h-4" />Push to branch</>}
                 </button>
 
                 <button
                   onClick={() => handleSubmit(true)}
-                  disabled={!!submitting || fetchLoading}
+                  disabled={!!submitting || fetchLoading || pathUnknown}
                   className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium transition-colors disabled:opacity-50"
                 >
                   {submitting === "pr"

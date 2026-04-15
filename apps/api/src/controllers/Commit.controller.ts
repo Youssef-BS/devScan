@@ -344,7 +344,9 @@ let scan = await prisma.scan.upsert({
     // Step 4: Use the structured issues returned by the AI service directly
     const rawIssues: any[] = aiResponse.data.issues || [];
 
-    // Step 5: Save issues to database
+    // Step 5: Save issues to database — delete old ones first to avoid duplication on re-analysis
+    await prisma.issue.deleteMany({ where: { scanId: scan.id } });
+
     if (rawIssues.length > 0) {
       await prisma.issue.createMany({
         data: rawIssues.map((issue: any) => ({

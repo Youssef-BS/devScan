@@ -25,6 +25,8 @@ export interface ApplyFixPayload {
   prTitle?: string;
   prBody?: string;
   branch?: string;
+  /** Blob SHA of the file obtained from getFileContent — skips a redundant GET in the backend */
+  fileSha?: string;
 }
 
 export interface ApplyFixResult {

@@ -22,12 +22,19 @@ export const useCommitStore = create<CommitStore>((set) => ({
   error: null,
 
   fetchAndLoadCommits: async (githubId: string) => {
-    set({ loading: true, error: null });
+    set({ loading: true, error: null, commits: [] });
+
+    // Sync from GitHub first — non-fatal: if it fails we still load from DB
+    try {
+      console.log("Syncing commits from GitHub for repo:", githubId);
+      await fetchCommitsFromGitHub(githubId);
+    } catch (err: any) {
+      console.warn("GitHub sync failed, will load existing commits from DB:", err.message);
+    }
 
     try {
-      console.log("Fetching and loading commits for repo:", githubId);
-      await fetchCommitsFromGitHub(githubId); 
-      const commits = await getAllCommits(githubId); 
+      console.log("Loading commits from DB for repo:", githubId);
+      const commits = await getAllCommits(githubId);
 
       if (!commits || commits.length === 0) {
         set({ commits: [], loading: false, error: "No commits found" });
@@ -37,7 +44,7 @@ export const useCommitStore = create<CommitStore>((set) => ({
       set({ commits, loading: false, error: null });
       console.log(`Loaded ${commits.length} commits`);
     } catch (err: any) {
-      console.error("Error fetching commits:", err);
+      console.error("Error loading commits:", err);
       set({ loading: false, error: err.message || "Failed to fetch commits" });
     }
   },

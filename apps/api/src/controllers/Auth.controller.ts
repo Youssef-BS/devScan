@@ -20,7 +20,7 @@ export const githubLogin = async (req: Request, res: Response) => {
       `https://github.com/login/oauth/authorize` +
       `?client_id=${process.env.GITHUB_CLIENT_ID}` +
       `&redirect_uri=${process.env.GITHUB_CALLBACK_URL}` +
-      `&scope=user:email` +
+      `&scope=user:email,repo` +
       `&state=${state}`;
 
     return res.redirect(redirectUrl);
