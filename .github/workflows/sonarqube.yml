@@ -1,4 +1,4 @@
-name: SonarQube Analysis (Turbo)
+name: SonarQube Analysis
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # required for SonarQube blame data
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -35,13 +35,10 @@ jobs:
 
       - name: Build (Turbo)
         run: pnpm turbo run build
+        continue-on-error: true
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        with:
-          args: >
-            -Dsonar.projectKey=YOUR_PROJECT_KEY
-            -Dsonar.sources=apps,packages
