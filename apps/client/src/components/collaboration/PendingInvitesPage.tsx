@@ -12,6 +12,7 @@ interface PendingInvite {
   expiresAt: string;
   repoName?: string;
   repoId: number;
+  repoGithubId?: string;
   invitedBy?: {
     email: string;
     username?: string;
@@ -78,21 +79,17 @@ export function PendingInvitesPage() {
       setAccepting(token);
       setError(null);
 
-      const result = await CollaborationService.acceptInvite(token);
       const acceptedInvite = invites.find((inv) => inv.token === token);
-      const repoId = result.collaborator?.repoId || acceptedInvite?.repoId;
+      await CollaborationService.acceptInvite(token);
 
       // Remove from list
       setInvites((prev) => prev.filter((inv) => inv.token !== token));
 
-      // Show success and redirect to the specific repo's collaboration page
-      setSuccess(`✅ Invitation accepted! Redirecting to ${acceptedInvite?.repoName || 'project'}...`);
+      setSuccess(`Invitation accepted! Redirecting to ${acceptedInvite?.repoName || 'project'}...`);
       setTimeout(() => {
-        if (repoId) {
-          // Redirect to the specific repo's collaboration page
-          window.location.href = `/repos/${repoId}?tab=collaboration`;
+        if (acceptedInvite?.repoGithubId) {
+          window.location.href = `/dashboard/repo/${acceptedInvite.repoGithubId}?tab=collaboration`;
         } else {
-          // Fallback to dashboard
           window.location.href = '/dashboard';
         }
       }, 1500);

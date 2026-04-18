@@ -144,7 +144,7 @@ const AIChatbot: React.FC<AIChatbotProps> = ({
   }
 
   return (
-    <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col border border-gray-200 z-50 overflow-hidden">
+    <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl flex flex-col border border-gray-200 dark:border-gray-700 z-50 overflow-hidden">
       {/* Header */}
       <div className="bg-linear-to-r from-blue-500 to-indigo-600 text-white p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -168,7 +168,7 @@ const AIChatbot: React.FC<AIChatbotProps> = ({
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-950">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -180,7 +180,7 @@ const AIChatbot: React.FC<AIChatbotProps> = ({
               className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
                 message.role === "user"
                   ? "bg-blue-500 text-white rounded-br-none"
-                  : "bg-white text-gray-900 rounded-bl-none border border-gray-200"
+                  : "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-bl-none border border-gray-200 dark:border-gray-700"
               }`}
             >
               <p className="text-sm leading-relaxed whitespace-pre-wrap">
@@ -190,7 +190,7 @@ const AIChatbot: React.FC<AIChatbotProps> = ({
                 className={`text-xs mt-1 ${
                   message.role === "user"
                     ? "text-blue-100"
-                    : "text-gray-500"
+                    : "text-gray-500 dark:text-gray-400"
                 }`}
               >
                 {message.timestamp.toLocaleTimeString()}
@@ -200,9 +200,9 @@ const AIChatbot: React.FC<AIChatbotProps> = ({
         ))}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-white text-gray-900 px-4 py-2 rounded-lg rounded-bl-none border border-gray-200 flex items-center gap-2">
+            <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-4 py-2 rounded-lg rounded-bl-none border border-gray-200 dark:border-gray-700 flex items-center gap-2">
               <Loader className="w-4 h-4 animate-spin text-blue-500" />
-              <span className="text-sm text-gray-600">Thinking...</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">Thinking...</span>
             </div>
           </div>
         )}
@@ -210,7 +210,7 @@ const AIChatbot: React.FC<AIChatbotProps> = ({
       </div>
 
       {/* Input */}
-      <div className="border-t border-gray-200 p-4 bg-white">
+      <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-900">
         <div className="flex gap-2">
           <input
             type="text"
@@ -218,18 +218,18 @@ const AIChatbot: React.FC<AIChatbotProps> = ({
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Ask me anything..."
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+            className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
             disabled={isLoading}
           />
           <button
             onClick={handleSendMessage}
             disabled={isLoading || !inputValue.trim()}
-            className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 transition-colors"
+            className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 dark:disabled:bg-gray-700 transition-colors"
           >
             <Send className="w-4 h-4" />
           </button>
         </div>
-        <p className="text-xs text-gray-500 mt-2">
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
           Powered by AI • Press Shift+Enter for new line
         </p>
       </div>

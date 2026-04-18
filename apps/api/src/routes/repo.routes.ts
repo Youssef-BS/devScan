@@ -1,14 +1,15 @@
 import { Router, Request, Response } from "express";
 import { deleteAllGithubRepos,
    getGithubRepos,
-   saveGithubRepos, 
-   getAllRepoFromDbByUser, 
-   saveGithubRepo, 
-   getRepoDetails, 
+   saveGithubRepos,
+   getAllRepoFromDbByUser,
+   saveGithubRepo,
+   getRepoDetails,
    getAllRepos,
-   deleteRepoByAdmin ,
-   addRepoByAdmin
-  } 
+   deleteRepoByAdmin,
+   addRepoByAdmin,
+   getAnalytics,
+  }
    from "../controllers/Repo.controller.js";
    import { auth } from "../middleware/auth.js" ;
    import { AuthRequest } from "../middleware/auth.js" ;
@@ -79,6 +80,7 @@ router.post("/sync", auth, isBanned , async (req: AuthRequest, res: Response) =>
 });
 
 
+router.get("/analytics", auth, isBanned, getAnalytics);
 router.delete("/clear", auth, isBanned , deleteAllGithubRepos) ;
 router.post("/save" , auth, isBanned , saveGithubRepo) ;
 

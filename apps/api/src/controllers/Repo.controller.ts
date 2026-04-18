@@ -283,6 +283,129 @@ export const deleteRepoByAdmin = async (req: Request, res: Response) => {
   }
 };
 
+export const getAnalytics = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.user) return res.status(401).json({ message: "Not authenticated" });
+
+    const userId = req.user.userId;
+
+    const repos = await prisma.repo.findMany({
+      where: { ownerId: userId },
+      include: {
+        scans: {
+          include: { issues: true },
+          orderBy: { createdAt: "desc" },
+        },
+      },
+    });
+
+    const allIssues = repos.flatMap((r) => r.scans.flatMap((s) => s.issues));
+
+    const issuesBySeverity = {
+      critical: allIssues.filter((i) => i.severity === "CRITICAL").length,
+      high:     allIssues.filter((i) => i.severity === "HIGH").length,
+      medium:   allIssues.filter((i) => i.severity === "MEDIUM").length,
+      low:      allIssues.filter((i) => i.severity === "LOW").length,
+    };
+
+    const issuesByAgent = {
+      security:    allIssues.filter((i) => i.agent === "security").length,
+      performance: allIssues.filter((i) => i.agent === "performance").length,
+      clean_code:  allIssues.filter((i) => i.agent === "clean_code").length,
+      bug:         allIssues.filter((i) => i.agent === "bug").length,
+    };
+
+    const issuesByStatus = {
+      open:      allIssues.filter((i) => i.status === "OPEN").length,
+      fixed:     allIssues.filter((i) => i.status === "FIXED").length,
+      confirmed: allIssues.filter((i) => i.status === "CONFIRMED").length,
+      ignored:   allIssues.filter((i) => i.status === "IGNORED").length,
+    };
+
+    // Recent 5 scans across all repos
+    const allScans = repos
+      .flatMap((r) =>
+        r.scans.map((s) => ({
+          repoName:   r.name,
+          issueCount: s.issues.length,
+          status:     s.status,
+          score:      s.score,
+          grade:      s.grade,
+          createdAt:  s.createdAt,
+        }))
+      )
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice(0, 5);
+
+    // Language distribution
+    const langMap = new Map<string, number>();
+    for (const repo of repos) {
+      const lang = repo.language || "Unknown";
+      langMap.set(lang, (langMap.get(lang) ?? 0) + 1);
+    }
+    const languageDistribution = Array.from(langMap.entries())
+      .map(([language, count]) => ({
+        language,
+        count,
+        percentage: repos.length > 0 ? Math.round((count / repos.length) * 100) : 0,
+      }))
+      .sort((a, b) => b.count - a.count);
+
+    // Top repos by total issue count
+    const topReposByIssues = repos
+      .map((r) => ({
+        name:       r.name,
+        language:   r.language,
+        issueCount: r.scans.flatMap((s) => s.issues).length,
+        score:      r.scans[0]?.score ?? null,
+        grade:      r.scans[0]?.grade ?? null,
+      }))
+      .sort((a, b) => b.issueCount - a.issueCount)
+      .slice(0, 5);
+
+    // Average scan score
+    const scansWithScore = repos.flatMap((r) => r.scans).filter((s) => s.score !== null);
+    const avgScore =
+      scansWithScore.length > 0
+        ? Math.round(scansWithScore.reduce((acc, s) => acc + (s.score ?? 0), 0) / scansWithScore.length)
+        : null;
+
+    // Most common issue titles
+    const titleCount = new Map<string, number>();
+    allIssues.forEach((i) => {
+      titleCount.set(i.title, (titleCount.get(i.title) ?? 0) + 1);
+    });
+    const topIssues = Array.from(titleCount.entries())
+      .map(([title, count]) => ({ title, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
+    return res.json({
+      overview: {
+        totalRepos:       repos.length,
+        privateRepos:     repos.filter((r) => r.private).length,
+        publicRepos:      repos.filter((r) => !r.private).length,
+        autoAuditEnabled: repos.filter((r) => r.autoAudit).length,
+        totalScans:       repos.flatMap((r) => r.scans).length,
+        totalIssues:      allIssues.length,
+        openIssues:       issuesByStatus.open,
+        fixedIssues:      issuesByStatus.fixed,
+        avgScore,
+      },
+      issuesBySeverity,
+      issuesByAgent,
+      issuesByStatus,
+      recentScans:         allScans,
+      languageDistribution,
+      topReposByIssues,
+      topIssues,
+    });
+  } catch (error) {
+    console.error("getAnalytics error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export const addRepoByAdmin = async (req: Request, res: Response) => {
   try {
     const { githubId, name, fullName, htmlUrl, description, language, private: isPrivate, fork, ownerId } = req.body;

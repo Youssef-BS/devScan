@@ -1,62 +1,56 @@
 "use client";
 
 import React from "react";
-import { Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+
+const tabs = [
+  { label: "All Repositories", type: "repositories", path: "/dashboard" },
+  { label: "Audit Queue", type: "checking", path: "/dashboard/toCheck" },
+  { label: "Analytics", type: "analytics", path: "/dashboard/analytics" },
+];
 
 const IntroDashboard = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const homeType = searchParams.get("homeType") || "repositories";
 
-  const goTo = (type: string, path = "/dashboard") => {
-    router.push(`${path}?homeType=${type}`);
-  };
-
   return (
-    <>
-      <section className="m-12 flex flex-col gap-4 text-center lg:flex-row lg:items-center lg:justify-between lg:text-left">
-        <div>
-          <h1 className="text-4xl font-bold">Your Repositories</h1>
-          <p className="pt-2.5 text-gray-500">
+    <div className="border-b border-gray-200 dark:border-white/[0.06] bg-white dark:bg-gray-950">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Page title */}
+        <div className="pt-8 pb-4">
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            Your Repositories
+          </h1>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Monitor and audit your code automatically
           </p>
         </div>
 
-      </section>
-
-      <section className="mx-1 mb-4 flex justify-center lg:mx-12 lg:justify-start">
-        <div className="flex w-fit gap-1.5 rounded-2xl bg-gray-200 p-1">
-          <button
-            className={`px-11 py-1 rounded-xl font-semibold transition cursor-pointer
-              ${homeType === "repositories" ? "bg-white" : "hover:bg-gray-100"}
-            `}
-            onClick={() => goTo("repositories")}
-          >
-           All my github Repositories
-          </button>
-
-          <button
-            className={`px-11 py-1 rounded-xl font-semibold transition cursor-pointer
-              ${homeType === "checking" ? "bg-white" : "hover:bg-gray-100"}
-            `}
-            onClick={() => goTo("checking", "/dashboard/toCheck")}
-          >
-            Repositories for checking
-          </button>
-
-          <button
-            className={`px-11 py-1 rounded-xl font-semibold transition cursor-pointer
-              ${homeType === "analytics" ? "bg-white" : "hover:bg-gray-100"}
-            `}
-            onClick={() => goTo("analytics", "/dashboard/analytics")}
-          >
-            Analytics
-          </button>
+        {/* Tab bar */}
+        <div className="flex gap-0">
+          {tabs.map(({ label, type, path }) => {
+            const active = homeType === type;
+            return (
+              <button
+                key={type}
+                onClick={() => router.push(`${path}?homeType=${type}`)}
+                className={`relative px-4 py-3 text-sm font-medium transition-colors cursor-pointer whitespace-nowrap ${
+                  active
+                    ? "text-blue-600 dark:text-blue-400"
+                    : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                }`}
+              >
+                {label}
+                {active && (
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400 rounded-t-full" />
+                )}
+              </button>
+            );
+          })}
         </div>
-      </section>
-    </>
+      </div>
+    </div>
   );
 };
 

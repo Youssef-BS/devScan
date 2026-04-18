@@ -121,6 +121,16 @@ export const getAllFromDb = async (page = 1, limit = 9) => {
 };
 
 
+export const getAnalytics = async () => {
+  const res = await fetch("http://localhost:4000/github/repos/analytics", {
+    method: "GET",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!res.ok) throw new Error("Failed to fetch analytics");
+  return res.json();
+};
+
 export const getRepoDetails = async (id : string) => {
 
   const res = await fetch(`http://localhost:4000/github/repos/${id}` , {

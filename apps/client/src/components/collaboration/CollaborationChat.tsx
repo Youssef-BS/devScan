@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Loader, MessageCircle } from 'lucide-react';
+import { Send, Loader, MessageCircle, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RealtimeMessage, OnlineUser } from '@/services/realtime.service';
@@ -19,6 +19,7 @@ interface CollaborationChatProps {
   loading?: boolean;
   repoId: number;
   repoName: string;
+  onStartCall?: (peer: OnlineUser) => void;
 }
 
 export function CollaborationChat({
@@ -32,6 +33,7 @@ export function CollaborationChat({
   loading = false,
   repoId,
   repoName,
+  onStartCall,
 }: CollaborationChatProps) {
   const [input, setInput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -188,6 +190,15 @@ export function CollaborationChat({
                   <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
                     {user.email?.split('@')[0] || user.email}
                   </span>
+                  {onStartCall && (
+                    <button
+                      onClick={() => onStartCall(user)}
+                      title={`Call ${user.email?.split('@')[0]}`}
+                      className="ml-1 w-6 h-6 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center transition-all hover:scale-110"
+                    >
+                      <Video className="w-3 h-3 text-white" />
+                    </button>
+                  )}
                 </div>
               ))}
           </div>

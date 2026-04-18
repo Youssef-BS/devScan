@@ -73,7 +73,7 @@ export class CollaborationService {
       where: { id: userId },
     });
 
-    if (!user || user.email !== invite.email) {
+    if (!user || user.email?.toLowerCase() !== invite.email.toLowerCase()) {
       return {
         success: false,
         message: "You cannot accept an invitation for another email",

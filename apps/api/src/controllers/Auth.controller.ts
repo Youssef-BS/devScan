@@ -99,9 +99,9 @@ export const githubCallback = async (req: Request, res: Response) => {
 
     // Check if user has active subscription
     if (dbUser.subscriptionStatus !== "ACTIVE") {
-      // Redirect to pricing/payment page
       const jwtToken = generateToken({
         userId: dbUser.id,
+        email: dbUser.email,
         role: "USER",
         isBanned: dbUser.isBanned || false,
       });
@@ -113,7 +113,6 @@ export const githubCallback = async (req: Request, res: Response) => {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      // Also set a non-httpOnly token for Socket.IO access
       res.cookie("socketToken", jwtToken, {
         httpOnly: false,
         sameSite: "lax",
@@ -121,14 +120,29 @@ export const githubCallback = async (req: Request, res: Response) => {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
+      // Check if the user has pending invitations — if so, let them accept
+      // before forcing a subscription. Otherwise send them to pricing.
+      const pendingInvite = await prisma.collaborationInvite.findFirst({
+        where: {
+          email: dbUser.email ?? "",
+          status: "PENDING",
+          expiresAt: { gt: new Date() },
+        },
+      });
+
+      if (pendingInvite) {
+        return res.redirect(`${process.env.CLIENT_URL}/dashboard/invitations`);
+      }
+
       return res.redirect(`${process.env.CLIENT_URL}/pricing`);
     }
 
   const jwtToken = generateToken({
-  userId: dbUser.id,
-  role: "USER",
-  isBanned: dbUser.isBanned || false,
-});
+    userId: dbUser.id,
+    email: dbUser.email,
+    role: "USER",
+    isBanned: dbUser.isBanned || false,
+  });
 
     res.cookie("token", jwtToken, {
       httpOnly: true,
@@ -203,6 +217,7 @@ export const LoginUserWithEmail = async (req: Request, res: Response) => {
 
         const token = generateToken({
             userId: user.id,
+            email: user.email,
             role: user.role,
             isBanned: user.isBanned
         });

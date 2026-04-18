@@ -350,7 +350,7 @@ ${allFilesCtx}`;
               )}
 
               {/* Chatbot */}
-              <AIChatbot codeContext={codeContent} isOpen onClose={() => {}} />
+              <AIChatbot codeContext={codeContent} repoId={commitDetails.commitInfo.repoId} isOpen onClose={() => {}} />
             </div>
           )}
 

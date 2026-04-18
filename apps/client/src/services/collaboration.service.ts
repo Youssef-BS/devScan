@@ -81,8 +81,11 @@ class CollaborationService {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token }),
     });
-    
-    if (!res.ok) throw new Error("Failed to accept invitation");
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.message || "Failed to accept invitation");
+    }
     return res.json();
   }
 

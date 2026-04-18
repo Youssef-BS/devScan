@@ -96,7 +96,7 @@ class NotificationService {
       title: `Repository Invitation`,
       description: `You've been invited to collaborate on ${invite.repoName}`,
       action: "View Invitation",
-      actionUrl: `/notifications`,
+      actionUrl: `/dashboard/invitations`,
       avatar: invite.InvitedByUser?.avatarUrl,
       timestamp: new Date(invite.createdAt || Date.now()),
       read: false,

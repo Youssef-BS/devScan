@@ -418,6 +418,7 @@ export class CollaborationController {
           token: inv.token,
           role: inv.role,
           repoId: inv.repoId,
+          repoGithubId: inv.Repo?.githubId,
           repoName: inv.Repo?.name,
           expiresAt: inv.expiresAt,
           invitedBy: inv.InvitedByUser,

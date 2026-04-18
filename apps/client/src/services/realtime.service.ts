@@ -91,6 +91,14 @@ class RealtimeService {
     this.socket.emit("typing", { repoId, isTyping });
   }
 
+  static onUsersInRoom(callback: (users: OnlineUser[]) => void) {
+    if (!this.socket) {
+      return;
+    }
+
+    this.socket.on("users-in-room", callback);
+  }
+
   static onUserJoined(callback: (user: OnlineUser) => void) {
     if (!this.socket) {
       return;
@@ -149,6 +157,10 @@ class RealtimeService {
 
   static isConnected(): boolean {
     return this.socket?.connected || false;
+  }
+
+  static getSocket() {
+    return this.socket;
   }
 
   static on(event: string, callback: (...args: any[]) => void) {

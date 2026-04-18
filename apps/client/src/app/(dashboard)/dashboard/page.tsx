@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Search, ListFilterPlus, Download } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Search, SlidersHorizontal, RefreshCw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import {
@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/select";
 import { useRepoStore } from "@/store/useRepoStore";
 import SpinnerLoad from "@/components/Spinner";
-import { Button } from "@/components/ui/button";
 import { saveReposInDB } from "@/services/github.service";
 import {
   Pagination,
@@ -41,16 +40,13 @@ const Dashboard = () => {
   const [language, setLocalLanguage] = useState("all");
   const [isDownloading, setIsDownloading] = useState(false);
 
-  useEffect(() => {
-    fetchRepos(1);
-  }, []);
+  useEffect(() => { fetchRepos(1); }, []);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       setSearch(search);
       fetchRepos(1);
     }, 400);
-
     return () => clearTimeout(timeout);
   }, [search]);
 
@@ -65,30 +61,33 @@ const Dashboard = () => {
       setIsDownloading(true);
       const result = await saveReposInDB();
       await fetchRepos(1);
-      toast.success(`Downloaded ${result.count} repositories successfully`);
-    } catch (e) {
-      toast.error("Failed to download repositories");
+      toast.success(`Synced ${result.count} repositories`);
+    } catch {
+      toast.error("Failed to sync repositories");
     } finally {
       setIsDownloading(false);
     }
   };
 
   return (
-    <React.Fragment>
-      <section className="mx-16 my-8">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center w-full rounded-2xl bg-gray-100 px-4 py-2">
-            <Search className="text-gray-400 mr-3 shrink-0" />
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+
+        {/* Toolbar */}
+        <div className="flex items-center gap-3 mb-8">
+          {/* Search + filter combo */}
+          <div className="flex flex-1 items-center gap-2 rounded-xl border border-gray-200 dark:border-white/8 bg-white dark:bg-gray-900 px-3 py-2 shadow-sm">
+            <Search size={15} className="shrink-0 text-gray-400" />
             <Input
-              placeholder="Search repositories..."
-              className="flex-1 border-0 bg-transparent focus-visible:ring-0 text-sm"
+              placeholder="Search repositories…"
+              className="flex-1 border-0 bg-transparent p-0 text-sm focus-visible:ring-0 text-gray-900 dark:text-white placeholder:text-gray-400"
               value={search}
               onChange={(e) => setLocalSearch(e.target.value)}
             />
-            <div className="mx-4 h-6 w-px bg-gray-300" />
-            <ListFilterPlus className="text-gray-500 mr-2 shrink-0" />
+            <div className="h-5 w-px bg-gray-200 dark:bg-white/10 mx-1" />
+            <SlidersHorizontal size={14} className="shrink-0 text-gray-400" />
             <Select value={language} onValueChange={onLanguageChange}>
-              <SelectTrigger className="border-0 bg-transparent shadow-none focus:ring-0 text-sm font-medium w-40">
+              <SelectTrigger className="border-0 bg-transparent shadow-none focus:ring-0 text-sm font-medium w-36 p-0 h-auto text-gray-700 dark:text-gray-300">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -96,67 +95,74 @@ const Dashboard = () => {
                 <SelectItem value="JavaScript">JavaScript</SelectItem>
                 <SelectItem value="TypeScript">TypeScript</SelectItem>
                 <SelectItem value="Java">Java</SelectItem>
+                <SelectItem value="Python">Python</SelectItem>
+                <SelectItem value="Go">Go</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <Button
+          {/* Sync button */}
+          <button
             onClick={handleDownload}
             disabled={isDownloading}
-            className="ml-4 flex items-center gap-2"
-            variant="outline"
+            className="flex shrink-0 items-center gap-2 rounded-xl border border-gray-200 dark:border-white/8 bg-white dark:bg-gray-900 px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-300 dark:hover:border-white/[0.14] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
-            <Download size={18} />
-            {isDownloading ? "Downloading..." : "Download / Update All"}
-          </Button>
+            <RefreshCw size={15} className={isDownloading ? "animate-spin" : ""} />
+            {isDownloading ? "Syncing…" : "Sync GitHub"}
+          </button>
         </div>
-      </section>
 
-      {loading ? (
-        <SpinnerLoad />
-      ) : (
-        <>
-          <section className="flex flex-wrap gap-5 m-16">
-            {repos.map((repo) => (
-              <RepoCard
-                key={repo.id}
-                repo={repo}
-                toggleAutoAudit={toggleAutoAudit}
-                addToCheck={() => saveRepo(repo)}
-              />
-            ))}
-          </section>
-
-          {totalPages > 1 && (
-            <div className="mb-12 flex justify-center">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationPrevious
-                    onClick={() => page > 1 && fetchRepos(page - 1)}
-                  />
-
-                  {Array.from({ length: totalPages }).map((_, i) => (
-                    <PaginationLink
-                      key={i}
-                      isActive={page === i + 1}
-                      onClick={() => fetchRepos(i + 1)}
-                    >
-                      {i + 1}
-                    </PaginationLink>
-                  ))}
-
-                  <PaginationNext
-                    onClick={() =>
-                      page < totalPages && fetchRepos(page + 1)
-                    }
-                  />
-                </PaginationContent>
-              </Pagination>
+        {/* Repo grid */}
+        {loading ? (
+          <SpinnerLoad />
+        ) : repos.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/6 mb-4">
+              <Search size={28} className="text-gray-400" />
             </div>
-          )}
-        </>
-      )}
-    </React.Fragment>
+            <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">
+              No repositories found
+            </h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Try adjusting your search or sync your GitHub repositories.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="flex flex-wrap gap-4">
+              {repos.map((repo) => (
+                <RepoCard
+                  key={repo.id}
+                  repo={repo}
+                  toggleAutoAudit={toggleAutoAudit}
+                  addToCheck={() => saveRepo(repo)}
+                />
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <div className="mt-10 flex justify-center">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationPrevious onClick={() => page > 1 && fetchRepos(page - 1)} />
+                    {Array.from({ length: totalPages }).map((_, i) => (
+                      <PaginationLink
+                        key={i}
+                        isActive={page === i + 1}
+                        onClick={() => fetchRepos(i + 1)}
+                      >
+                        {i + 1}
+                      </PaginationLink>
+                    ))}
+                    <PaginationNext onClick={() => page < totalPages && fetchRepos(page + 1)} />
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
   );
 };
 

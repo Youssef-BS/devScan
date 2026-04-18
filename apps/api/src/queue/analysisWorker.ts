@@ -159,6 +159,38 @@ async function processAnalysisJob(job: Job<AnalysisJobData>) {
       data:  { status: "COMPLETED", score, grade },
     });
 
+    // 7. Auto-resolve issues from previous scans that no longer appear in
+    //    the new scan (same repo, same file + title fingerprint).
+    const prevOpenIssues = await prisma.issue.findMany({
+      where: {
+        Scan: { repoId },
+        scanId: { not: scan.id },
+        status: "OPEN",
+      },
+      select: { id: true, filePath: true, title: true },
+    });
+
+    if (prevOpenIssues.length > 0) {
+      // Build a set of fingerprints from the new scan's issues
+      const newSigs = new Set(
+        rawIssues.map((i) =>
+          `${i.file ?? "unknown"}::${(i.title || "").substring(0, 100)}`
+        )
+      );
+
+      const resolvedIds = prevOpenIssues
+        .filter((i) => !newSigs.has(`${i.filePath}::${i.title}`))
+        .map((i) => i.id);
+
+      if (resolvedIds.length > 0) {
+        await prisma.issue.updateMany({
+          where: { id: { in: resolvedIds } },
+          data:  { status: "FIXED" },
+        });
+        console.log(`[Worker] Auto-resolved ${resolvedIds.length} issues from previous scans`);
+      }
+    }
+
     console.log(`[Worker] Job ${job.id} done — ${rawIssues.length} issues, score ${score} (${grade})`);
     return { issuesFound: rawIssues.length, score, grade };
 

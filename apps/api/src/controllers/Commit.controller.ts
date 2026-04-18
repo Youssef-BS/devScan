@@ -269,6 +269,7 @@ export const getCommitDetails = async (req: Request, res: Response) => {
         totalChanges: allFiles.reduce((sum : any, file :any) => sum + (file.changes || 0), 0),
         repoGithubId: commit.Repo.githubId,
         repoFullName: commit.Repo.fullName,
+        repoId: commit.Repo.id,
       }
     });
   } catch (error: any) {

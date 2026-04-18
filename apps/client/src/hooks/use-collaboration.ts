@@ -94,6 +94,12 @@ export function useCollaboration({ repoId, token, apiUrl }: UseCollaborationProp
     RealtimeService.joinRepo(repoId);
 
     // Setup event listeners
+
+    // Populate users who were already in the room when we joined
+    RealtimeService.onUsersInRoom((users) => {
+      setOnlineUsers(users);
+    });
+
     RealtimeService.onUserJoined((user) => {
       setOnlineUsers((prev) => {
         const exists = prev.find((u) => u.userId === user.userId);
@@ -132,6 +138,7 @@ export function useCollaboration({ repoId, token, apiUrl }: UseCollaborationProp
 
     return () => {
       RealtimeService.leaveRepo(repoId);
+      RealtimeService.removeListener("users-in-room");
       RealtimeService.removeListener("user-joined");
       RealtimeService.removeListener("user-left");
       RealtimeService.removeListener("new-message");

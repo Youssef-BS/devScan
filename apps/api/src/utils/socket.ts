@@ -64,6 +64,14 @@ export function initializeSocket(httpServer: HTTPServer) {
         return;
       }
 
+      // Collect users already in the room BEFORE joining
+      const existingUsers: { userId: number; email?: string }[] = [];
+      connectedUsers.forEach((user, socketId) => {
+        if (user.repoId === repoId && socketId !== socket.id) {
+          existingUsers.push({ userId: user.userId, email: user.email });
+        }
+      });
+
       socket.join(roomName);
       connectedUsers.set(socket.id, {
         userId: socket.data.userId,
@@ -71,14 +79,18 @@ export function initializeSocket(httpServer: HTTPServer) {
         email: socket.data.email,
       });
 
-      io.to(roomName).emit("user-joined", {
+      // Broadcast join to everyone else in the room
+      socket.to(roomName).emit("user-joined", {
         userId: socket.data.userId,
         email: socket.data.email,
         timestamp: new Date(),
       });
 
+      // Send the list of already-online users back to the joining socket only
+      socket.emit("users-in-room", existingUsers);
+
       console.log(
-        `User ${socket.data.userId} joined repo ${repoId} room`
+        `User ${socket.data.userId} joined repo ${repoId} room (${existingUsers.length} already online)`
       );
     });
 
@@ -141,11 +153,7 @@ export function initializeSocket(httpServer: HTTPServer) {
     });
     socket.on("disconnect", () => {
       const user = connectedUsers.get(socket.id);
-      if (socket.data?.userId) {
-        console.log(`User ${socket.data.userId} disconnected`);
-      } else {
-        console.log(`Socket ${socket.id} disconnected (unauthenticated)`);
-      }
+      connectedUsers.delete(socket.id);
 
       if (user?.repoId) {
         const roomName = `repo-${user.repoId}`;
@@ -154,9 +162,10 @@ export function initializeSocket(httpServer: HTTPServer) {
           email: user.email,
           timestamp: new Date(),
         });
+        console.log(`User ${user.userId} disconnected from repo ${user.repoId}`);
+      } else {
+        console.log(`Socket ${socket.id} disconnected`);
       }
-
-      console.log(`User ${socket.data.userId} disconnected`);
     });
 
     socket.on("leave-repo", (repoId: number) => {

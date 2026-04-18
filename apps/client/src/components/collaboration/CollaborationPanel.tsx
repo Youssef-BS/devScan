@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Cookies from 'js-cookie';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, MessageCircle, Activity, Settings2, AlertCircle, Phone } from 'lucide-react';
+import { Users, MessageCircle, Activity, Settings2, AlertCircle } from 'lucide-react';
 import { CollaboratorsList } from './CollaboratorsList';
 import { InviteCollaborator } from './InviteCollaborator';
 import { CollaborationChat } from './CollaborationChat';
 import { OnlineIndicator } from './OnlineIndicator';
+import { CallModal, CallPeer } from './CallModal';
 import { useCollaboration } from '@/hooks/use-collaboration';
+import { OnlineUser } from '@/services/realtime.service';
 
 interface CollaborationPanelProps {
   repoId: number;
@@ -26,6 +28,10 @@ export function CollaborationPanel({
   const [activeTab, setActiveTab] = useState('chat');
   const [showInviteSuccess, setShowInviteSuccess] = useState(false);
   const [token, setToken] = useState<string | undefined>(undefined);
+
+  // Outgoing call state (incoming calls are handled globally by GlobalCallListener)
+  const [callOpen, setCallOpen] = useState(false);
+  const [callPeer, setCallPeer] = useState<CallPeer | null>(null);
 
   useEffect(() => {
     try {
@@ -64,6 +70,11 @@ export function CollaborationPanel({
     token,
   });
 
+  const handleStartCall = useCallback((user: OnlineUser) => {
+    setCallPeer({ userId: user.userId, email: user.email });
+    setCallOpen(true);
+  }, []);
+
   const handleInvite = async (email: string, role: 'VIEWER' | 'EDITOR' | 'ADMIN') => {
     try {
       await invite(email, role);
@@ -95,7 +106,12 @@ export function CollaborationPanel({
           )}
         </div>
 
-        <OnlineIndicator users={onlineUsers} maxShow={6} />
+        <OnlineIndicator
+          users={onlineUsers}
+          maxShow={6}
+          currentUserId={currentUserId}
+          onCall={handleStartCall}
+        />
       </div>
 
       {error && (
@@ -114,7 +130,7 @@ export function CollaborationPanel({
       )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
-        <TabsList className="grid w-full grid-cols-4 m-4 gap-2 flex-shrink-0">
+        <TabsList className="grid w-full grid-cols-4 m-4 gap-2 shrink-0">
           <TabsTrigger value="chat" className="flex items-center gap-2">
             <MessageCircle className="w-4 h-4" />
             <span className="hidden sm:inline">Chat</span>
@@ -151,6 +167,7 @@ export function CollaborationPanel({
               loading={isLoading}
               repoId={repoId}
               repoName={repoName}
+              onStartCall={handleStartCall}
             />
           </TabsContent>
 
@@ -263,6 +280,17 @@ export function CollaborationPanel({
           </TabsContent>
         </div>
       </Tabs>
+
+      {callOpen && callPeer && currentUserId && (
+        <CallModal
+          isOpen={callOpen}
+          onClose={() => setCallOpen(false)}
+          currentUserId={currentUserId}
+          repoId={repoId}
+          peer={callPeer}
+          isIncoming={false}
+        />
+      )}
     </div>
   );
 }
