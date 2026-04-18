@@ -1,8 +1,8 @@
 services:
   postgres:
-    image: postgres:15
+    image: postgres:15-alpine
     container_name: devscan_postgres
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: devscan
       POSTGRES_PASSWORD: devscan
@@ -11,30 +11,59 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devscan -d devscan_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: devscan_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api:
     build:
       context: .
       dockerfile: Dockerfiles/Dockerfile.api
     container_name: devscan_api
+    restart: unless-stopped
     ports:
       - "4000:4000"
     env_file:
       - ./apps/api/.env
     environment:
       DATABASE_URL: postgresql://devscan:devscan@postgres:5432/devscan_db
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      AI_SERVICE_URL: http://ai:8003
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   client:
     build:
       context: .
       dockerfile: Dockerfiles/Dockerfile.client
     container_name: devscan_client
+    restart: unless-stopped
     ports:
       - "3000:3000"
     env_file:
       - ./apps/client/.env
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000
     depends_on:
       - api
 
@@ -43,10 +72,13 @@ services:
       context: .
       dockerfile: Dockerfiles/Dockerfile.admin
     container_name: devscan_admin
+    restart: unless-stopped
     ports:
       - "3001:3001"
     env_file:
       - ./apps/admin/.env
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000
     depends_on:
       - api
 
@@ -55,6 +87,7 @@ services:
       context: .
       dockerfile: Dockerfiles/Dockerfile.ai
     container_name: devscan_ai
+    restart: unless-stopped
     ports:
       - "8003:8003"
     env_file:
@@ -64,3 +97,4 @@ services:
 
 volumes:
   postgres_data:
+  redis_data:

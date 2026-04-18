@@ -1,13 +1,14 @@
-FROM node:20
+FROM node:20-alpine
 
-RUN corepack enable
-RUN corepack prepare pnpm@latest --activate
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
+
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 COPY packages/typescript-config/package.json packages/typescript-config/
 COPY packages/eslint-config/package.json packages/eslint-config/
+COPY packages/validation/package.json packages/validation/
 COPY apps/client/package.json apps/client/
 
 RUN pnpm install --frozen-lockfile
