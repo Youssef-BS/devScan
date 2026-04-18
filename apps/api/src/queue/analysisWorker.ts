@@ -47,21 +47,21 @@ async function fetchChangedCode(
 
 // ─── Normalizers ──────────────────────────────────────────────────────────
 
-function normalizeIssueType(t: string): "BUG" | "VULNERABILITY" | "CODE_SMELL" {
+export function normalizeIssueType(t: string): "BUG" | "VULNERABILITY" | "CODE_SMELL" {
   const map: Record<string, "BUG" | "VULNERABILITY" | "CODE_SMELL"> = {
     VULNERABILITY: "VULNERABILITY", BUG: "BUG", CODE_SMELL: "CODE_SMELL",
   };
   return map[(t || "").toUpperCase()] ?? "CODE_SMELL";
 }
 
-function normalizeSeverity(s: string): "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" {
+export function normalizeSeverity(s: string): "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" {
   const map: Record<string, "LOW" | "MEDIUM" | "HIGH" | "CRITICAL"> = {
     LOW: "LOW", MEDIUM: "MEDIUM", HIGH: "HIGH", CRITICAL: "CRITICAL",
   };
   return map[(s || "").toUpperCase()] ?? "MEDIUM";
 }
 
-function normalizeAgent(a: string): "security" | "performance" | "clean_code" | "bug" {
+export function normalizeAgent(a: string): "security" | "performance" | "clean_code" | "bug" {
   const map: Record<string, "security" | "performance" | "clean_code" | "bug"> = {
     security: "security", performance: "performance",
     clean_code: "clean_code", bug: "bug",
@@ -69,7 +69,7 @@ function normalizeAgent(a: string): "security" | "performance" | "clean_code" | 
   return map[(a || "").toLowerCase()] ?? "clean_code";
 }
 
-function calculateScore(issues: any[]): number {
+export function calculateScore(issues: any[]): number {
   if (!issues.length) return 100;
   const deductions: Record<string, number> = {
     CRITICAL: 10, HIGH: 5, MEDIUM: 2, LOW: 1,
@@ -81,7 +81,7 @@ function calculateScore(issues: any[]): number {
   return Math.max(0, total);
 }
 
-function calculateGrade(score: number): string {
+export function calculateGrade(score: number): string {
   if (score >= 90) return "A";
   if (score >= 80) return "B";
   if (score >= 70) return "C";
